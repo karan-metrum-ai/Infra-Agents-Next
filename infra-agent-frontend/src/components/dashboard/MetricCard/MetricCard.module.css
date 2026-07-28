@@ -1,0 +1,108 @@
+.metricCard {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md, 8px);
+  transition: all 0.2s ease;
+  min-width: 70px;
+  flex: 1;
+}
+
+.metricCard:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--metric-color, rgba(139, 92, 246, 0.2));
+}
+
+.metricIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metricContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.metricLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--foreground);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.metricValueRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.metricValue {
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.metricValueShimmer {
+  width: 40px;
+  height: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerMove 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmerMove {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.trendIndicator {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.trendUp {
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.trendDown {
+  color: var(--destructive);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.trendStable {
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metricValueShimmer {
+    animation: none;
+  }
+}

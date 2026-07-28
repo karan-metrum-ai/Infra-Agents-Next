@@ -1,0 +1,148 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: loader-fadein 0.18s ease 0.1s both;
+}
+
+@keyframes loader-fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 50%,
+    rgba(59, 130, 246, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.logo {
+  height: 3.5rem;
+  width: auto;
+  opacity: 0.6;
+  margin-bottom: var(--spacing-2xl);
+  user-select: none;
+  pointer-events: none;
+}
+
+.ringWrapper {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin-bottom: var(--spacing-2xl);
+  flex-shrink: 0;
+}
+
+.ringOuter {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.1);
+  border-top: 2px solid rgba(139, 92, 246, 0.55);
+  animation: loader-spin 1.7s linear infinite;
+}
+
+.ringInner {
+  position: absolute;
+  inset: 16px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(59, 130, 246, 0.08);
+  border-top: 2.5px solid var(--primary);
+  border-right: 2.5px solid rgba(59, 130, 246, 0.35);
+  animation: loader-spin 0.85s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.25);
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.label {
+  font-family: "Inter", sans-serif;
+  font-size: 1.625rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    135deg,
+    var(--primary, #3b82f6),
+    var(--secondary, #8b5cf6),
+    var(--accent, #ec4899)
+  );
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 4s ease infinite;
+  margin-bottom: 0.625rem;
+  text-align: center;
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.sub {
+  font-family: "Inter", sans-serif;
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+  text-align: center;
+  animation: loader-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes loader-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.brand {
+  position: absolute;
+  bottom: 2rem;
+  font-family: "Inter", sans-serif;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--border);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .ringOuter,
+  .ringInner,
+  .label,
+  .sub {
+    animation: none;
+  }
+}

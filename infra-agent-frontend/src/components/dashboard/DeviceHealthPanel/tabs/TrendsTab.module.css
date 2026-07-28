@@ -1,0 +1,19 @@
+.clusterRequired {
+  padding: 24px 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: var(--font-size-xs);
+}
+
+.chartStack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.noPrimaryIpNotice {
+  font-size: 0.5625rem;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+  padding: 4px 0;
+}

@@ -1,0 +1,35 @@
+.controllerBadge {
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.controllerBadgeNormal {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+}
+
+.controllerBadgeWarn {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dim {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.spareThreshold {
+  margin-left: 4px;
+}
+
+.notice {
+  opacity: 0.5;
+}

@@ -1,11 +1,13 @@
+import styles from "./page.module.css";
+
 export default function ReportsPage() {
   return (
-    <main>
-      <h1>Reports</h1>
+    <div className={styles.placeholder}>
+      <h1>Reporting lands in Phase 10</h1>
       <p>
-        Reporting dashboard lands in Phase 5 (Command Center / Live Dashboard), built out in Phase
-        10.
+        This tab renders the full Report Builder (templates, drag-drop canvas, SSE generation,
+        export preview), built in the Reports & Report Builder phase.
       </p>
-    </main>
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { NotificationToast } from "@/components/NotificationToast/NotificationToast";
+import { MobileBlocker } from "@/components/MobileBlocker/MobileBlocker";
 import "./globals.css";
 
 const inter = Inter({
@@ -49,6 +50,7 @@ export default function RootLayout({
               closeButton
             />
             <NotificationToast />
+            <MobileBlocker />
           </ThemeProvider>
         </ReduxProvider>
       </body>

@@ -1,0 +1,488 @@
+/**
+ * SwitchDetailsCard styles
+ * Compact SONiC switch inspector panel shown in the 3D rack view / split
+ * device panel. Dark-only overlay tints (rgba(255,255,255,X) / rgba(0,0,0,X))
+ * are intentional fixed-alpha tints per DESIGN.md — this app is dark-only.
+ * Semantic status colors always go through design tokens.
+ */
+
+/* Card container — floats bottom-left over the 3D scene */
+.card {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 340px;
+  max-height: calc(100% - 32px);
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: var(--border-width) solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  /* High z-index to sit above drei Html labels and other canvas overlays */
+  z-index: 10000;
+  isolation: isolate;
+  animation: slideIn 0.2s ease-out;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+/* Card variant — fills its parent panel edge-to-edge (split view layout) */
+.cardRight {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  max-height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: var(--border-width) solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+  isolation: isolate;
+  animation: slideInRight 0.25s ease-out;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardRight {
+    animation: none;
+  }
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: var(--border-width) solid rgba(255, 255, 255, 0.06);
+}
+
+.headerTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.headerIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.deviceName {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deviceSubtitle {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+}
+
+.healthBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.healthDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full, 9999px);
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  background: transparent;
+  border: var(--border-width) solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--foreground);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Scrollable content */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Loading / error states */
+.loadingState,
+.errorState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 20px;
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  text-align: center;
+}
+
+.errorState {
+  color: var(--destructive);
+}
+
+/* Section */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sectionHeader svg {
+  flex-shrink: 0;
+}
+
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Info rows */
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  font-size: var(--font-size-xs);
+  gap: var(--spacing-sm);
+}
+
+.infoLabel {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.infoValue {
+  color: var(--foreground);
+  font-weight: 500;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emptyText {
+  color: var(--color-text-dim);
+  font-size: var(--font-size-xs);
+}
+
+/* Port grid */
+.portGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  max-height: 80px;
+  overflow: auto;
+}
+
+.portDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--destructive);
+}
+
+.portDot[data-up="true"] {
+  background: var(--success);
+}
+
+/* BGP table */
+.bgpTable {
+  max-height: 100px;
+  overflow: auto;
+}
+
+.bgpRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 11px;
+  padding: 2px 0;
+  border-bottom: var(--border-width) solid rgba(255, 255, 255, 0.05);
+}
+
+.bgpNeighbor {
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bgpAs {
+  color: var(--muted);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.bgpStatus {
+  font-weight: 600;
+  font-size: 10px;
+  flex-shrink: 0;
+  color: var(--destructive);
+}
+
+.bgpStatus[data-established="true"] {
+  color: var(--success);
+}
+
+/* Environmental grid (fans / PSUs) */
+.envGrid {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.envColumn {
+  flex: 1;
+  min-width: 0;
+}
+
+.envColumnLabel {
+  font-size: 10px;
+  color: var(--color-text-dim);
+  margin-bottom: 4px;
+}
+
+.envItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.envBox {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--destructive);
+  background: rgba(239, 68, 68, 0.15);
+  border: var(--border-width) solid var(--destructive);
+}
+
+.envBox[data-active="true"] {
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.15);
+  border-color: var(--success);
+}
+
+/* Alarms */
+.alarmsList {
+  max-height: 80px;
+  overflow: auto;
+}
+
+.alarmsEmpty {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--success);
+  font-size: var(--font-size-xs);
+}
+
+.alarmRow {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  padding: 3px 0;
+  border-bottom: var(--border-width) solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+}
+
+.alarmIcon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--warning);
+}
+
+.alarmIcon[data-critical="true"] {
+  color: var(--destructive);
+}
+
+.alarmText {
+  color: var(--color-text-secondary);
+}
+
+/* Events */
+.eventsList {
+  max-height: 100px;
+  overflow: auto;
+}
+
+.eventRow {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  padding: 3px 0;
+  border-bottom: var(--border-width) solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+}
+
+.eventAction {
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  flex-shrink: 0;
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--success);
+}
+
+.eventAction[data-raise="true"] {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--destructive);
+}
+
+.eventText {
+  color: var(--muted);
+}
+
+/* LLDP */
+.lldpTable {
+  max-height: 80px;
+  overflow: auto;
+}
+
+.lldpRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  font-size: 11px;
+  padding: 2px 0;
+  border-bottom: var(--border-width) solid rgba(255, 255, 255, 0.05);
+}
+
+.lldpLocal {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.lldpRemote {
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Freshness footer */
+.freshnessFooter {
+  padding: 6px 12px;
+  font-size: 10px;
+  color: var(--color-text-dim);
+  text-align: center;
+  border-top: var(--border-width) solid rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    width: calc(100% - 24px);
+    left: 12px;
+    bottom: 12px;
+  }
+}

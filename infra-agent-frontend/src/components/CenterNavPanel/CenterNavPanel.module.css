@@ -1,0 +1,151 @@
+/* Center Navigation Panel - Global App Navigation */
+
+.centerNavPanel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.floatingButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--color-text-primary);
+}
+
+.floatingButton svg {
+  stroke: currentColor;
+  color: currentColor;
+}
+
+.floatingButton:hover {
+  transform: scale(1.05);
+  border-color: color-mix(in oklch, var(--color-brand) 35%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--color-brand) 20%, transparent),
+    var(--shadow-lg);
+}
+
+.floatingButton:active {
+  transform: scale(0.95);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  min-width: 170px;
+  background: var(--card);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-sm);
+  animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdownMenu {
+    animation: none;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.dropdownItem:hover {
+  /* Blue-tinted hover that sits in the same family as the active pill
+   * (gradient: var(--primary) -> var(--secondary)) below. */
+  background: color-mix(in oklch, var(--primary-500) 18%, transparent);
+  border: 1px solid color-mix(in oklch, var(--primary-400) 35%, transparent);
+  color: var(--foreground);
+}
+
+.dropdownItem.active {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--color-text-primary);
+  border: 1px solid transparent;
+  box-shadow: 0 2px 10px color-mix(in oklch, var(--primary-500) 35%, transparent);
+}
+
+.dropdownItem.active:hover {
+  /* Don't stack the translucent blue on top of the active gradient. */
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-color: transparent;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .floatingButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dropdownMenu {
+    min-width: 150px;
+    right: -8px;
+  }
+
+  .dropdownItem {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-xs);
+    gap: 10px;
+  }
+}
+
+/* Large viewport scaling -- keep dropdown compact, only modest growth so
+   it stays proportional to the labels and avoids excessive empty space. */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .dropdownMenu {
+    min-width: 190px;
+  }
+}
+@media (min-width: 2560px) and (max-width: 3439px) {
+  .dropdownMenu {
+    min-width: 210px;
+  }
+}
+@media (min-width: 3440px) {
+  .dropdownMenu {
+    min-width: 230px;
+  }
+}

@@ -12,6 +12,8 @@ import { digitalTwinApi } from "@/features/digitalTwin/digitalTwinApi";
 import { sandboxApi } from "@/features/sandbox/sandboxApi";
 import { reportsApi } from "@/features/reports/reportsApi";
 import { kyaiApi } from "@/features/kyai/kyaiApi";
+import { deviceMetricsApi } from "@/features/metrics/deviceMetricsApi";
+import { prometheusApi } from "@/features/metrics/prometheusApi";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +30,8 @@ export const store = configureStore({
     [sandboxApi.reducerPath]: sandboxApi.reducer,
     [reportsApi.reducerPath]: reportsApi.reducer,
     [kyaiApi.reducerPath]: kyaiApi.reducer,
+    [deviceMetricsApi.reducerPath]: deviceMetricsApi.reducer,
+    [prometheusApi.reducerPath]: prometheusApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -41,6 +45,8 @@ export const store = configureStore({
       sandboxApi.middleware,
       reportsApi.middleware,
       kyaiApi.middleware,
+      deviceMetricsApi.middleware,
+      prometheusApi.middleware,
     ),
 });
 

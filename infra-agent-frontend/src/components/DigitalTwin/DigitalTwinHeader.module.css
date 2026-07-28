@@ -1,0 +1,110 @@
+/* Digital Twin Header Styles
+ * Mirrors the Onboarding / LiveDashboard top bar so the menu button,
+ * Metrum logo and page title share the same position and padding
+ * across pages.
+ */
+.topBar {
+  position: fixed;
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.logoPanel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  background: var(--card);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: var(--border-width) solid var(--border);
+  height: 52px;
+  pointer-events: auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+  min-width: 100px;
+  object-fit: contain;
+}
+
+/* Compact square icon used on small screens */
+.logoIcon {
+  display: none;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.separatorSm {
+  height: 1.5rem;
+  margin-left: var(--spacing-sm);
+  margin-right: var(--spacing-sm);
+}
+
+.title {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Tablet: shrink logo and hide the wordmark */
+@media (max-width: 1024px) {
+  .logoPanel {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    height: 44px;
+  }
+
+  .logo {
+    height: 28px;
+    min-width: unset;
+    max-width: 120px;
+  }
+
+  .title {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Mobile: hide the wordmark/title, show the compact icon */
+@media (max-width: 768px) {
+  .logoPanel {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-sm);
+    height: 40px;
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .logoIcon {
+    display: block;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .separatorSm {
+    display: none;
+  }
+}

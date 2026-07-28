@@ -11,10 +11,36 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { clearTokenGetter, registerIdentity } from "@/lib/authTokenProvider";
 import { normalizeRole } from "@/features/auth/authSelectors";
 import { type SessionResponse, sessionResponseSchema } from "@/schemas/session.schema";
+import {
+  type AcceptPolicyRequest,
+  type AcceptPolicyResponse,
+  acceptPolicyResponseSchema,
+  type PolicyAcceptanceStatus,
+  policyAcceptanceStatusSchema,
+  type PrivacyPolicy,
+  privacyPolicySchema,
+} from "@/schemas/policy.schema";
 
+const AUTH_API_BASE = "/auth-api";
 const AUTH_SESSION_URL = "/auth-api/auth/session";
 const SESSION_CHECK_MAX_RETRIES = 3;
 const SESSION_CHECK_RETRY_DELAY_MS = 500;
+
+async function fetchAuthJson<T>(
+  path: string,
+  schema: { parse: (data: unknown) => T },
+  init?: RequestInit,
+): Promise<{ data: T } | { error: { status: number | string; error: string } }> {
+  try {
+    const resp = await fetch(`${AUTH_API_BASE}${path}`, { credentials: "include", ...init });
+    if (!resp.ok) {
+      return { error: { status: resp.status, error: resp.statusText } };
+    }
+    return { data: schema.parse(await resp.json()) };
+  } catch (error) {
+    return { error: { status: "FETCH_ERROR", error: String(error) } };
+  }
+}
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -61,7 +87,7 @@ async function fetchSessionWithRetry(): Promise<SessionResponse> {
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: () => ({ data: undefined }),
-  tagTypes: ["Session"],
+  tagTypes: ["Session", "PrivacyPolicy", "PolicyAcceptance"],
   endpoints: (builder) => ({
     getSession: builder.query<SessionResponse, void>({
       queryFn: async () => {
@@ -73,10 +99,39 @@ export const authApi = createApi({
       },
       providesTags: ["Session"],
     }),
+
+    /** Public endpoint — the currently active privacy policy (no auth required). */
+    getCurrentPolicy: builder.query<PrivacyPolicy, void>({
+      queryFn: () => fetchAuthJson("/auth/privacy-policy/current", privacyPolicySchema),
+      providesTags: ["PrivacyPolicy"],
+      keepUnusedDataFor: 300,
+    }),
+
+    /** The signed-in user's acceptance status; `requires_renewal` drives the Landing gate. */
+    getPolicyAcceptance: builder.query<PolicyAcceptanceStatus, void>({
+      queryFn: () => fetchAuthJson("/auth/privacy-policy/acceptance", policyAcceptanceStatusSchema),
+      providesTags: ["PolicyAcceptance"],
+      keepUnusedDataFor: 60,
+    }),
+
+    acceptPolicy: builder.mutation<AcceptPolicyResponse, AcceptPolicyRequest>({
+      queryFn: (payload) =>
+        fetchAuthJson("/auth/privacy-policy/accept", acceptPolicyResponseSchema, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }),
+      invalidatesTags: ["PolicyAcceptance"],
+    }),
   }),
 });
 
-export const { useGetSessionQuery } = authApi;
+export const {
+  useGetSessionQuery,
+  useGetCurrentPolicyQuery,
+  useGetPolicyAcceptanceQuery,
+  useAcceptPolicyMutation,
+} = authApi;
 
 /** Redirects to the BFF login endpoint (full-page redirect, cookie-based). */
 export function login(): void {

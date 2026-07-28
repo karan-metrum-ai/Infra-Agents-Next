@@ -1,10 +1,5 @@
-import { Spinner } from "@/components/ui/Spinner/Spinner";
-import styles from "./loading.module.css";
+import { PageLoader } from "@/components/PageLoader/PageLoader";
 
 export default function Loading() {
-  return (
-    <div className={styles.overlay}>
-      <Spinner size="lg" aria-label="Loading" />
-    </div>
-  );
+  return <PageLoader />;
 }

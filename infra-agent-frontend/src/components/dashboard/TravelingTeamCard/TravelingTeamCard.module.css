@@ -1,0 +1,437 @@
+/* TravelingTeamCard
+ *
+ * Renders a visual replica of the active agent's team-composition card
+ * (avatar + name + description + tools chip) and animates it flying
+ * from the right (teams panel) into the server rack on the left. The
+ * card disappears precisely inside the rack on landing.
+ *
+ *   .overlay         — full-bleed positioned layer over the split view.
+ *   .flightWrapper   — full-bleed track sized to the overlay; an
+ *                      animated `transform: translate(X%, Y%)` on this
+ *                      element places its top-left at the arc waypoint
+ *                      (the % is of its own size, which equals the
+ *                      overlay's size). All motion is GPU-composited.
+ *   .scaleWrapper    — sits at the wrapper's translated origin and
+ *                      uses `translate(-50%, -50%) scale(...)` to
+ *                      center + size the actual card.
+ *   .cardChrome      — overrides the default agent card border/shadow
+ *                      so the flying card has a brighter neon edge.
+ *
+ * Performance notes:
+ *   - We never animate `left`/`top` (those force layout reflow on
+ *     every frame and were the source of stutter). Motion is pure
+ *     `transform: translate3d(...)` so the browser can promote the
+ *     subtree to its own GPU layer and composite it cheaply.
+ *   - `filter: blur()` is expensive; we only use it for the brief
+ *     fade-in / fade-out frames, never during cruise.
+ *   - `will-change` is scoped to `transform, opacity` only — the two
+ *     properties the compositor handles natively.
+ *
+ * NOTE: `.nodeWrapper` through `.capabilityText` below are copied from
+ * the (not-yet-ported) `AgentNode.module.css` so this card pixel-matches
+ * the real Workflow Designer agent card. Once `AgentNode` lands, consider
+ * factoring the shared "agent card" chrome into one stylesheet.
+ */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  overflow: visible;
+  /* Isolate this subtree's paint/layout from the rest of the page
+     so the dashboard never has to re-layout while the card is in
+     flight. */
+  contain: layout paint;
+}
+
+/* The flight track. Sized to the overlay so percent-based translates
+   resolve to overlay-relative offsets. The animated transform places
+   its top-left at the current arc waypoint. */
+.flightWrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  transform: translate3d(78%, 50%, 0);
+  backface-visibility: hidden;
+  animation: travelArc 1.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Sits at the flight wrapper's translated origin, centers itself with
+   its own translate(-50%, -50%), and animates its scale so the card
+   visually shrinks into the rack on landing. */
+.scaleWrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate3d(-50%, -50%, 0) scale(0.45);
+  transform-origin: center;
+  will-change: transform;
+  backface-visibility: hidden;
+  /* The agent card subtree uses absolute positioning for the avatar
+     (top: -7rem from the card). We give the wrapper a fixed footprint
+     so its layout stays stable as it scales. */
+  width: 320px;
+  /* Card body grows ~ 280-360px once we include capabilities + tool
+     chips; avatar lifts 7rem (112px) above it. We give the wrapper a
+     roomy bounding box so the full card never clips during flight. */
+  height: 480px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: travelScale 1.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Agent card chrome (copied from AgentNode.module.css — see note     */
+/*  in the file header above)                                          */
+/* ------------------------------------------------------------------ */
+
+.nodeWrapper {
+  position: relative;
+  overflow: visible;
+}
+
+.avatarPosition {
+  position: absolute;
+  top: -7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+}
+
+.avatarFrame {
+  width: 11rem;
+  height: 11rem;
+  position: relative;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35));
+}
+
+.avatarImg {
+  width: 10.5rem;
+  height: 10.5rem;
+  object-fit: contain;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 95%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 65%, rgba(0, 0, 0, 0) 95%);
+  transform: translateY(6px);
+}
+
+.mainCard {
+  padding: 7rem var(--spacing-md) var(--spacing-md);
+  width: 320px;
+  border-radius: 1rem;
+  border: 1px solid;
+  box-shadow: var(--shadow-xl);
+  backdrop-filter: blur(4px);
+}
+
+/* Glassy card with subtle gradient. Fixed width ensures uniform card
+   sizes across all agent cards. */
+.card {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--card), transparent 0%),
+    color-mix(in oklab, var(--background), transparent 0%)
+  );
+  border-color: color-mix(in oklab, var(--border), transparent 0%);
+  position: relative;
+  width: 320px;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+
+/* Soft seam-blend where the avatar meets the card. */
+.card::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  transform: translateX(-50%);
+  width: 78%;
+  height: 36px;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 90% at 50% 100%,
+    color-mix(in oklab, var(--background), transparent 0%) 0%,
+    color-mix(in oklab, var(--background), transparent 60%) 55%,
+    transparent 90%
+  );
+  filter: blur(6px);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+.borderDefault {
+  border-color: rgba(107, 114, 128, 0.6);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.headerInfo {
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.agentName {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--foreground);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+.agentTagline {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: var(--spacing-xs);
+  max-width: 220px;
+}
+
+.chipsRow {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.toolsChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  background: color-mix(in oklab, var(--muted), transparent 75%);
+  border: 1px solid color-mix(in oklab, var(--border), transparent 30%);
+  border-radius: 999px;
+  padding: 3px var(--spacing-sm);
+}
+
+.rule {
+  height: 1px;
+  margin: 10px 0;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.capabilitiesList {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.capabilityItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.capabilityDot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.capabilityText {
+  font-size: var(--font-size-sm);
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Flying-card accent chrome                                          */
+/* ------------------------------------------------------------------ */
+
+/* Override the default agent card border with an accent-colored neon
+   edge so the flying card is clearly distinguished from the static
+   cards in the team panel. */
+.cardChrome {
+  background: linear-gradient(
+    135deg,
+    rgba(12, 14, 22, 0.96) 0%,
+    rgba(20, 24, 34, 0.94) 100%
+  ) !important;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 0 1px rgba(125, 220, 240, 0.35),
+    0 18px 42px rgba(0, 0, 0, 0.55),
+    0 0 32px rgba(34, 211, 238, 0.28) !important;
+}
+
+.accentProcessing .cardChrome {
+  border-color: rgba(125, 220, 240, 0.7) !important;
+  box-shadow:
+    0 0 0 1px rgba(125, 220, 240, 0.45),
+    0 18px 42px rgba(0, 0, 0, 0.55),
+    0 0 36px rgba(34, 211, 238, 0.35) !important;
+}
+
+.accentWaiting .cardChrome {
+  border-color: rgba(253, 224, 71, 0.7) !important;
+  box-shadow:
+    0 0 0 1px rgba(253, 224, 71, 0.45),
+    0 18px 42px rgba(0, 0, 0, 0.55),
+    0 0 36px rgba(234, 179, 8, 0.32) !important;
+}
+
+.accentNeutral .cardChrome {
+  border-color: rgba(125, 220, 240, 0.5) !important;
+}
+
+/* Tool list — small chip row below the capabilities. Mirrors the
+   compact "tag pill" look used elsewhere in the dashboard. The colors
+   are accent-tinted so the chips read as part of the live agent's
+   visual identity (cyan / amber / neutral). */
+.toolsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 var(--spacing-md) var(--spacing-md);
+  margin-top: 8px;
+}
+
+.toolChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: rgba(186, 230, 253, 0.92);
+  background: rgba(34, 211, 238, 0.1);
+  border: 1px solid rgba(125, 220, 240, 0.35);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.toolMore {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.8);
+  background: rgba(63, 63, 70, 0.4);
+  border: 1px solid rgba(82, 82, 91, 0.55);
+}
+
+.accentWaiting .toolChip {
+  color: rgba(254, 240, 138, 0.95);
+  background: rgba(234, 179, 8, 0.12);
+  border-color: rgba(253, 224, 71, 0.45);
+}
+
+.accentNeutral .toolChip {
+  color: rgba(203, 213, 225, 0.92);
+  background: rgba(100, 116, 139, 0.18);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+/* Flight path — pure transform translate (no left/top), so the browser
+   can hold the layer on the GPU for the full duration. Percent units
+   on `translate()` resolve against the element's own size; since
+   `.flightWrapper` is sized 100% of the overlay, 78% / 50% etc. land
+   exactly at the same arc waypoints as a left/top version, but without
+   triggering layout each frame.
+       start (right edge of teams panel) -> (78%, 50%)
+       apex (mid air, slight lift)       -> (50%, 32%)
+       end  (inside the rack)            -> (20%, 50%)
+*/
+@keyframes travelArc {
+  0% {
+    transform: translate3d(78%, 50%, 0);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  7% {
+    transform: translate3d(77%, 49.5%, 0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  30% {
+    transform: translate3d(65%, 42%, 0);
+    opacity: 1;
+  }
+  52% {
+    transform: translate3d(50%, 32%, 0);
+    opacity: 1;
+  }
+  74% {
+    transform: translate3d(32%, 38%, 0);
+    opacity: 1;
+  }
+  90% {
+    transform: translate3d(22%, 48%, 0);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(20%, 50%, 0);
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+/* Scale ramp paired with the arc. Eases in gently, holds steady
+   during cruise, then shrinks into the rack on landing. */
+@keyframes travelScale {
+  0% {
+    transform: translate3d(-50%, -50%, 0) scale(0.2);
+  }
+  7% {
+    transform: translate3d(-50%, -50%, 0) scale(0.45);
+  }
+  74% {
+    transform: translate3d(-50%, -50%, 0) scale(0.43);
+  }
+  90% {
+    transform: translate3d(-50%, -50%, 0) scale(0.28);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) scale(0.1);
+  }
+}
+
+/* Honor user preference for reduced motion: skip the flight entirely
+   and just fade in / out at the rack endpoint. */
+@media (prefers-reduced-motion: reduce) {
+  .flightWrapper {
+    animation: none;
+    transform: translate3d(20%, 50%, 0);
+    opacity: 1;
+  }
+  .scaleWrapper {
+    animation: none;
+    transform: translate3d(-50%, -50%, 0) scale(0.35);
+  }
+}

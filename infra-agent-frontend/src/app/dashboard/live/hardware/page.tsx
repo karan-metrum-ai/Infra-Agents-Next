@@ -1,8 +1,13 @@
+import styles from "./page.module.css";
+
 export default function HardwarePage() {
   return (
-    <main>
-      <h1>Hardware</h1>
-      <p>Hardware dashboard lands in Phase 5 (Command Center / Live Dashboard).</p>
-    </main>
+    <div className={styles.placeholder}>
+      <h1>Physical Systems lands in Phase 6</h1>
+      <p>
+        This tab renders the full 3D rack/globe digital-twin scene (react-three-fiber + cobe), built
+        as part of the Infrastructure Topology & Digital Twin phase.
+      </p>
+    </div>
   );
 }

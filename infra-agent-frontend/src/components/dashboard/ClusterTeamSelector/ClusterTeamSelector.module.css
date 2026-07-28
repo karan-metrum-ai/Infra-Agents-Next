@@ -1,0 +1,415 @@
+/* ClusterTeamSelector - Compact Premium Dropdown */
+
+/* Container */
+.selectorContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Loading State - Compact */
+.loadingState {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+}
+
+.spinnerIcon {
+  animation: spin 1s linear infinite;
+  color: var(--primary);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State - Compact */
+.errorState {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--destructive);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.errorState:hover {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.errorState:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Empty State - Compact */
+.emptyState {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Trigger Button - Compact Premium
+ * Hard pixel values (instead of fluid spacing tokens) keep the trigger
+ * visually identical from iPad-portrait up through 4K so it never
+ * inflates with viewport scaling. */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.trigger:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.trigger.open {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.trigger.disabled {
+  cursor: default;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.trigger.disabled:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Status Indicators */
+.statusSpinner {
+  animation: spin 1s linear infinite;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.statusActive {
+  color: var(--success);
+  fill: var(--success);
+  flex-shrink: 0;
+}
+
+.statusInactive {
+  color: var(--muted);
+  fill: transparent;
+  stroke: var(--muted);
+  flex-shrink: 0;
+}
+
+.clusterLabel {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  /* Truncate very long cluster names so the chip stays compact instead
+   * of stretching across the top bar on smaller portrait viewports. */
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu - Compact */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 140px;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.12s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown {
+    animation: none;
+  }
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.clusterCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--spacing-xs);
+  background: rgba(139, 92, 246, 0.15);
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.dropdownList {
+  max-height: 180px;
+  overflow-y: auto;
+  padding: var(--spacing-xs);
+}
+
+/* Scrollbar styling */
+.dropdownList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dropdownList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdownList::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 2px;
+}
+
+.dropdownList::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.4);
+}
+
+/* Cluster Item - Compact */
+.clusterItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.clusterItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.clusterItem:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.clusterItem.selected {
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.clusterId {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.clusterItem.selected .clusterId {
+  color: var(--primary);
+}
+
+.deviceCount {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 0.6875rem;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* =====================================================================
+ * RESPONSIVE TIERS
+ * The trigger uses fixed pixel values so it stays compact at every
+ * supported breakpoint (iPad-portrait 768 -> 4K 3840). We only nudge
+ * the label width / dropdown min-width per tier; the chip height stays
+ * constant so it never dominates the top bar. */
+
+/* iPad portrait (>= 768) and small laptop */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .clusterLabel {
+    max-width: 110px;
+    font-size: 11px;
+  }
+
+  .dropdown {
+    min-width: 140px;
+  }
+}
+
+/* Small / standard laptop (1024 - 1439) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .clusterLabel {
+    max-width: 140px;
+  }
+}
+
+/* HD / FHD (1440 - 1919) */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .clusterLabel {
+    max-width: 160px;
+  }
+}
+
+/* FHD (1920 - 2559) - keep chip the same height, allow slightly wider label */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .trigger {
+    height: 28px;
+    padding: 0 10px;
+  }
+
+  .loadingState,
+  .errorState,
+  .emptyState {
+    height: 28px;
+  }
+
+  .clusterLabel {
+    max-width: 180px;
+    font-size: 12px;
+  }
+
+  .dropdown {
+    min-width: 180px;
+  }
+}
+
+/* 2K (2560 - 3439) */
+@media (min-width: 2560px) and (max-width: 3439px) {
+  .trigger {
+    height: 30px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .loadingState,
+  .errorState,
+  .emptyState {
+    height: 30px;
+  }
+
+  .clusterLabel {
+    max-width: 220px;
+    font-size: 13px;
+  }
+
+  .dropdown {
+    min-width: 220px;
+  }
+}
+
+/* Ultrawide (3440 - 3839) and 4K (>= 3840) */
+@media (min-width: 3440px) {
+  .trigger {
+    height: 32px;
+    padding: 0 14px;
+    gap: 8px;
+  }
+
+  .loadingState,
+  .errorState,
+  .emptyState {
+    height: 32px;
+  }
+
+  .clusterLabel {
+    max-width: 260px;
+    font-size: 14px;
+  }
+
+  .dropdown {
+    min-width: 260px;
+  }
+}

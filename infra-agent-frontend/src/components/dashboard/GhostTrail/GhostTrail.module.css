@@ -1,0 +1,108 @@
+/* GhostTrail — subtle neon ribbon flow.
+ *
+ * Goals:
+ *  - Always continuous, never bursty.
+ *  - Neon ribbons fade in/out softly with the active state.
+ *  - No pulsing rings, no impact flashes, no one-shot bursts.
+ */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1.6s ease;
+  mix-blend-mode: screen;
+}
+
+.overlayActive {
+  opacity: 1;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Neon ribbon — gently breathes its opacity so the strands look alive
+   without ever drawing too much attention. */
+.ribbon {
+  animation: ribbonBreathe 6.5s ease-in-out infinite;
+}
+
+@keyframes ribbonBreathe {
+  0% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0.18;
+  }
+}
+
+/* Particle — kept very small and soft. We only animate a faint scale so
+   the dots feel like dust drifting along the ribbon. */
+.particle {
+  animation: particleSoftBreathe 3.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes particleSoftBreathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Endpoint halos — purely static glow, no rings, no expansion. */
+.endpointHalo {
+  animation: endpointHaloDrift 7s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes endpointHaloDrift {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* Respect reduced-motion preference: keep the ribbons/halos visible (they
+   still carry the fade-in/out via .overlayActive, which is a state change,
+   not a decorative loop) but freeze the continuous breathing loops to a
+   static mid-point opacity instead of animating them. Particle motion along
+   the path is driven by SVG <animateMotion>, which browsers already pause
+   under prefers-reduced-motion; the CSS opacity loops below are the only
+   ones we control directly. */
+@media (prefers-reduced-motion: reduce) {
+  .ribbon,
+  .particle,
+  .endpointHalo {
+    animation: none;
+  }
+
+  .ribbon {
+    opacity: 0.6;
+  }
+
+  .particle {
+    opacity: 0.75;
+  }
+
+  .endpointHalo {
+    opacity: 0.65;
+  }
+}
