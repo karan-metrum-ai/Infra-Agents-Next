@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## SQL Code Quality
+
+### Formatting Standards
+
+- SQL keywords in UPPERCASE: `SELECT`, `INSERT`, `CREATE TABLE`, `REFERENCES`, `NOT NULL`, `DEFAULT`, `WHERE`, `JOIN`, `ON`, `AND`, `OR`, `RETURNS`, `AS`, `LANGUAGE`, `BEGIN`, `END`, `DECLARE`, `IF`, `THEN`, `ELSE`, `LOOP`, `RETURN`.
+- Table and column names in lowercase_snake_case.
+- Function names: UPPERCASE for trigger/internal functions (`FN_HEARTBEAT_AUTO_PROMOTE`), lowercase_snake_case for RPCs (`create_project`, `execute_scenario`).
+- Indent with 4 spaces. No tabs.
+- One column definition per line in CREATE TABLE statements.
+- Align column types and constraints for readability.
+- SQLFluff is configured (`.sqlfluff` in repo root) - follow its rules.
+
+### Python Code Quality
+
+- Follow `ruff.toml` for linting. Ruff is the configured linter for all Python code.
+- Follow `pyproject.toml` for project configuration and dependencies.
+- Type hints on all function signatures. No `Any` types unless genuinely unavoidable.
+- Import linting via `.importlinter` - dependency boundaries are enforced.
+- Copy-paste detection via `.jscpd.json` - do not duplicate code across services.
+- Pre-commit hooks (`.pre-commit-config.yaml`) run on every commit. Do not skip them.
+
+### LOC Discipline for SQL Files
+
+- Single schema files should not exceed ~1000 lines. When they grow beyond this, split into numbered parts within a directory (e.g., `schema/07_seed_functions/01_...`, `02_...`).
+- RPCs should be focused. One function per logical operation. Do not create monolithic RPCs that do 5 different things based on a mode parameter.
+- Views should be readable. If a view requires more than ~100 lines of SQL, consider breaking it into CTEs or intermediate views.
+
+## Testing Contracts
+
+- Schema validation tests in `tests/` and `validation/` verify that tables, columns, constraints, and RPCs exist and behave correctly.
+- Every new RPC should have a corresponding test that validates: happy path, input validation errors, foreign key resolution errors, and business rule violations.
+- Tests must be runnable against a fresh database created by `make db-reset` or `docker compose up postgres`.

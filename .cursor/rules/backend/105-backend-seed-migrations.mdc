@@ -1,0 +1,42 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Seed Data Contracts
+
+### Lookup Seed Data
+
+- Every `lkp_` table must have seed data in `schema/07_seed_functions/` or `seed/`.
+- Seed functions must be idempotent: `INSERT ... ON CONFLICT (code) DO UPDATE SET display_name = EXCLUDED.display_name, ...`.
+- Seed data uses `code` values as stable identifiers. Application code NEVER hardcodes `_id` integers from lookup tables - always resolve via `code`.
+- When adding a new lookup value, add it to the seed function AND document it in the `COMMENT ON COLUMN` of the code column.
+
+### Master Data Seed Patterns
+
+- GPU models, CPU models, NIC models, server vendors, frameworks, tools - all seeded via functions in `schema/07_seed_functions/`.
+- Seed functions accept parameters for upsert and use `ON CONFLICT ... DO UPDATE` to handle re-runs.
+- Seed data must match production reality. Do not invent GPU models or framework versions that do not exist.
+
+## Migration Discipline
+
+### When to Use Migrations vs Schema Files
+
+- **Schema files** (`schema/NN_*.sql`): Idempotent, run on every deploy. All table definitions, RPCs, views, triggers, seed functions. Safe to re-run.
+- **Migrations** (`migrations/NNNN_*.sql`): Run ONCE, for data transformations, backfills, or fixes that cannot be idempotent. Use sparingly.
+- Prefer making schema files idempotent over creating migrations. A migration is a last resort for one-time data transforms.
+
+### Migration File Format
+
+- Sequential numbering: `0001_`, `0002_`, etc.
+- Descriptive name: `0010_core_add_framework_profiles.sql`
+- Begin with a comment block explaining what the migration does and WHY it is needed.
+- Always test rollback path mentally - even if you do not script it, know what would need to happen to undo the change.
+
+## Service Layer Contracts
+
+- Backend Python services in `services/` connect to PostgreSQL and call RPCs via PostgREST or direct SQL.
+- Services NEVER write raw SQL for operations that have an RPC. If an RPC does not exist for a needed operation, create one.
+- Services validate their own inputs before calling RPCs - defense in depth. Do not rely solely on database constraints.
+- Environment variables for database connection, PostgREST URL, and service credentials are in `env.example`. Never hardcode connection strings.

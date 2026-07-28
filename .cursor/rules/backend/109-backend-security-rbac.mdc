@@ -1,0 +1,68 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Security, RBAC, and Authentication - Non-Negotiable
+
+### JWT and Authentication Architecture
+
+- PostgREST uses two roles: `metrum_anon` (unauthenticated, SELECT-only) and `metrum_authenticated` (full CRUD, inherits anon).
+- JWTs are minted server-side using `PGRST_JWT_SECRET`. User tokens have 900s TTL. Service tokens should not exceed 24h TTL.
+- The `rbac_pre_request()` hook fires before EVERY PostgREST request. It reads `account_id` from `request.jwt.claims` (the JWT, not user-supplied headers), looks up `(resource, action)` in `rpc_permission_map`, and calls `check_casbin_sql()`.
+- **Dev mode flags MUST flow through server-side env vars** (`PGRST_APP_SETTINGS_DEV_MODE`), NEVER from JWT claims. A client-supplied JWT must never be able to disable billing enforcement or security checks.
+
+### Casbin RBAC Model (Three-Clause Allow)
+
+`check_casbin_sql()` implements three independent allow paths, any of which is sufficient:
+
+1. **RBAC**: User has a role in an org domain AND a policy `p` row exists for `(role, domain/wildcard, resource, action)`
+2. **Metrum admin wildcard**: User has a `g` row with `v1='metrum_admin'` and `v2='*'` - bypasses all org checks
+3. **Direct project grant**: Explicit `p` row for `(account_id, project:<id>, resource, action)` - used for cross-org sharing
+
+Casbin rules are DERIVED, never edited directly. They are rebuilt by `sync_casbin_policies()` triggered by changes to `org_memberships`, `user_global_roles`, `project_access`, and `organizations.owner_account_id`. Statement-level triggers prevent N rebuilds per bulk operation.
+
+### RPC Permission Map
+
+- Every RPC that modifies data MUST have a row in `rpc_permission_map` with `(rpc_name, resource, action, org_param)`.
+- `org_param` tells `rbac_pre_request` which request body field contains the org_id for authorization.
+- An unregistered RPC is callable by ANYONE with a valid JWT - the hook cannot gate what it does not know about.
+- When adding a new RPC, add its `rpc_permission_map` row in the SAME schema file as the function definition.
+
+### Secret Management
+
+- API keys: stored as SHA-256 hashes (`token_hash`). Plain token returned only at creation, never again.
+- Onboarding tokens: UUIDs generated at registration, returned by explicit bootstrap RPCs, hidden from generic table reads via views.
+- Cloud credentials: environment variables only. Never stored in the database.
+- `api_key_hash` on invocation tables: SHA-256 hash for audit trail. Comment explicitly states "never store actual keys."
+
+### Multi-Tenancy Enforcement
+
+- Every query, every RPC, every view MUST respect tenant boundaries via `org_id` / `owner_account_id` scoping.
+- Views that join across tenant boundaries (for admin dashboards) must explicitly filter by the caller's org membership or `metrum_admin` global role.
+- The `_audit_actor_id()` helper extracts JWT claims with an EXCEPTION handler returning NULL, so audit triggers work correctly outside request context (migrations, seeds).
+
+### Authorization Check Order in RPCs
+
+```sql
+-- 1. Reject NULL callers - NEVER skip auth
+IF p_account_id IS NULL THEN
+    RAISE EXCEPTION 'p_account_id is required';
+END IF;
+
+-- 2. Superadmin bypass
+IF account_has_global_role(p_account_id, 'metrum_admin') THEN
+    -- proceed
+ELSIF (SELECT owner_account_id FROM organizations WHERE org_id = p_org_id) = p_account_id THEN
+    -- org owner, proceed
+ELSIF EXISTS (
+    SELECT 1 FROM org_memberships om
+    JOIN lkp_org_roles lr ON om.role_id = lr.role_id
+    WHERE om.account_id = p_account_id AND om.org_id = p_org_id AND lr.permission_level >= 80
+) THEN
+    -- admin or higher, proceed
+ELSE
+    RAISE EXCEPTION 'insufficient_privilege';
+END IF;
+```

@@ -1,0 +1,95 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## RPC Design Contracts
+
+### Function Naming
+
+- RPCs use `snake_case` and are verbs: `create_project`, `execute_scenario`, `get_benchmark_results`, `cancel_job`
+- CRUD RPCs: `create_{entity}`, `update_{entity}`, `delete_{entity}`, `get_{entity}`, `list_{entities}`
+- Action RPCs: `execute_{action}`, `cancel_{action}`, `schedule_{action}`
+- Internal/trigger functions: `FN_{DESCRIPTION}` in UPPER*SNAKE (e.g., `FN_HEARTBEAT_AUTO_PROMOTE`) or `trg*{description}` for trigger functions
+- Helper functions: `{domain}_{action}` (e.g., `sync_engine_args_from_command_template`)
+
+### Input Validation - Every RPC Must
+
+1. Validate ALL required parameters at the top of the function body. Raise `EXCEPTION` with clear error messages including parameter names and expected formats.
+2. Use typed parameters (INTEGER, UUID, VARCHAR, BOOLEAN) - not generic TEXT or JSON for structured inputs.
+3. Validate foreign key references exist before attempting inserts (check existence, raise meaningful error if not found).
+4. Validate business rules (e.g., cannot cancel a terminal job, cannot modify a completed run).
+
+### Return Types - Every RPC Must
+
+1. Return a typed `TABLE(...)` or `RECORD` with explicit column names and types. NEVER return raw `JSON` or `JSONB` from RPCs.
+2. For single-row returns, use `RETURNS TABLE(...)` with the expected columns.
+3. For multi-row returns, use `RETURNS TABLE(...)` or `RETURNS SETOF {type}`.
+4. For void actions (status updates, deletions), return at minimum the affected entity's ID and new status.
+
+### Error Handling - ONE Pattern, No Split
+
+The drift analysis found a critical contract split in the codebase: some RPCs use `RAISE EXCEPTION` (callers need error handling), others return `json_build_object('error', ...)` (callers check a key), and a third group silently returns empty. This is unacceptable - callers cannot know which pattern a given RPC uses without reading its source.
+
+**The canonical pattern is `RAISE EXCEPTION` for errors.** PostgREST translates these into proper HTTP error responses (400/409/403). This gives the frontend a consistent error contract. Do NOT return error JSON objects from new RPCs.
+
+**Parameter ordering convention:** Caller identity always comes first (`p_account_id UUID` or `p_caller_id UUID`), followed by the org scoping parameter (`p_org_id UUID`), then operation-specific parameters. Prefix all params with `p_`, all local variables with `v_`.
+
+```sql
+CREATE OR REPLACE FUNCTION create_something(
+    p_account_id UUID,
+    p_org_id UUID,
+    p_name VARCHAR,
+    p_type_code VARCHAR
+)
+RETURNS TABLE(entity_id INTEGER, entity_name VARCHAR) AS $$
+DECLARE
+    v_type_id INTEGER;
+BEGIN
+    -- 1. Validate inputs
+    IF p_name IS NULL OR LENGTH(TRIM(p_name)) = 0 THEN
+        RAISE EXCEPTION 'p_name is required and cannot be empty';
+    END IF;
+
+    -- 2. Resolve foreign keys via code, never raw IDs
+    SELECT type_id INTO v_type_id FROM lkp_types WHERE code = p_type_code;
+    IF v_type_id IS NULL THEN
+        RAISE EXCEPTION 'Unknown type code: %', p_type_code;
+    END IF;
+
+    -- 3. Execute with RETURNING
+    RETURN QUERY
+    INSERT INTO entities (name, org_id, type_id)
+    VALUES (TRIM(p_name), p_org_id, v_type_id)
+    RETURNING entities.entity_id, entities.name;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+### RPC Security
+
+- Every RPC that modifies data must validate caller identity. For PostgREST, this means checking `current_setting('request.jwt.claims', true)` for org_id/user_id.
+- Service-role RPCs (called by backend services, not end users) must have explicit caller guards: `SELECT current_setting('role') = 'metrum_service'` or similar.
+- The pattern established in `schema/38_service_rpc_caller_guards.sql` must be followed for all service-internal RPCs.
+- **NEVER allow NULL account_id to bypass authorization checks.** The drift analysis found RPCs (`record_sut_payload`, `append_job_log_chunk`, `finalize_job_log`) where `p_account_id IS NULL` was used as an intentional auth bypass. This creates an exploitable hole - any caller that omits the account parameter gets unrestricted access.
+- **Every new data-modifying RPC MUST be registered in `rpc_permission_map`** with the correct `(resource, action, org_param)` triple. The `rbac_pre_request` hook only gates RPCs that are explicitly registered. An unregistered RPC is callable by anyone with a valid JWT.
+
+### RBAC Authorization Pattern in RPCs
+
+For RPCs that do their own authorization (in addition to `rbac_pre_request`), follow this three-clause check:
+
+1. Check `account_has_global_role(p_caller_id, 'metrum_admin')` - if true, bypass org checks (superadmin path)
+2. Check org ownership (`organizations.owner_account_id = p_caller_id`)
+3. Check org membership with sufficient `permission_level` (e.g., `>= 80` for admin-or-higher)
+4. `RAISE EXCEPTION 'insufficient_privilege'` if none pass - NEVER return an error JSON object, NEVER silently return empty
+
+## PostgREST Exposure Rules
+
+- Tables exposed via PostgREST are read-only for `metrum_anon` (SELECT only) and full CRUD for `metrum_authenticated`.
+- Sensitive columns (tokens, hashes, passwords) must NEVER be exposed via PostgREST table reads. Use views or RPCs to filter them out.
+- The `onboarding_token` on `server_config_instances` is an example - it is hidden from generic reads and only returned by explicit onboarding RPCs.
+- All RPCs are exposed to both `metrum_anon` and `metrum_authenticated` via `GRANT EXECUTE`. If an RPC should be restricted, it must do its own caller validation internally.
+- When adding new tables or RPCs, the `08_postgrest_setup.sql` grants propagate via `ALTER DEFAULT PRIVILEGES`. But verify that existing objects get the grant by running explicit `GRANT` statements in your schema file.
+- **NEVER grant `metrum_anon` INSERT/UPDATE/DELETE on tables or write-capable RPCs** unless there is an explicit, documented, security-reviewed reason. The drift analysis found `metrum_anon` granted INSERT on `inferencex` results tables, allowing unauthenticated writes. This is a security hole.
+- Use `COMMENT ON FUNCTION` on every RPC to document: what it does, who can call it (anon/authenticated/service), what parameters it expects, and what it returns. This is the API contract for the frontend team.

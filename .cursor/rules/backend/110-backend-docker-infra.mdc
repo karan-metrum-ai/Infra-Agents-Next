@@ -1,0 +1,61 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Docker, Services, and Infrastructure Contracts
+
+### Docker Compose Architecture
+
+The platform runs as a Docker Compose stack with these core services:
+
+- `postgres` (PostgreSQL 18.1) - primary database with pg_net, pg_cron extensions
+- `postgrest` (PostgREST v12.2) - REST/RPC API gateway, 50-connection pool
+- `insights-frontend` (Next.js) - product UI on port 3144
+- `provisioner` (Python asyncio) - cloud GPU provisioning, listens on PG NOTIFY
+- `mcpserver` (Python FastMCP) - MCP tools for the agent console
+- `caddy` - reverse proxy for frontend, agent console, MCP
+- `hardware_sizer` (Go) - GPU/hardware sizing with its own Postgres
+
+### Service Health Check Rules
+
+- Every Docker service MUST have a health check in `docker-compose.yml`.
+- The health check MUST verify the service ITSELF is responsive, not just that a dependency is reachable. A `curl` to PostgREST tells you PostgREST is alive, not that your Python service is functioning.
+- For Python services: health check should hit a `/health` or `/ready` endpoint on the service itself.
+- For database-dependent services: health check should verify DB connectivity from the service's perspective.
+
+### Volume and Data Protection
+
+- All persistent data volumes MUST be declared `external: true` in `docker-compose.yml`. This protects them from `docker compose down -v`.
+- The pattern: create the volume manually first (`docker volume create metrum_postgres_data`), then reference it as external.
+- NEVER use anonymous or local-scope volumes for data that must survive stack recreation.
+
+### Network Isolation
+
+- `metrum_insights_network` - main internal bridge for core services
+- `metrum_agent_sessions_net` - agent session isolation with `enable_icc=false` (sessions cannot communicate with each other). The frontend/control-plane service bridges both networks.
+- `protocol_test_network` - isolated test network with its own postgres/postgrest replicas
+- New services MUST be placed on the correct network. Services that handle user data go on the main network. Isolated workloads go on the sessions network.
+
+### Service Access Patterns
+
+- **Frontend -> PostgREST**: All data access via PostgREST REST endpoints and RPCs. JWT minted server-side in Next.js API routes.
+- **Services -> PostgREST**: Preferred path for all CRUD. Service mints a short-lived JWT via PyJWT.
+- **Services -> Direct DB**: Acceptable ONLY for internal state management that has no PostgREST RPC (e.g., PG NOTIFY listeners, advisory locks). NEVER use direct DB access for operations that have RPCs.
+- **Never mix access patterns** for the same entity. If workloads are read via PostgREST, they must be written via PostgREST RPCs too. The provisioner's current dual-path (PostgREST reads, asyncpg writes) is acknowledged tech debt, not a pattern to follow.
+
+### Environment and Configuration
+
+- All environment variables documented in `env.example`. Never hardcode connection strings, API URLs, or credentials.
+- `PGRST_JWT_SECRET` must be the same across PostgREST and all services that mint JWTs.
+- `PGRST_DB_ANON_ROLE=metrum_anon` and `PGRST_DB_SCHEMAS=public` are the standard PostgREST config.
+- Staging deploys use a single PostgREST instance behind a maintenance-window flow (snapshot -> migrate -> restart -> smoke). There is no blue/green slot setup.
+
+### Makefile Contracts
+
+- `make db-reset` - full clean-DB rebuild from schema files. Must pass before any schema PR.
+- `make create-schema` - applies schema files. Blocked in `RUNTIME_ENV=production` unless override flag set.
+- `make sync-agent-tooling` - syncs agent skills and MCP configs.
+- `make test-coverage` - enforces 80% minimum coverage for SDK and CLI.
+- After any schema/service change, the relevant `make` target must pass before the change is considered done.

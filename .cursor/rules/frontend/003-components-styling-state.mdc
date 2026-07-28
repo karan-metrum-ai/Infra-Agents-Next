@@ -1,0 +1,40 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Components
+
+- All unique project-specific components go in `src/components/` each in its own co-located folder containing the `.tsx` `.module.css` and `.types.ts` together.
+- Universal UI primitives (buttons, inputs, modals, tooltips, dialogs, toasts) go in `src/components/ui/` each in its own co-located folder.
+- All UI primitives must be built using **Base UI** primitives wherever applicable.
+- `.types.ts` files are only created when a component has non-trivial props or shared interfaces. A LoadingSpinner taking one boolean prop does not need one.
+- No barrel files. No `index.ts` re-exports. Direct imports always.
+- DO NOT put components inside `features/`. Ever. Components go in `components/`. Features is pure state logic.
+
+**CO-LOCATION REMINDER:** The `.module.css` file goes INSIDE the component folder NEXT TO the `.tsx` file. DO NOT create a separate `styles/` directory. If you catch yourself creating a `styles/` folder STOP and move the file.
+
+## Styling
+
+- All styling is **Vanilla CSS** using **CSS Modules** (`.module.css`). Strictly no TailwindCSS.
+- Style files are co-located inside the component folder. NEVER in a separate parallel `styles/` tree.
+- `src/app/globals.css` is the single source of truth for all design tokens, CSS variables, and theme definitions.
+- EVERY ATOMIC ELEMENT IN THE APP MUST BE THEME AWARE AND LOOK BEST ON BOTH LIGHT AND DARK THEMES. USE CSS VARIABLES FROM `globals.css`. DO NOT hardcode any color values.
+- For page-specific styles, the `.module.css` lives in the route folder next to `page.tsx`.
+
+## State Management — Redux Toolkit + RTK Query
+
+- Redux Toolkit for global state. Store init lives in `src/store/store.ts`.
+- Feature state logic lives in `src/features/{featureName}/` containing:
+  - `{featureName}Slice.ts` — state and reducers
+  - `{featureName}Selectors.ts` — all selectors
+  - `{featureName}Api.ts` — all API calls for that feature (RTK Query — MUST use RTK Query for all API calls)
+- No components in `features/`. Ever. Components go in `components/`.
+- DO NOT put `useState` for server/async data in components. Extract to a hook that reads from the Redux store or RTK Query cache.
+
+## App Router — Next.js Specific
+
+- `src/app/` is exclusively for routing. Route folders contain `page.tsx`, `layout.tsx` (if needed), `page.module.css`, and `page.types.ts` (if needed). No business logic no state management no API calls in route files.
+- Pages are thin composers — they import components from `src/components/`, wire up route params, and thats it. 20-40 lines max.
+- Static assets (images, logos, fonts, favicon) go in `public/`. DO NOT create a `src/assets/` directory.

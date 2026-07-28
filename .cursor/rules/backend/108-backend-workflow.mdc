@@ -1,0 +1,35 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Backend Workflow - Non-Negotiable Steps
+
+These steps happen after EVERY backend change. No skipping.
+
+### Git Discipline
+
+- After every schema/RPC/service change - stage, lint, then make **atomic commits** with conventional commits: `feat/chore/fix/docs/refactor/test/perf/ci/build(schema)`, `feat(rpc)`, `fix(migration)`, `feat(service)`.
+- Commit with local author details.
+- Push to the remote repo immediately after commit.
+
+### Validation After Schema Changes
+
+- After modifying any schema file, run `make db-reset` or the equivalent to verify the entire schema loads cleanly from scratch.
+- **MANDATORY after ANY live schema patch (psql applied directly without full db-reset):** trigger a PostgREST schema cache refresh immediately:
+  ```bash
+  docker exec metrum-insights-postgres-1 psql -U metrum -d metrum_insights -c "NOTIFY pgrst, 'reload schema';"
+  # or if NOTIFY doesn't fire (PostgREST version < 10), restart directly:
+  docker restart metrum-insights-postgrest-1
+  ```
+  A stale PostgREST cache causes PGRST202 "function not found" (HTTP 404) for any RPC whose signature changed but was not reloaded. This silently breaks live users and is not detectable from logs alone.
+- After modifying RPCs, verify they are callable via PostgREST: `curl -X POST http://localhost:3000/rpc/{function_name} -H "Content-Type: application/json" -d '{...}'`.
+- After modifying views, verify they return expected data shapes.
+- After modifying seed data, verify the seed function populates correctly.
+
+### Frontend Sync Check
+
+- If a schema change affects PostgREST-exposed tables or RPCs that the frontend calls (via RTK Query in `insights-frontend/`), verify the frontend contract is not broken.
+- If column names, types, or RPC return shapes change, the corresponding `{feature}Api.ts` in the frontend MUST be updated in the same PR. No orphaned backend changes that break the frontend.
+- If new RPCs or tables are added for frontend consumption, document the expected API contract (URL, method, params, return shape) in the RPC's `COMMENT ON FUNCTION`.

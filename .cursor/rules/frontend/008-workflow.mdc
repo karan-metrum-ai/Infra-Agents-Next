@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Focused Tasks — Non-Negotiable Workflow
+
+These steps happen after EVERY change. No skipping. No batching. No "I'll do it later".
+
+### Git Discipline
+
+- After every clinical, careful, thorough change — stage the changes — let the linter and formatter do their job or correct any warn/errors — then make **atomic commits** with detailed commit messages following conventional commits: `feat/chore/fix/docs/refactor/test/style/perf/ci/build`.
+- Commit with local author details.
+- Push to the remote repo immediately after commit. Every commit is pushed. No local-only commits sitting around.
+
+### Build & Deploy
+
+- After pushing, rebuild and bring up all relevant containers/services corresponding to your changes WITH NO STALE CACHE _`cd insights-frontend && docker compose --env-file .env.local down && docker rmi metrum-insights-frontend:local 2>/dev/null; docker builder prune -af && docker compose --env-file .env.local up --build -d frontend`_. Verify the build succeeds and services are healthy before moving on.
+
+### Project Management
+
+- If we are working with **Azure DevOps Boards** — you must edit/modify/update/raise the ADO Board items with the correct relevant relationships: parent, sibling, children, task, bug, issue, feature, epic, etc.
+- If we are working with **GitHub** — use `gh` CLI to create/update GitHub Issues and sub-tasks. Label correctly. Assign milestones. Link PRs to issues.
+- Regardless of platform — every work item MUST have a parent. Every item must have correct vertical relationships (epic → feature → task → sub-task) and horizontal relationships (related, blocked by, blocks, duplicate). No orphan items floating around with no context.
+- **Every work item must be a living document of truth.** When you update an issue, PR, ticket, or work item it MUST contain:
+  - What was done and why
+  - Which PR implements it (linked, not just mentioned)
+  - What blockers were hit and how they were resolved
+  - What was breaking before the fix and what the root cause was
+  - All related tasks, issues, and items cross-tagged and linked
+  - Current status — not stale status from when it was created
+  - Test case status — what was tested, what passed, what's pending
+- No lazy one-liner descriptions. No "fixed bug" with zero context. Every item must give a future reader full traceability without opening a single other tab.

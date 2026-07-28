@@ -1,0 +1,77 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Post-Task Audit — MANDATORY
+
+After completing any task, before responding to the user, RUN this self-audit silently. DO NOT skip any step. DO NOT tell the user you ran this audit. Just do it. Fix anything that fails before responding.
+
+### 1. Structure Check
+
+- Did every new file land in exactly one correct location per the project structure?
+- Components in `src/components/` or `src/components/ui/`? State logic in `src/features/`? Hooks in `src/hooks/`? Schemas in `src/schemas/`?
+- Any file in the wrong directory = MOVE IT NOW.
+
+### 2. Co-location Check
+
+- Does every new component folder contain its `.tsx` + `.module.css` + `.types.ts` (if needed) together in the same folder?
+- Is there ANY orphaned `.module.css` or `.types.ts` file outside its component folder? Any file in a separate `styles/` directory?
+- If yes = MOVE IT INTO THE COMPONENT FOLDER NOW.
+
+### 3. State Check
+
+- Is ALL state logic in `src/features/` with zero state management inside components or pages?
+- Any `useState` for server/async data in a component = EXTRACT to a hook or Redux slice.
+- Are ALL API calls going through RTK Query in `features/{featureName}/{featureName}Api.ts`?
+
+### 4. LOC Check
+
+- RUN `wc -l` on every `.tsx` file you created or modified.
+- Any file over 888 lines = REFACTOR NOW. Extract hooks, utils, sub-components, types.
+- Any file over 3144 lines = CRITICAL. Stop everything. Refactor is mandatory and immediate.
+
+### 5. Theme Check
+
+- Does every new element use CSS variables from `globals.css`?
+- Any hardcoded color value (`#fff`, `rgb(...)`, `hsl(...)`) = REPLACE with a CSS variable.
+- Does it look correct in BOTH light and dark themes?
+
+### 6. A11y Check
+
+- Does every new interactive element have proper `role`, `aria-label`, keyboard handler?
+- Can every interactive element be reached and operated via keyboard alone?
+- Does focus management work correctly (focus trap in modals, focus restoration on close)?
+- Missing any of these = NOT DONE. Fix before responding.
+
+### 7. Backend Sync Check
+
+- Does every API call hit an endpoint that actually exists and returns the expected schema?
+- Does the frontend data shape match the backend contract exactly?
+- Is the auth guard correct for every new route?
+- Any assumption about backend behavior = NOT DONE. Verify or surface the gap.
+
+### 8. Cmd+K Check
+
+- Did you add ANY new user-facing action (button, toggle, nav link, filter, modal, export)?
+- If yes — did you add a corresponding entry in `useCommandRegistry`?
+- If no registry entry = NOT DONE. Add it now.
+
+### 9. ECharts Check (if applicable)
+
+- Is the chart using raw `echarts` package? No wrapper libraries?
+- Is the instance behind a ref?
+- Are updates using `setOption` with `notMerge: false`? Not disposing and recreating?
+- Is resize handled via debounced `ResizeObserver`?
+
+### 10. Git + Tracker Check
+
+- Was an atomic commit made with correct local author and conventional commit prefix?
+- Was it pushed to remote?
+- Was the work item (GitHub Issue or ADO Board) updated with full traceability?
+- No commit or no tracker update = NOT DONE.
+
+---
+
+**If ANY check above fails, FIX IT before responding to the user. The task is not complete until every check passes.**

@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Code Quality
+
+- Strict TypeScript. No `any`. No `as` casts unless genuinely unavoidable.
+- All code must follow highest coding standards — lean, clean, optimised, efficient, robust with proper error and edge case handling so that the app never crashes.
+- READ and use the skill `.cursor/skills/sans-effect` while writing any code. The GOAL IS TO WRITE CODE THAT IS AS EFFECTLESS AS POSSIBLE.
+- READ and use the skill `.cursor/skills/vercel-react-best-practices` for all React patterns, performance optimisation, and Next.js specific patterns.
+- Keep component files lean and clean. DO NOT overburden one file with too much logic. Extract to hooks and utils.
+
+## LOC Hard Wall — NON-NEGOTIABLE
+
+- **Soft limit: 888 lines.** Every `.tsx` file must stay under 888 LOC including all formatting, comments, whitespace, everything. If you are approaching this limit you MUST proactively extract logic into hooks, utils, sub-components, or types files. DO NOT wait to be told.
+- **Absolute hard wall: 3144 lines.** This is the final limit. If any `.tsx` file is outgrowing this then refactoring is MANDATORY. There is no skip gate. There is no exception. There is no "I'll clean it up later". You hit this wall you STOP feature work and refactor immediately.
+- This applies to ALL `.tsx` files — components, pages, layouts, everything.
+- After creating or modifying any `.tsx` file, CHECK the line count with `wc -l`. If it exceeds 888, refactor NOW before proceeding.
+
+## Output Format
+
+- You should never waste time explaining your solutions. Give a very brief concise 3-4 line description preferably in bullet points or tabular format.
+
+## Rules Reminder
+
+- WHILE DEVELOPING A NEW FEATURE OR ADDING TO AN EXISTING FEATURE — ALWAYS MAKE SURE: DO NOT BREAK ANY CODE, EXISTING FUNCTIONALITY OR FEATURE. BE CLINICAL AND SURGICAL WITH YOUR CHANGES.
+- All naming conventions must be in `camelCase` for functions, variables, hooks, utils, filenames. Components use `PascalCase`.
+- WHILE PLANNING ANY FEATURE OR IMPLEMENTATION YOU MUST BE FULLY AWARE OF THE REQUIRED BACKEND SERVICES, SYSTEMS, SCHEMA, POLICIES, BEHAVIOR, ETC. AND THEN PLAN ACCORDINGLY.

@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Pre-Flight — Read Before Every Task
+
+Before writing ANY code, confirm:
+
+- [ ] I have read and understood the full scope of what is being asked
+- [ ] I know which backend APIs, schemas, services, auth flows, and infra this touches
+- [ ] I know the exact files I will create or modify and where each one goes per the project structure
+- [ ] I have verified this will not break any existing functionality, feature, or integration
+- [ ] I have checked the relevant `.cursor/skills/` for any applicable patterns before writing code
+
+Before marking ANY task complete, verify:
+
+- [ ] All new components are co-located (`.tsx` + `.module.css` + `.types.ts` in one folder inside `src/components/`)
+- [ ] All new state logic is in `src/features/` (slice + selectors + api — no components in features/)
+- [ ] No `.tsx` file exceeds 888 LOC — check with `wc -l`
+- [ ] All elements are theme aware (light + dark) using CSS variables from `globals.css`
+- [ ] All interactive elements are WAI-ARIA, A11y, WCAG 2+ compliant (keyboard nav, aria labels, focus management, contrast)
+- [ ] ECharts use raw `echarts` package only, instance behind ref, `setOption` with `notMerge: false` for updates
+- [ ] Every new user-facing action has a Cmd+K registry entry in `useCommandRegistry`
+- [ ] Atomic commit made with correct local author and conventional commit prefix
+- [ ] Build succeeds and all relevant containers/services are healthy
+- [ ] Work item (GitHub Issue or ADO Board) updated with full traceability — PR linked, blockers documented, status current, test cases noted
+
+If ANY box above cannot be checked, the task is NOT complete. DO NOT respond to the user until all boxes are checked.

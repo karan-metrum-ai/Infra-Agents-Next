@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Design
+
+- Clean, minimal, well designed, soothing, harmonious, premium UI as per the principles in `metrum-insights/insights-frontend/DESIGN.md` file.
+- EVERY ATOMIC ELEMENT IN THE APP MUST BE THEME AWARE AND LOOK BEST ON BOTH LIGHT AND DARK THEMES. USE CSS VARIABLES. DO NOT hardcode colors.
+- **Every atomic element you create must be WAI-ARIA Authoring Practices, A11y, WCAG 2+ compliant.** Proper roles, labels, keyboard navigation, focus management, contrast ratios, screen reader announcements — baked in from the start not bolted on later. If a component cannot be used entirely via keyboard and screen reader it is not done.
+
+### A11y Checklist — Apply to Every Interactive Element
+
+- [ ] Has appropriate `role` attribute (or uses semantic HTML element)
+- [ ] Has `aria-label` or `aria-labelledby` for non-text content
+- [ ] Is fully operable via keyboard (Tab, Enter, Space, Escape, Arrow keys as appropriate)
+- [ ] Has visible focus indicator that meets WCAG contrast requirements
+- [ ] Color is never the only means of conveying information
+- [ ] Contrast ratio meets WCAG AA minimum (4.5:1 for text, 3:1 for large text and UI components)
+- [ ] Screen reader announces state changes (aria-live, aria-expanded, aria-selected, etc.)
+
+If ANY box above cannot be checked for an interactive element, that element is NOT done.
+
+## Animations
+
+- READ and use the skill `.cursor/skills/emil-design-eng` and the Animation Framework from `metrum-insights/insights-frontend/DESIGN.md` (important) file BEFORE designing any animation.
+- All animations and micro interactions built using **Motion** (previously Framer Motion) wherever applicable.
+- DO NOT overuse animation all over the UI — judiciously add motion to create user delight without making the app sluggish.
+- Every animation must respect `prefers-reduced-motion`. If the user has reduced motion enabled, DO NOT animate. Use a static fallback.

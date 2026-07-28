@@ -1,0 +1,23 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Command Palette (Cmd+K)
+
+- USE the `cmdk` package for the command palette. No custom implementations.
+- The CommandPalette component lives in `src/components/CommandPalette/` co-located as usual.
+- All available actions are managed through a single `useCommandRegistry` hook in `src/hooks/`. This is the only place actions are registered. The CommandPalette component reads from this hook and never defines actions itself.
+- Adding a new action to Cmd+K = adding one entry to the registry. NEVER touch the palette component to add actions.
+- **Every action in the app that can be performed via mouse or keyboard MUST have a Cmd+K analog.** Navigation, filters, toggles, theme switching, modals, exports — if the user can click it, they can Cmd+K it. No exceptions.
+- The palette must show a **frequently used** section at the top based on usage history. Track command frequency in local state or localStorage and surface the top 5-8 most used commands as a default view when the palette opens with an empty query.
+- A dedicated **help screen** (triggered via `Cmd+K → ?` or a dedicated shortcut like `Cmd+/`) must list all available commands grouped logically with their keyboard shortcuts.
+- **Keyboard shortcuts must be visible on the UI surface** wherever applicable — in buttons, menu items, tooltips, sidebar links — styled inline the way Linear and Notion do it. Small, muted, right-aligned `kbd` elements showing the shortcut next to the action label. These must be theme aware.
+- Style with CSS Modules. Must be theme aware. Must look premium on both light and dark.
+- The palette must be accessible — full keyboard navigation, screen reader support, focus restoration on close. `cmdk` handles this out of the box, DO NOT override or break it.
+- Async search results (e.g. searching pages, API-backed results) must show a loading state and stream results in as they resolve. NEVER block the input.
+
+### Cmd+K Registration Reminder
+
+When you create ANY new user-facing action (button, toggle, navigation link, filter, modal trigger, export action), you MUST also add a corresponding entry in `useCommandRegistry`. If you did not add the registry entry, the feature is NOT complete.

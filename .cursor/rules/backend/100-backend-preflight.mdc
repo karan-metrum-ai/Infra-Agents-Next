@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Backend Pre-Flight - Read Before Every Schema/RPC/Service Task
+
+Before writing ANY SQL, RPC, migration, service, or PostgREST change, confirm:
+
+- [ ] I have read and understood the full scope of what is being asked
+- [ ] I know which tables, views, RPCs, triggers, constraints, lookups, and seed data this touches
+- [ ] I know the exact `.sql` files I will create or modify and where each one goes per the schema numbering convention
+- [ ] I have verified this will not break any existing RPC contract, view, seed data, migration, or frontend API call
+- [ ] I have checked schema/ for existing patterns before introducing a new one (lookup tables, polymorphic subtypes, EAV extensions, snapshot immutability)
+- [ ] I have verified the PostgREST exposure is correct (anon vs authenticated, which functions are exposed, which tables are read-only)
+- [ ] I have verified any new data-modifying RPC is registered in `rpc_permission_map` for RBAC enforcement via `rbac_pre_request`
+- [ ] I have verified no sensitive column (tokens, hashes, secrets) is exposed via generic PostgREST table reads
+
+Before marking ANY backend task complete, verify:
+
+- [ ] All new tables follow the `lkp_` prefix for lookups, `_history` suffix for immutable audit trails, polymorphic subtype pattern where applicable
+- [ ] All new columns have `COMMENT ON COLUMN` with clear purpose, constraints, and foreign key documentation
+- [ ] All new RPCs have input validation, proper error messages via `RAISE EXCEPTION`, and return typed records (not JSON blobs)
+- [ ] All indexes are explicit and purposeful - no missing FK indexes, no duplicate indexes
+- [ ] All foreign keys have explicit `ON DELETE` behavior (CASCADE, SET NULL, or RESTRICT - never implicit)
+- [ ] Schema file follows the numbering convention and loads idempotently (uses `IF NOT EXISTS`, `CREATE OR REPLACE`, `DO $$ BEGIN ... END $$`)
+- [ ] The change is backward-compatible with running services and the frontend's RTK Query contracts
+- [ ] Seed data is updated if new lookup values are needed
+- [ ] Any denormalized column has a corresponding sync trigger from day one - not "we'll add it later"
+- [ ] Any new RPC that modifies data is registered in `rpc_permission_map` with the correct `(resource, action, org_param)` triple
+- [ ] Build succeeds and `make db-reset` or equivalent runs cleanly
+
+If ANY box above cannot be checked, the task is NOT complete.

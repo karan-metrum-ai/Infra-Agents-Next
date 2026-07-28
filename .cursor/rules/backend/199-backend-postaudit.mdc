@@ -1,0 +1,100 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Backend Post-Task Audit - MANDATORY
+
+After completing any backend task, before responding to the user, RUN this self-audit silently. Fix anything that fails before responding.
+
+### 1. Schema Placement Check
+
+- Did every new/modified SQL file land in the correct numbered position?
+- New tables in the right domain file? New RPCs in the right RPC file? New views in `99_views/`?
+- Any file in the wrong location = MOVE IT NOW.
+
+### 2. Naming Convention Check
+
+- Do all new tables follow the naming conventions? `lkp_` for lookups, `_history` for audit trails, `_snapshots` for immutable captures?
+- Do all new columns follow naming conventions? `_id` for PKs/FKs, `_code` for stable identifiers, `_at` for timestamps, `is_` for booleans, unit in name for measurements?
+- Any naming violation = FIX IT NOW.
+
+### 3. Documentation Check
+
+- Does every new table have `COMMENT ON TABLE`?
+- Does every non-obvious column have `COMMENT ON COLUMN`?
+- Does every new RPC have a `COMMENT ON FUNCTION`?
+- Missing any = NOT DONE. Add them now.
+
+### 4. Constraint Check
+
+- Does every FK have an explicit `ON DELETE` clause?
+- Does every FK column have an index?
+- Are there appropriate CHECK constraints for value validation?
+- Are UNIQUE constraints in place for natural keys?
+- Any missing constraint or index = ADD IT NOW.
+
+### 5. Idempotency Check
+
+- Can every schema file be run multiple times without errors? Uses `IF NOT EXISTS`, `CREATE OR REPLACE`, `DO $$ ... EXCEPTION ... $$`?
+- Any non-idempotent DDL in a schema file (not a migration) = FIX IT NOW.
+
+### 6. Anti-Pattern Check
+
+- Any PostgreSQL ENUM type created? = REPLACE with lookup table.
+- Any JSON/JSONB column for known-schema data? = REPLACE with typed columns.
+- Any raw JSON returned from an RPC? = REPLACE with RETURNS TABLE(...).
+- Any direct UPDATE of current_status_id? = REPLACE with status history INSERT.
+- Any duplicated table structure ("versus" pattern)? = REFACTOR immediately.
+
+### 7. Security Check
+
+- Are sensitive columns (tokens, hashes, secrets) hidden from generic PostgREST table reads?
+- Do data-modifying RPCs validate caller identity? Is `p_account_id IS NULL` rejected, not used as an auth bypass?
+- Is every new data-modifying RPC registered in `rpc_permission_map`?
+- Is multi-tenant scoping (org_id/owner_account_id) enforced in all queries?
+- Is `metrum_anon` still SELECT-only on all tables? Did you accidentally grant write access?
+- Any security gap = NOT DONE. Fix before responding.
+
+### 8. Frontend Contract Check
+
+- Does any change affect PostgREST-exposed endpoints that the frontend calls?
+- If yes - is the frontend contract updated or at minimum flagged?
+- Does every new RPC have a `COMMENT ON FUNCTION` documenting its API contract?
+- Any breaking change without frontend coordination = NOT DONE. Flag it.
+
+### 8.5. Error Convention Check
+
+- Does every new RPC use `RAISE EXCEPTION` for errors (not `json_build_object('error', ...)`)?
+- Does every RPC follow the parameter ordering convention (caller identity first, then org scoping, then operation params)?
+- Do all params use `p_` prefix and all local vars use `v_` prefix?
+- Any convention deviation = FIX IT NOW.
+
+### 9. Seed Data Check
+
+- Does a new lookup table have corresponding seed data?
+- Does a new entity type require demo/seed data for development?
+- Missing seed data = NOT DONE if the feature requires it.
+
+### 10. Build Check
+
+- Does the full schema load cleanly on `make db-reset`?
+- Do existing tests pass?
+- Any build failure = NOT DONE.
+
+### 11. Denormalization Sync Check
+
+- Did you add any denormalized columns (copies of data from another table)?
+- If yes - does a sync trigger exist in the SAME file? Not in a follow-up. Not in a later PR.
+- Is the trigger statement-level where appropriate (Casbin sync, bulk operations)?
+- Missing sync trigger = NOT DONE. Add it now.
+
+### 12. Infrastructure Check (if applicable)
+
+- If you modified `docker-compose.yml` - does the new/modified service have a health check that verifies THE SERVICE ITSELF?
+- Are persistent volumes declared `external: true`?
+- Is the service on the correct network?
+- Is the service JWT TTL reasonable (not 30 days)?
+
+**If ANY check above fails, FIX IT before responding to the user. The task is not complete until every check passes.**

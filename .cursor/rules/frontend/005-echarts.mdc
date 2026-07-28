@@ -1,0 +1,58 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Visualisation — ECharts Only
+
+- STRICTLY USE ECHARTS FOR ALL DATA VISUALISATION FOR MODULARITY.
+- USE the native `echarts` npm package ONLY. No wrapper libraries. No `echarts-for-react`. No `react-echarts`. No third-party React bindings of any kind. Ever. Raw `echarts` imported directly, instance managed via refs.
+- Charts must be super snappy, optimised, clean. Zero unnecessary rerenders, zero side effects, zero full redraws when data changes.
+- When filters are applied or new data arrives (live charts, polling, websockets) — only the specific visual elements update. The line in a line chart. The bars in a bar chart. The slice in a pie. Not the entire chart instance. USE `setOption` with `notMerge: false` and targeted series updates. NEVER dispose and recreate.
+- Chart components must isolate the ECharts instance behind a ref. No ECharts logic leaking into parent components. Parent passes data via props, chart component handles all instance lifecycle internally.
+- Resize handling must be debounced and use `ResizeObserver`, not window resize events.
+
+### ECharts Component Pattern — Follow This Exactly
+
+```tsx
+// ✅ CORRECT pattern — every chart component follows this structure
+const chartRef = useRef<HTMLDivElement>(null);
+const instanceRef = useRef<echarts.ECharts | null>(null);
+
+// Init once on mount
+useEffect(() => {
+  if (chartRef.current) {
+    instanceRef.current = echarts.init(chartRef.current);
+  }
+  return () => {
+    instanceRef.current?.dispose();
+  };
+}, []);
+
+// Update on data change — targeted setOption, never dispose+recreate
+useEffect(() => {
+  instanceRef.current?.setOption(
+    { series: [{ data: newData }] },
+    { notMerge: false },
+  );
+}, [newData]);
+
+// Resize via ResizeObserver, debounced
+useEffect(() => {
+  const ro = new ResizeObserver(
+    debounce(() => instanceRef.current?.resize(), 200),
+  );
+  if (chartRef.current) ro.observe(chartRef.current);
+  return () => ro.disconnect();
+}, []);
+```
+
+```tsx
+// ❌ WRONG — never do this
+useEffect(() => {
+  instanceRef.current?.dispose(); // NO — never dispose on data change
+  instanceRef.current = echarts.init(chartRef.current); // NO — never recreate on data change
+  instanceRef.current.setOption(fullOptions); // NO — never pass full options on update
+}, [data]);
+```

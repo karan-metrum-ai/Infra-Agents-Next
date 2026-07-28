@@ -1,0 +1,62 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Schema File Organization - Zero Ambiguity
+
+Every schema file has exactly ONE home in the numbered loading order. DO NOT deviate:
+
+| You are writing a...                           | PUT it in...                      | Named as...                               |
+| ---------------------------------------------- | --------------------------------- | ----------------------------------------- |
+| Extension / Lookup tables                      | `schema/00_lookup.sql`            | Add to existing file or numbered sub-part |
+| Identity / Accounts / Auth                     | `schema/01_identity.sql`          | Identity domain only                      |
+| Hardware master data (GPU/CPU/NIC/Server)      | `schema/02_hardware.sql`          | Hardware catalog domain                   |
+| AI model master data                           | `schema/03_models.sql`            | Model/quantization domain                 |
+| Framework/tool master data                     | `schema/04_frameworks.sql`        | Framework + tool + engine args            |
+| Benchmarks (projects/workloads/scenarios/jobs) | `schema/05_benchmarks.sql`        | Core benchmark domain                     |
+| Traceability (invocations/outputs/metrics)     | `schema/06_traceability.sql`      | Tool output/metrics domain                |
+| Seed functions                                 | `schema/07_seed_functions/`       | Numbered parts within directory           |
+| PostgREST setup                                | `schema/08_postgrest_setup.sql`   | Roles and grants                          |
+| RPCs (control plane)                           | `schema/09_control_plane_rpcs/`   | Numbered parts                            |
+| RPCs (CLI)                                     | `schema/11_cli_rpcs/`             | Numbered parts                            |
+| RPCs (frontend)                                | `schema/50_frontend_rpcs.sql`     | Frontend-facing RPCs                      |
+| Views                                          | `schema/99_views/`                | Numbered parts                            |
+| Migrations (post-deploy patches)               | `migrations/NNNN_description.sql` | Sequential numbered                       |
+
+## Schema File Conventions
+
+- Files load in numeric order. Lower numbers = foundational tables. Higher numbers = RPCs and views that depend on them.
+- Every file must be **idempotent** - safe to run multiple times. Use `CREATE OR REPLACE`, `IF NOT EXISTS`, `DO $$ BEGIN ... EXCEPTION WHEN ... END $$` blocks.
+- When a domain grows too large for one file, split into a directory with numbered parts: `schema/07_seed_functions/01_seed_functions_part_001.sql`, etc.
+- New features that add tables + RPCs should be in a single numbered file (e.g., `schema/70_new_feature.sql`) that handles both, or split across the appropriate domain files.
+
+## Table Naming Conventions
+
+- Lookup tables: `lkp_{domain}` (e.g., `lkp_run_statuses`, `lkp_cloud_providers`)
+- Domain tables: `{domain_noun}s` plural (e.g., `projects`, `workloads`, `benchmark_jobs`)
+- Subtype tables: `{base_table}_{subtype}` (e.g., `server_configs_onprem`, `server_configs_cloud_instance`)
+- History/audit tables: `{entity}_status_history` (e.g., `project_run_status_history`)
+- Snapshot tables: `{entity}_snapshots` + `{entity}_snapshot_{detail}` (e.g., `hardware_snapshots`, `hardware_snapshot_gpus`)
+- Junction tables: `{entity_a}_{entity_b}` or `{entity}_access` (e.g., `project_access`, `agent_supported_frameworks`)
+- EAV extension tables: `{parent}_details`, `{parent}_metadata`, `{parent}_param_values`
+
+## Column Naming Conventions
+
+- Primary keys: `{table_singular}_id` (e.g., `project_id`, `job_id`, `config_id`)
+- Foreign keys: Match the referenced column name exactly (e.g., `project_id INTEGER REFERENCES projects (project_id)`)
+- Timestamps: `created_at`, `updated_at`, `changed_at`, `started_at`, `completed_at` - always `TIMESTAMPTZ NOT NULL DEFAULT NOW()` unless nullable is justified
+- Stable identifiers: `code` or `{entity}_code` - VARCHAR, UNIQUE, used in seed data and APIs
+- Display names: `display_name` or `{entity}_name` - VARCHAR, human-readable
+- Soft delete: `is_active BOOLEAN DEFAULT TRUE` on lookup tables only
+- Boolean flags: `is_{adjective}` (e.g., `is_terminal`, `is_success`, `is_stable`)
+- Amounts: Include unit in column name (e.g., `hourly_cost_usd`, `vram_gb`, `tdp_watts`)
+
+## Critical Rules
+
+- EVERY table gets a `COMMENT ON TABLE` explaining its purpose, ownership model, and relationship to other tables.
+- EVERY column that is not self-explanatory gets a `COMMENT ON COLUMN` documenting its semantics, valid values, and constraints.
+- EVERY foreign key gets an explicit `ON DELETE` clause. The CTO used CASCADE for composition, SET NULL for optional references, RESTRICT for protective references. Follow this.
+- NEVER use `JSON` or `JSONB` for structured data that has a known schema. Use typed relational columns. The "before" schema stored everything in `JSON` - the CTO's redesign eliminated that. Do not regress.
+- NEVER create a table without at least one index beyond the primary key. At minimum, index all foreign key columns.

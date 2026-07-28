@@ -1,0 +1,33 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Core Backend Engineering Principles
+
+These are non-negotiable. Every SQL file, every RPC, every schema decision flows from these:
+
+1. **Lookup Tables Over ENUMs** - All categorical/reference data uses `lkp_` prefixed lookup tables with `code` (stable identifier), `display_name` (UI label), `sort_order`, `is_active` (soft delete). NEVER use PostgreSQL ENUMs. Lookups can be extended without schema migrations, carry metadata for UI rendering, and support soft deletion. The CTO established this pattern in `00_lookup.sql` - follow it exactly.
+
+2. **Polymorphic Subtype Pattern** - When an entity has type-specific fields, use a base table + subtype tables joined via shared primary key. Examples: `server_configs` + `server_configs_onprem` / `server_configs_cloud_instance` / `server_configs_cloud_container`. The base table carries common fields and the type discriminator FK. Subtype tables carry type-specific fields. NEVER use wide nullable columns to simulate polymorphism.
+
+3. **Immutable Audit Trails** - Status changes, lifecycle events, and point-in-time snapshots are append-only. `_status_history` tables are INSERT-only with `changed_at`, `changed_by_account_id`, and `notes`. The current status is a denormalized column on the parent table, maintained ONLY by database triggers, NEVER by application code. Views like `v_*_current_status` provide the latest state.
+
+4. **Snapshot Immutability** - Any data that affects benchmark reproducibility (hardware config, GPU specs, driver versions, OS versions) is captured in snapshot tables at benchmark time. Snapshots denormalize specs for historical accuracy even if the source data changes later. This is not optional - it is foundational to the platform's scientific credibility.
+
+5. **Full Relational Traceability** - Every benchmark result must be traceable to: who ran it, on what hardware (snapshot), with what model/quantization, using what framework version + engine args, what tool + version, with what parameters, and what prompt source. No JSON blobs for structured data. No orphaned records. Every foreign key must be intentional and documented.
+
+6. **Code-Based Natural Keys** - Every entity that needs external reference has both a SERIAL `_id` primary key (internal) and a `_code` VARCHAR stable identifier (external). Seed data, application code, and API contracts reference the `code`. Internal joins use the `_id`. The `code` must be unique within its scope (global or per-org/per-owner).
+
+7. **Earned Complexity** - A new table, column, or abstraction must justify its existence with a real data integrity or query boundary. EAV extension tables (`_details`, `_metadata`, `scenario_param_values`) are the escape hatch for flexible parameters - not wide nullable columns. But use EAV sparingly and only when the parameter set is genuinely variable across tool types.
+
+8. **Zero Ambiguity on Ownership** - Every table that holds user-created data must have clear ownership semantics: `org_id`, `owner_account_id`, `created_by_account_id`. Projects are org-scoped. Workloads are owner-scoped. Lookup tables are global. There is exactly ONE ownership model per table, documented in the table comment.
+
+9. **Natural Keys in All External Interfaces** - APIs, tests, seed data, scripts, runbooks, CLI output, and documentation MUST use natural keys (`code`, `slug`, `uuid`) - NEVER internal SERIAL IDs. Internal `_id` integers are storage identifiers for JOIN performance. External tooling resolves `code` / `slug` to `_id` at startup. If you hardcode a SERIAL ID in a test, script, or API contract, it is a bug.
+
+10. **Casbin Is Derived, Never Edited Directly** - The Casbin RBAC policy tables (`casbin_rule`) are a materialized projection of `org_memberships`, `user_global_roles`, `project_access`, and `organizations.owner_account_id`. They are rebuilt automatically by `sync_casbin_policies()` fired via statement-level triggers. NEVER insert/update/delete Casbin rules directly. Change the source tables and let the triggers propagate.
+
+11. **Append-Only Core Tables** - `benchmark_jobs` is append-only for application code (only INSERTs). The ONLY columns that receive UPDATEs are `current_status_id` and `current_status_changed_at`, and those ONLY via database triggers. If you find application code doing `UPDATE benchmark_jobs SET ...`, it is a bug. Status changes go into `benchmark_job_status_history` and triggers denormalize.
+
+12. **Denormalized Columns Must Have Sync Triggers From Day One** - If you add a denormalized column (a copy of data that lives authoritatively elsewhere), you MUST create the corresponding sync trigger in the SAME schema file. Not later. Not in a follow-up. The drift analysis found denormalized columns on `workloads` (from `shared_workloads`) that had NO sync trigger for months, leading to silent data divergence. This is never acceptable.

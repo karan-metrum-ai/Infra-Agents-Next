@@ -1,0 +1,41 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Anti-Patterns - Never Do These
+
+### Schema Anti-Patterns
+
+- **NEVER use PostgreSQL ENUMs** (`CREATE TYPE ... AS ENUM`). The CTO explicitly replaced the old `statusenum`, `availabilityenum`, `role_access_enum` with lookup tables. Do not regress.
+- **NEVER store structured data as JSON/JSONB** when the schema is known. The old schema had `JSON` columns everywhere (`config_combination JSON`, `hardware_ids JSON`, `cloud_config JSON`, `workload_types JSON`). The CTO's redesign uses typed relational columns. Do not regress.
+- **NEVER use `JSON` or `JSONB` as a column data type**. CI enforces a hard `JSONB` ban (contract test). For opaque payloads the DB stores but never queries (template variables, runtime env), use `TEXT NOT NULL DEFAULT '{}'`. For genuinely variable per-type parameters, use the EAV pattern (`_param_values` with `param_key TEXT, param_value TEXT`). The only approved use of `JSON` is as an RPC return type for legacy compatibility.
+- **NEVER create a wide table with nullable columns** to simulate polymorphism. Use the subtype pattern (base table + subtype tables).
+- **NEVER duplicate tables** for "versus" or "comparison" variants. The old schema had `projects` + `projects_versus`, `workloads` + `workloads_versus`, `jobs` + `job_versus`, `scenario_runs` + `scenario_runs_versus` - a complete duplication of the entity model. The CTO's redesign eliminated this. Do not recreate it.
+- **NEVER use `SERIAL` without a corresponding `_id` naming convention** that matches the table name.
+- **NEVER add columns without `COMMENT ON COLUMN`**.
+- **NEVER create tables without `COMMENT ON TABLE`**.
+
+### RPC Anti-Patterns
+
+- **NEVER return raw JSON from an RPC** when a `RETURNS TABLE(...)` with typed columns is possible. JSON returns prevent PostgREST from generating proper OpenAPI schemas and make frontend type inference impossible.
+- **NEVER silently swallow errors**. Every RPC must `RAISE EXCEPTION` with a clear message when something is wrong. Do not return NULL or empty sets as error indicators.
+- **NEVER mix error conventions**. Use `RAISE EXCEPTION` for all errors. Do NOT return `json_build_object('error', ...)` from new RPCs. The codebase has a legacy split where some RPCs raise and others return error JSON - new code must use the raise pattern exclusively.
+- **NEVER bypass lookup table resolution**. If a function receives a `code` parameter, resolve it to an `_id` via the lookup table and raise an error if not found. Do not pass IDs directly from the frontend - always use codes for external APIs.
+- **NEVER modify `current_status_id` or `current_status_changed_at` from application code**. These are trigger-maintained denormalized columns. Insert into the status history table and let the trigger update the parent.
+- **NEVER allow NULL caller identity to bypass authorization**. If `p_account_id IS NULL`, the RPC must reject the call, not skip auth checks. The null-bypass pattern creates exploitable holes.
+- **NEVER create a data-modifying RPC without registering it in `rpc_permission_map`**. An unregistered RPC bypasses the `rbac_pre_request` hook entirely.
+- **NEVER hardcode SERIAL IDs in tests, scripts, seed data, or API contracts**. Use natural keys (`code`, `slug`) and resolve to IDs at runtime.
+
+### Service Anti-Patterns
+
+- **NEVER embed raw SQL in Python services** for operations that have RPCs. Call the RPC via PostgREST.
+- **NEVER mix PostgREST and direct asyncpg access for the same entity**. The provisioner currently does this (reads via PostgREST, writes via asyncpg) which bypasses the RBAC pre-request hook for writes. Pick one access path per entity and stick with it. If the RPC exists, use PostgREST.
+- **NEVER store secrets in the database**. API keys are stored as SHA-256 hashes (`token_hash`). Onboarding tokens are UUIDs returned once at creation. Cloud credentials are environment variables.
+- **NEVER create a Docker service without a health check** in `docker-compose.yml`. And the health check must verify the SERVICE ITSELF is healthy, not just that a dependency (like PostgREST) is reachable. A hung service with a live dependency would falsely report healthy.
+- **NEVER ignore the `org_id` / `owner_account_id` scoping**. Multi-tenancy is foundational. Every query, every RPC, every view must respect tenant boundaries.
+- **NEVER issue service JWTs with TTLs longer than 24 hours**. The provisioner currently uses 30-day tokens. If the JWT secret rotates or a token leaks, the exposure window is a month. Service tokens should be short-lived and refreshed.
+- **NEVER use `dev_mode` or security bypass flags from JWT claims**. Dev mode must flow through server-side environment variables (`PGRST_APP_SETTINGS_DEV_MODE`) only. A client-supplied JWT must never be able to disable billing enforcement or security checks.
+- **NEVER use local Docker volumes for persistent data in staging/production**. The main `metrum_postgres_data` is correctly `external: true` (protected from `docker compose down -v`). All persistent data volumes must follow this pattern.
+- **NEVER create a denormalized column without its sync trigger in the same file**. Silent divergence is inevitable without it.

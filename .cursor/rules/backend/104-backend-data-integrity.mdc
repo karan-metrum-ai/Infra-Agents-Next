@@ -1,0 +1,50 @@
+---
+alwaysApply: true
+globs: "**/*.sql"
+author: "Chetan Gadgil // Debarshi Das"
+---
+
+## Data Integrity - Non-Negotiable
+
+### Constraint Philosophy
+
+1. **CHECK constraints** for value validation: `CHECK (LENGTH(project_name) > 0 AND LENGTH(project_name) <= 200)`, `CHECK (stage_type IN ('setup', 'teardown'))`, `CHECK (ordinal > 0)`.
+2. **UNIQUE constraints** for natural keys: Every entity's code/slug must be unique within its scope. Use partial unique indexes when uniqueness is conditional (e.g., `WHERE org_id IS NULL` for global entries vs `WHERE org_id IS NOT NULL` for org-scoped).
+3. **Foreign key constraints** with explicit ON DELETE behavior. CASCADE for owned children (deleting a project deletes its workloads). SET NULL for optional references (deleting an org sets project.org_id to NULL). RESTRICT for protective references (cannot delete a shared workload if project workloads reference it).
+4. **NOT NULL by default**. Columns are nullable ONLY when there is a legitimate reason (optional fields, type-specific fields in polymorphic tables, timestamps that are set later like `completed_at`). Document why a column is nullable in its COMMENT.
+5. **Deferred constraint triggers** for cross-table invariants that span a transaction (e.g., `enforce_job_has_run` fires at COMMIT to allow job creation before run-job linking within the same transaction).
+
+### State Machine Integrity
+
+- Status transitions are enforced by looking up `is_terminal` on `lkp_run_statuses`. Terminal states (completed, failed, cancelled, timeout) allow no further transitions. RPCs must check this before inserting status history.
+- The denormalized `current_status_id` on parent tables is maintained ONLY by trigger functions, NEVER by application code. This is critical - if you see an `UPDATE benchmark_jobs SET current_status_id = ...` anywhere outside a trigger, it is a bug.
+
+### Index Strategy
+
+- Every foreign key column gets its own index. No exceptions. PostgreSQL does NOT auto-index FK columns.
+- Composite indexes for common query patterns: `(project_id, created_at DESC)`, `(server_id, scheduled_for)`, `(current_status_id, created_at DESC)`.
+- Partial indexes for filtered queries: `WHERE is_default = TRUE`, `WHERE org_id IS NOT NULL`, `WHERE completed_at IS NOT NULL`.
+- Descending indexes on timestamps used for "most recent" queries: `(created_at DESC)`, `(changed_at DESC)`.
+- Name indexes consistently: `idx_{table}_{column}` for single-column, `idx_{table}_{col1}_{col2}` for composite.
+
+### No Data Loss Patterns
+
+- NEVER use `DROP TABLE` without `IF EXISTS` and understanding the impact on dependent views, RPCs, and triggers.
+- NEVER use `ALTER TABLE DROP COLUMN` in a schema file that runs on every deploy. Use `DROP COLUMN IF EXISTS` for cleanup of known-stale columns.
+- Prefer `ALTER TABLE ADD COLUMN IF NOT EXISTS` for additive changes.
+- For constraint changes, always `DROP CONSTRAINT IF EXISTS` before re-adding to make the file idempotent.
+
+### Denormalization Discipline
+
+- If you denormalize a column (copy data from a source table for query performance), the sync trigger MUST be created in the SAME file, SAME commit. Not later. Not in a follow-up PR.
+- Use statement-level triggers (not row-level) for Casbin sync and bulk operations to prevent N rebuilds per bulk insert.
+- Audit triggers (`write_audit_log`) must be EXCEPTION-safe - wrap the body in `BEGIN ... EXCEPTION WHEN OTHERS THEN NULL; END` so audit failures never break the calling transaction.
+- The `_audit_actor_id()` helper extracts JWT claims with an EXCEPTION handler returning NULL, so triggers work correctly outside request context (migrations, seeds, manual SQL).
+
+### Trigger Design Rules
+
+- **AFTER triggers** for audit, status denormalization, Casbin sync. These observe completed mutations.
+- **BEFORE triggers** for defaults and validation (e.g., `trg_cli_tools_default_family` defaults `tool_family_id`).
+- **DEFERRABLE INITIALLY DEFERRED** for cross-table invariants that span a transaction (e.g., `enforce_job_has_run`).
+- **Statement-level** (`FOR EACH STATEMENT`) for triggers that rebuild materialized projections (Casbin sync) to avoid N executions per bulk operation.
+- **Row-level** (`FOR EACH ROW`) for triggers that denormalize a single field from a child table to a parent.

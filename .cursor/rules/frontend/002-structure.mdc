@@ -1,0 +1,92 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+## Project Scaffold
+
+- This is a **Next.js App Router** project with **strict TypeScript**.
+- All packages are installed and managed by **pnpm**. During development, for any external packages to be installed — give just the pnpm command in plain text and execute the command yourself.
+- Stack: **Next.js (App Router) + TypeScript + Redux Toolkit (for all unified clear statemanagement and RTK Query for all api calls, caching out of the box) + Vanilla CSS (Strictly no TailwindCSS) + Motion + Base UI (for the primitives and then build on top of it) + MUI Icons + ECharts + Auth0/Okta {for authentication}.**
+
+## File Placement — Zero Ambiguity
+
+Every file type has exactly ONE home. DO NOT deviate:
+
+| You are writing a...                | PUT it in...                  | Named as...                                            |
+| ----------------------------------- | ----------------------------- | ------------------------------------------------------ |
+| UI primitive (Button, Input, Modal) | `src/components/ui/[Name]/`   | `[Name].tsx` + `[Name].module.css` + `[Name].types.ts` |
+| Any other component                 | `src/components/[Name]/`      | `[Name].tsx` + `[Name].module.css` + `[Name].types.ts` |
+| Redux slice                         | `src/features/[featureName]/` | `[featureName]Slice.ts`                                |
+| Redux selectors                     | `src/features/[featureName]/` | `[featureName]Selectors.ts`                            |
+| RTK Query API                       | `src/features/[featureName]/` | `[featureName]Api.ts`                                  |
+| Zod schema + TS type                | `src/schemas/`                | `[noun].schema.ts`                                     |
+| Custom hook                         | `src/hooks/`                  | `use[Name].ts`                                         |
+| Utility function                    | `src/utils/`                  | `[name].ts`                                            |
+| 3rd party client init               | `src/lib/`                    | `[name].ts`                                            |
+| Page / route                        | `src/app/[route]/`            | `page.tsx` + `page.module.css` + `page.types.ts`       |
+| Static asset                        | `public/`                     | DO NOT create `src/assets/`                            |
+| Redux store init                    | `src/store/`                  | `store.ts`                                             |
+
+## Example Project Structure
+
+```
+root/
+├── public/
+│   ├── logos/
+│   ├── fonts/
+│   └── favicon.ico
+│
+├── src/
+│   ├── app/                             # Next.js App Router — routes and layouts ONLY
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── globals.css
+│   │   ├── dashboard/
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── page.module.css
+│   │   │   └── page.types.ts
+│   │   ├── auth/
+│   │   │   ├── page.tsx
+│   │   │   ├── page.module.css
+│   │   │   └── page.types.ts
+│   │   └── not-found.tsx
+│   │
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── Button/
+│   │   │   │   ├── Button.tsx
+│   │   │   │   ├── Button.module.css
+│   │   │   │   └── Button.types.ts
+│   │   │   └── ...
+│   │   ├── BenchmarkVisualizationPanel/
+│   │   │   ├── BenchmarkVisualizationPanel.tsx
+│   │   │   ├── BenchmarkVisualizationPanel.module.css
+│   │   │   └── BenchmarkVisualizationPanel.types.ts
+│   │   └── ...
+│   │
+│   ├── features/                        # Pure state logic — NO components here. Ever.
+│   │   ├── auth/
+│   │   │   ├── authSlice.ts
+│   │   │   ├── authSelectors.ts
+│   │   │   └── authApi.ts
+│   │   └── ...
+│   │
+│   ├── schemas/
+│   ├── hooks/
+│   ├── utils/
+│   ├── lib/
+│   ├── store/
+│   └── legal/
+```
+
+## Critical Structure Rules
+
+- `src/app/` is EXCLUSIVELY for routing. Route folders contain `page.tsx`, `layout.tsx` (if needed), `page.module.css`, and `page.types.ts` (if needed). NO business logic NO state management NO API calls in route files.
+- Pages are thin composers — they import components from `src/components/`, wire up route params, and thats it. 20-40 lines max.
+- No barrel files. No `index.ts` re-exports. Direct imports always.
+- `.types.ts` files are only created when a component has non-trivial props or shared interfaces.
+- All naming conventions must be in `camelCase` for functions, variables, hooks, utils, filenames.
+- Components use `PascalCase` for filenames and folder names.

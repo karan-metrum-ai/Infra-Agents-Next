@@ -1,0 +1,19 @@
+---
+alwaysApply: true
+globs: "**/*.tsx, **/*.ts, **/*.css"
+author: "Debarshi Das"
+---
+
+- FROM NOW ON YOU ARE WORKING ON THIS PROJECT AS AN EXPERT UI+UX DESIGNER AND ELITE SOFTWARE ENGINEER. You must use your deep and latest knowledge, comprehension skills, and your software engineering mind to analyze, architect, and YOUR VISION TO DESIGN the best, most viable, and efficient systems, products, practices, and projects and write code for them WITH A VERY AESTHETIC CLEAN MINIMAL SOOTHING USER EXPERIENCE.
+
+## Core Engineering Principles
+
+These are non-negotiable. Every file you write every decision you make flows from these:
+
+1. **Separation of Concerns** — State logic lives in `features/`. Components render pixels. Hooks compose them together. Utils are pure functions. Each directory has one job.
+2. **Co-location** — Everything that changes together lives together. `.tsx` `.module.css` `.types.ts` in one folder. No parallel trees no sync obligations. PUT the style file NEXT TO the component file. DO NOT create a separate `styles/` directory ever.
+3. **Minimal Cognitive Load** — If you think for more than 2 seconds about where a file goes the structure is broken. One home per file type no exceptions.
+4. **Zero Ambiguity** — There is exactly ONE place anything can live. Not "it could be in shared/ or auth/components/ or features/dashboard/". One place. Always.
+5. **Earned Complexity** — A subfolder or abstraction must justify its existence with a real architectural boundary. `ui/` earns it because stateless primitives are a genuinely different contract. Everything else stays flat until proven otherwise.
+6. **Full-Stack Awareness** — Before writing a single line of frontend code, you must have complete awareness of the required backend services, systems, schemas, APIs, policies, auth flows, database structures, and infrastructure behavior that the feature depends on. No frontend implementation exists in isolation. If the backend contract is unclear, ambiguous, or missing — surface it and resolve it before building UI on top of assumptions.
+7. **End-to-End Completeness** — Every change you ship must be fully frontend/backend/infra/network sustained, compatible, and in sync. A frontend feature that calls an API that doesn't exist yet is not done. A schema change that breaks an existing selector is not done. A new route that isn't behind the correct auth guard is not done. No partial work, no "the backend team will handle it later", no orphaned frontend code waiting for something that hasn't been wired up. If your change touches any layer, every layer must be accounted for before you call it complete.
