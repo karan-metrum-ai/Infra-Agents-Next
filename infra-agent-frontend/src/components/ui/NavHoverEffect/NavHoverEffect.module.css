@@ -1,0 +1,30 @@
+.navContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  position: relative;
+}
+
+.navItemWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.hoverBackground {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, var(--color-info-subtle) 0%, var(--color-brand-subtle) 100%);
+  border: 1px solid var(--color-border-focus);
+  box-shadow: 0 0 10px var(--color-info-subtle);
+  z-index: 0;
+}
+
+.navItem {
+  position: relative;
+  z-index: 1;
+}

@@ -74,19 +74,19 @@ tool, not a responsive marketing page; there is no meaningful phone-sized layout
 
 The breakpoint tier system extends the familiar Bootstrap/Tailwind names upward:
 
-| Tier | Range (px)     | Reference device                          |
-| ---- | -------------- | ------------------------------------------ |
-| xs   | < 768          | blocked — `MobileBlocker`, no layout applied |
-| sm   | 768 – 1023     | tablet portrait (iPad Portrait 810)         |
-| md   | 1024 – 1279    | tablet landscape (iPad Landscape 1080)      |
-| lg   | 1280 – 1439    | laptop 13"                                  |
-| xl   | 1440 – 1919    | laptop 14–15"                               |
-| 2xl  | 1920 – 2559    | desktop full HD                             |
-| 3xl  | 2560 – 3439    | 2K / 29" ultrawide                          |
-| 4xl  | 3440 – 3839    | 34" ultrawide                               |
-| 5xl  | 3840 – 5119    | 32" 4K / 38" ultrawide                      |
-| 6xl  | 5120 – 7679    | 49" super-ultrawide (5120×1440)             |
-| 7xl  | ≥ 7680         | 8K / dual-4K super-ultrawide                |
+| Tier | Range (px)  | Reference device                             |
+| ---- | ----------- | -------------------------------------------- |
+| xs   | < 768       | blocked — `MobileBlocker`, no layout applied |
+| sm   | 768 – 1023  | tablet portrait (iPad Portrait 810)          |
+| md   | 1024 – 1279 | tablet landscape (iPad Landscape 1080)       |
+| lg   | 1280 – 1439 | laptop 13"                                   |
+| xl   | 1440 – 1919 | laptop 14–15"                                |
+| 2xl  | 1920 – 2559 | desktop full HD                              |
+| 3xl  | 2560 – 3439 | 2K / 29" ultrawide                           |
+| 4xl  | 3440 – 3839 | 34" ultrawide                                |
+| 5xl  | 3840 – 5119 | 32" 4K / 38" ultrawide                       |
+| 6xl  | 5120 – 7679 | 49" super-ultrawide (5120×1440)              |
+| 7xl  | ≥ 7680      | 8K / dual-4K super-ultrawide                 |
 
 Ranges are mutually exclusive by construction so per-component media queries never collide. Layout
 tokens (`--rail-w`, `--container-max`) step up at 1920/2560px and only gain centered side gutters
@@ -138,7 +138,7 @@ Motion is split cleanly by layer:
    GPU-cheap, and respects `prefers-reduced-motion`. Skeleton placeholders (`Shimmer`, `PulseDot`,
    `TracePanelSkeleton`, `ReconnectBanner`) are the same: CSS Modules and keyframes, no JS animation
    loop. Given how much of this product is live-streaming (SSE agent traces, real-time metrics),
-   keeping the *continuous* animations off the JS main thread matters more than it would in a mostly
+   keeping the _continuous_ animations off the JS main thread matters more than it would in a mostly
    static UI.
 
 Hover lift is a repeated signature across cards/buttons/toggles: `translateY(-1px to -2px)` paired
@@ -153,40 +153,40 @@ the `Button` `variantDefault`/`variantSecondary` CSS Module hover states.
 ```css
 :root {
   /* Primary -- electric cobalt, H=235 */
-  --primary-50:  oklch(0.980 0.014 235);
+  --primary-50: oklch(0.98 0.014 235);
   --primary-100: oklch(0.955 0.034 235);
   --primary-200: oklch(0.905 0.072 235);
-  --primary-300: oklch(0.830 0.120 235);
-  --primary-400: oklch(0.720 0.170 235);
-  --primary-500: oklch(0.620 0.205 235);
-  --primary-600: oklch(0.520 0.200 235);
-  --primary-700: oklch(0.420 0.170 235);
-  --primary-800: oklch(0.320 0.125 235);
+  --primary-300: oklch(0.83 0.12 235);
+  --primary-400: oklch(0.72 0.17 235);
+  --primary-500: oklch(0.62 0.205 235);
+  --primary-600: oklch(0.52 0.2 235);
+  --primary-700: oklch(0.42 0.17 235);
+  --primary-800: oklch(0.32 0.125 235);
   --primary-900: oklch(0.225 0.085 235);
   --primary-950: oklch(0.155 0.055 235);
 
   /* Secondary -- violet-indigo, H=275 */
-  --secondary-50:  oklch(0.980 0.012 275);
-  --secondary-500: oklch(0.630 0.170 275);
-  --secondary-950: oklch(0.160 0.045 275);
+  --secondary-50: oklch(0.98 0.012 275);
+  --secondary-500: oklch(0.63 0.17 275);
+  --secondary-950: oklch(0.16 0.045 275);
   /* ...full 50-950 ramp, see reference index.css */
 
   /* Accent -- warm amber-orange, H=55 */
   --accent-400: oklch(0.775 0.165 55);
-  --accent-500: oklch(0.710 0.185 55);
+  --accent-500: oklch(0.71 0.185 55);
   /* ...full ramp */
 
   /* Neutral -- H=238, very low chroma */
-  --neutral-50:  oklch(0.985 0.005 238);
-  --neutral-900: oklch(0.210 0.010 238);
+  --neutral-50: oklch(0.985 0.005 238);
+  --neutral-900: oklch(0.21 0.01 238);
   --neutral-950: oklch(0.135 0.008 238);
   /* ...full ramp */
 
   /* Semantic -- success H=155, warning H=70, danger H=20, info H=200 */
-  --success-400: oklch(0.740 0.150 155);
-  --warning-400: oklch(0.800 0.168 70);
-  --danger-400:  oklch(0.740 0.185 20);
-  --info-400:    oklch(0.750 0.135 200);
+  --success-400: oklch(0.74 0.15 155);
+  --warning-400: oklch(0.8 0.168 70);
+  --danger-400: oklch(0.74 0.185 20);
+  --info-400: oklch(0.75 0.135 200);
   /* ...each with full 50-950 ramp */
 }
 ```
@@ -196,43 +196,51 @@ the `Button` `variantDefault`/`variantSecondary` CSS Module hover states.
 ```css
 :root {
   /* Surfaces */
-  --color-bg:              #000000;
-  --color-surface:         var(--neutral-900);
-  --color-surface-raised:  oklch(0.250 0.012 238);
-  --color-surface-sunken:  oklch(0.110 0.008 238);
-  --color-surface-hover:   var(--neutral-800);
-  --color-surface-active:  var(--neutral-700);
+  --color-bg: #000000;
+  --color-surface: var(--neutral-900);
+  --color-surface-raised: oklch(0.25 0.012 238);
+  --color-surface-sunken: oklch(0.11 0.008 238);
+  --color-surface-hover: var(--neutral-800);
+  --color-surface-active: var(--neutral-700);
 
   /* Text */
-  --color-text-primary:    var(--neutral-50);
-  --color-text-secondary:  var(--neutral-300);
-  --color-text-muted:      var(--neutral-400);
-  --color-text-inverse:    var(--neutral-900);
-  --color-text-link:       var(--primary-400);
+  --color-text-primary: var(--neutral-50);
+  --color-text-secondary: var(--neutral-300);
+  --color-text-muted: var(--neutral-400);
+  --color-text-inverse: var(--neutral-900);
+  --color-text-link: var(--primary-400);
   --color-text-link-hover: var(--primary-300);
 
   /* Borders */
-  --color-border:          var(--neutral-800);
-  --color-border-strong:   var(--neutral-700);
-  --color-border-focus:    var(--primary-400);
-  --color-divider:         var(--neutral-800);
+  --color-border: var(--neutral-800);
+  --color-border-strong: var(--neutral-700);
+  --color-border-focus: var(--primary-400);
+  --color-divider: var(--neutral-800);
 
   /* Brand */
-  --color-brand:           var(--primary-400);
-  --color-brand-hover:     var(--primary-300);
-  --color-brand-subtle:    oklch(0.225 0.085 235 / 0.6);
+  --color-brand: var(--primary-400);
+  --color-brand-hover: var(--primary-300);
+  --color-brand-subtle: oklch(0.225 0.085 235 / 0.6);
   --color-brand-subtle-fg: var(--primary-200);
 
-  --color-accent:          var(--accent-400);
-  --color-accent-hover:    var(--accent-300);
-  --color-accent-subtle:   oklch(0.285 0.075 55 / 0.6);
-  --color-accent-subtle-fg:var(--accent-200);
+  --color-accent: var(--accent-400);
+  --color-accent-hover: var(--accent-300);
+  --color-accent-subtle: oklch(0.285 0.075 55 / 0.6);
+  --color-accent-subtle-fg: var(--accent-200);
 
   /* Status -- fills + foreground pairings pre-computed for AA on dark */
-  --color-success:  var(--success-400);   --color-success-subtle: oklch(0.255 0.070 155 / 0.6);  --color-success-fg: var(--success-200);
-  --color-warning:  var(--warning-400);   --color-warning-subtle: oklch(0.290 0.070 70 / 0.6);   --color-warning-fg: var(--warning-200);
-  --color-danger:   var(--danger-400);    --color-danger-subtle:  oklch(0.240 0.085 20 / 0.6);   --color-danger-fg:  var(--danger-200);
-  --color-info:     var(--info-400);      --color-info-subtle:    oklch(0.260 0.060 200 / 0.6);  --color-info-fg:    var(--info-200);
+  --color-success: var(--success-400);
+  --color-success-subtle: oklch(0.255 0.07 155 / 0.6);
+  --color-success-fg: var(--success-200);
+  --color-warning: var(--warning-400);
+  --color-warning-subtle: oklch(0.29 0.07 70 / 0.6);
+  --color-warning-fg: var(--warning-200);
+  --color-danger: var(--danger-400);
+  --color-danger-subtle: oklch(0.24 0.085 20 / 0.6);
+  --color-danger-fg: var(--danger-200);
+  --color-info: var(--info-400);
+  --color-info-subtle: oklch(0.26 0.06 200 / 0.6);
+  --color-info-fg: var(--info-200);
 
   --color-ring: var(--primary-400);
 }
@@ -241,27 +249,32 @@ the `Button` `variantDefault`/`variantSecondary` CSS Module hover states.
 ### Back-compat flat aliases (existing components reference these unchanged)
 
 ```css
---primary: var(--color-brand);       --secondary: var(--secondary-500);
---accent: var(--color-accent);       --success: var(--color-success);
---warning: var(--color-warning);     --destructive: var(--color-danger);
---background: var(--color-bg);       --foreground: var(--color-text-primary);
---card: var(--color-surface);        --muted: var(--color-text-muted);
+--primary: var(--color-brand);
+--secondary: var(--secondary-500);
+--accent: var(--color-accent);
+--success: var(--color-success);
+--warning: var(--color-warning);
+--destructive: var(--color-danger);
+--background: var(--color-bg);
+--foreground: var(--color-text-primary);
+--card: var(--color-surface);
+--muted: var(--color-text-muted);
 --border: var(--color-border);
 ```
 
 ### Radii, control heights, borders
 
 ```css
---radius: 0.75rem;                              /* base unit, shadcn pattern */
---radius-sm: calc(var(--radius) * 0.5);         /* 6px  */
---radius-md: calc(var(--radius) * 0.667);       /* 8px  */
---radius-lg: var(--radius);                     /* 12px */
---radius-xl: calc(var(--radius) * 1.333);       /* 16px */
---radius-2xl: calc(var(--radius) * 2);          /* 24px */
+--radius: 0.75rem; /* base unit, shadcn pattern */
+--radius-sm: calc(var(--radius) * 0.5); /* 6px  */
+--radius-md: calc(var(--radius) * 0.667); /* 8px  */
+--radius-lg: var(--radius); /* 12px */
+--radius-xl: calc(var(--radius) * 1.333); /* 16px */
+--radius-2xl: calc(var(--radius) * 2); /* 24px */
 
---control-height-sm: 1.75rem;      /* 28px */
---control-height-default: 2rem;    /* 32px */
---control-height-lg: 2.5rem;       /* 40px */
+--control-height-sm: 1.75rem; /* 28px */
+--control-height-default: 2rem; /* 32px */
+--control-height-lg: 2.5rem; /* 40px */
 --control-height-icon: 2rem;
 --control-height-icon-sm: 1.75rem;
 
@@ -273,47 +286,47 @@ the `Button` `variantDefault`/`variantSecondary` CSS Module hover states.
 ### Fluid spacing & font size (clamp-based, 768px → ~3840px)
 
 ```css
---spacing-xs:  clamp(0.125rem, 0.09rem + 0.08vw, 0.375rem);
---spacing-sm:  clamp(0.25rem,  0.18rem + 0.12vw, 0.625rem);
---spacing-md:  clamp(0.5rem,   0.35rem + 0.22vw, 1.25rem);
---spacing-lg:  clamp(0.75rem,  0.55rem + 0.32vw, 1.875rem);
---spacing-xl:  clamp(1rem,     0.7rem  + 0.5vw,  2.5rem);
---spacing-2xl: clamp(1.5rem,   1rem    + 0.85vw, 3.75rem);
---spacing-3xl: clamp(2rem,     1.25rem + 1.2vw,  5rem);
+--spacing-xs: clamp(0.125rem, 0.09rem + 0.08vw, 0.375rem);
+--spacing-sm: clamp(0.25rem, 0.18rem + 0.12vw, 0.625rem);
+--spacing-md: clamp(0.5rem, 0.35rem + 0.22vw, 1.25rem);
+--spacing-lg: clamp(0.75rem, 0.55rem + 0.32vw, 1.875rem);
+--spacing-xl: clamp(1rem, 0.7rem + 0.5vw, 2.5rem);
+--spacing-2xl: clamp(1.5rem, 1rem + 0.85vw, 3.75rem);
+--spacing-3xl: clamp(2rem, 1.25rem + 1.2vw, 5rem);
 
---font-size-xs:   clamp(0.6875rem, 0.62rem + 0.07vw, 0.875rem);
---font-size-sm:   clamp(0.75rem,   0.66rem + 0.10vw, 1rem);
---font-size-base: clamp(0.875rem,  0.74rem + 0.15vw, 1.25rem);
---font-size-lg:   clamp(1rem,      0.83rem + 0.20vw, 1.5rem);
---font-size-xl:   clamp(1.125rem,  0.91rem + 0.25vw, 1.75rem);
---font-size-2xl:  clamp(1.25rem,   0.97rem + 0.36vw, 2.125rem);
---font-size-3xl:  clamp(1.5rem,    1.10rem + 0.50vw, 2.625rem);
---font-size-4xl:  clamp(1.75rem,   1.20rem + 0.70vw, 3.25rem);
---font-size-5xl:  clamp(2rem,      1.30rem + 0.90vw, 4rem);
---font-size-6xl:  clamp(2.5rem,    1.55rem + 1.20vw, 5rem);
---font-size-7xl:  clamp(3rem,      1.75rem + 1.60vw, 6rem);
---font-size-8xl:  clamp(3.5rem,    1.95rem + 2.00vw, 7.5rem);
+--font-size-xs: clamp(0.6875rem, 0.62rem + 0.07vw, 0.875rem);
+--font-size-sm: clamp(0.75rem, 0.66rem + 0.1vw, 1rem);
+--font-size-base: clamp(0.875rem, 0.74rem + 0.15vw, 1.25rem);
+--font-size-lg: clamp(1rem, 0.83rem + 0.2vw, 1.5rem);
+--font-size-xl: clamp(1.125rem, 0.91rem + 0.25vw, 1.75rem);
+--font-size-2xl: clamp(1.25rem, 0.97rem + 0.36vw, 2.125rem);
+--font-size-3xl: clamp(1.5rem, 1.1rem + 0.5vw, 2.625rem);
+--font-size-4xl: clamp(1.75rem, 1.2rem + 0.7vw, 3.25rem);
+--font-size-5xl: clamp(2rem, 1.3rem + 0.9vw, 4rem);
+--font-size-6xl: clamp(2.5rem, 1.55rem + 1.2vw, 5rem);
+--font-size-7xl: clamp(3rem, 1.75rem + 1.6vw, 6rem);
+--font-size-8xl: clamp(3.5rem, 1.95rem + 2vw, 7.5rem);
 ```
 
 ### Shadows (dark-theme tuned — higher alpha than a light UI would use)
 
 ```css
---shadow-sm:  0 1px 2px 0 rgba(0, 0, 0, 0.3);
---shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
---shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
---shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 ```
 
 ### Layout tokens
 
 ```css
---container-max: none;   /* no side gutters below 4xl (3440px) */
---rail-w: 280px;          /* steps to 320/360/400/440/480/520px at 1920/2560/3440/3840/5120/7680 */
+--container-max: none; /* no side gutters below 4xl (3440px) */
+--rail-w: 280px; /* steps to 320/360/400/440/480/520px at 1920/2560/3440/3840/5120/7680 */
 --grid-gap: var(--spacing-lg);
 
---nav-panel-h: clamp(38px, 3.5vw, 52px);   /* Command Center top nav panel */
---nav-btn-h:   clamp(24px, 2.3vw, 34px);
+--nav-panel-h: clamp(38px, 3.5vw, 52px); /* Command Center top nav panel */
+--nav-btn-h: clamp(24px, 2.3vw, 34px);
 --nav-input-h: clamp(20px, 1.8vw, 28px);
 --nav-badge-h: clamp(16px, 1.4vw, 22px);
 ```
@@ -339,13 +352,13 @@ CSS-in-JS runtime. Primitives live in `components/ui/` and follow a consistent s
 
 ### Primitive inventory
 
-| Component | Variants | Sizes | Notes |
-| --- | --- | --- | --- |
-| `Button` | `default, secondary, outline, ghost, link, destructive` | `default, sm, lg, icon, icon-sm` | `default` uses the primary→secondary gradient; CSS-only hover lift |
-| `Card` | `default, borderless` | — | `CardHeader/Title/Description/Content/Footer/Action` subcomponents |
-| `Badge` | `default, secondary, destructive, outline, success, warning, info` | — | maps 1:1 to the semantic color scales |
-| `Tabs` | `TabsList` variant `default, line` | — | context-driven controlled/uncontrolled state |
-| `Spinner` | `default, secondary, white` | `sm, default, lg, xl` | SVG arc, CSS `@keyframes` only |
+| Component | Variants                                                           | Sizes                            | Notes                                                              |
+| --------- | ------------------------------------------------------------------ | -------------------------------- | ------------------------------------------------------------------ |
+| `Button`  | `default, secondary, outline, ghost, link, destructive`            | `default, sm, lg, icon, icon-sm` | `default` uses the primary→secondary gradient; CSS-only hover lift |
+| `Card`    | `default, borderless`                                              | —                                | `CardHeader/Title/Description/Content/Footer/Action` subcomponents |
+| `Badge`   | `default, secondary, destructive, outline, success, warning, info` | —                                | maps 1:1 to the semantic color scales                              |
+| `Tabs`    | `TabsList` variant `default, line`                                 | —                                | context-driven controlled/uncontrolled state                       |
+| `Spinner` | `default, secondary, white`                                        | `sm, default, lg, xl`            | SVG arc, CSS `@keyframes` only                                     |
 
 No primitive imports `framer-motion` — see Motion philosophy above.
 
@@ -440,24 +453,25 @@ Cookie-session auth via a BFF — no tokens ever live in browser storage. `AuthC
 `/auth-api/auth/session` on mount with retry/backoff and normalizes role to
 `viewer | operator | infra_admin | platform_admin`; login/logout are full-page redirects to the
 BFF's `/auth-api/auth/login|logout`. Route-level protection wraps lazy routes in an error boundary
-+ Suspense (`RouteShell`/`ProtectedLazyRoute`) — that file is *not* the visual app shell, it is
-purely the loading/error harness around each lazy page.
+
+- Suspense (`RouteShell`/`ProtectedLazyRoute`) — that file is _not_ the visual app shell, it is
+  purely the loading/error harness around each lazy page.
 
 ## 5. Motion & Interaction Catalog
 
-| Pattern | Where | Mechanism |
-| --- | --- | --- |
-| Card/button hover lift | `.card`, `.btn-primary`, `Button` variants | CSS `transform: translateY(-1px/-2px)` + shadow step-up, `cubic-bezier(0.4,0,0.2,1)` |
-| Gradient title text | Landing hero (`.title-gradient`) | `background-clip: text` + `background-position` keyframe loop |
-| Floating background blobs | Landing (`.bg-blob-*`) | `filter: blur()` + `float` keyframe (translateY + rotate) |
-| Expand/collapse | `ReasoningBlock`, `ReasoningAccordion` | `framer-motion` animated height/opacity |
-| Rotating label/word swap | `RotatingText` | `framer-motion` `AnimatePresence` + `motion.span` |
-| Looping radar pulse | `RadarScanner` | `framer-motion` looping `animate`/`transition` |
-| Sliding nav hover highlight | `NavHoverEffect` | `framer-motion` `AnimatePresence` fade |
-| Streaming text shimmer | `ShimmerText` | CSS-only masked gradient `background-position`, respects reduced-motion |
-| Skeleton loading | `TracePanelSkeleton`, `Shimmer`, `PulseDot`, `RecentFlowsSkeleton` | CSS Modules + keyframes, no JS loop |
-| Team card "flight" between panels | `TravelingTeamCard` | animated position transition between two anchor rects |
-| Agent-to-rack connector | `GhostTrail` | animated neon ribbon path between two DOM anchors |
+| Pattern                           | Where                                                              | Mechanism                                                                            |
+| --------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Card/button hover lift            | `.card`, `.btn-primary`, `Button` variants                         | CSS `transform: translateY(-1px/-2px)` + shadow step-up, `cubic-bezier(0.4,0,0.2,1)` |
+| Gradient title text               | Landing hero (`.title-gradient`)                                   | `background-clip: text` + `background-position` keyframe loop                        |
+| Floating background blobs         | Landing (`.bg-blob-*`)                                             | `filter: blur()` + `float` keyframe (translateY + rotate)                            |
+| Expand/collapse                   | `ReasoningBlock`, `ReasoningAccordion`                             | `framer-motion` animated height/opacity                                              |
+| Rotating label/word swap          | `RotatingText`                                                     | `framer-motion` `AnimatePresence` + `motion.span`                                    |
+| Looping radar pulse               | `RadarScanner`                                                     | `framer-motion` looping `animate`/`transition`                                       |
+| Sliding nav hover highlight       | `NavHoverEffect`                                                   | `framer-motion` `AnimatePresence` fade                                               |
+| Streaming text shimmer            | `ShimmerText`                                                      | CSS-only masked gradient `background-position`, respects reduced-motion              |
+| Skeleton loading                  | `TracePanelSkeleton`, `Shimmer`, `PulseDot`, `RecentFlowsSkeleton` | CSS Modules + keyframes, no JS loop                                                  |
+| Team card "flight" between panels | `TravelingTeamCard`                                                | animated position transition between two anchor rects                                |
+| Agent-to-rack connector           | `GhostTrail`                                                       | animated neon ribbon path between two DOM anchors                                    |
 
 ## 6. Accessibility
 
@@ -470,7 +484,7 @@ purely the loading/error harness around each lazy page.
 - `ShimmerText` and other continuous CSS animations respect `prefers-reduced-motion`.
 - Status color is never the only signal: badges pair color with text/label (`success`/`warning`/
   `danger`/`info` variants carry a matching `-fg` foreground token, not color alone), consistent
-  with how `Badge` variants are named after the *semantic* state, not the raw color.
+  with how `Badge` variants are named after the _semantic_ state, not the raw color.
 - Mobile is out of scope by explicit product decision (`MobileBlocker`) rather than being an
   unaddressed gap — don't treat sub-768px layout bugs as accessibility debt to fix; that gate is
   intentional.

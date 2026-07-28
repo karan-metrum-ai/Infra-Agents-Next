@@ -1,0 +1,67 @@
+.base {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  line-height: 1rem;
+  font-weight: 600;
+  transition:
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.base:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--primary);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variants                                                          */
+/* ------------------------------------------------------------------ */
+
+.variantDefault {
+  border-color: transparent;
+  background-color: var(--primary);
+  color: var(--background);
+  box-shadow: var(--shadow-sm);
+}
+
+.variantSecondary {
+  border-color: transparent;
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.variantDestructive {
+  border-color: transparent;
+  background-color: var(--destructive);
+  color: var(--foreground);
+  box-shadow: var(--shadow-sm);
+}
+
+.variantOutline {
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+.variantSuccess {
+  border-color: transparent;
+  background-color: var(--color-success-subtle);
+  color: var(--color-success-fg);
+}
+
+.variantWarning {
+  border-color: transparent;
+  background-color: var(--color-warning-subtle);
+  color: var(--color-warning-fg);
+}
+
+.variantInfo {
+  border-color: transparent;
+  background-color: var(--color-info-subtle);
+  color: var(--color-info-fg);
+}

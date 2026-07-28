@@ -1,0 +1,195 @@
+/**
+ * Sparkline — compact ECharts line chart for metric cards and trends.
+ */
+
+"use client";
+
+import { useEffect, useMemo, useRef } from "react";
+import * as echarts from "echarts/core";
+import { LineChart } from "echarts/charts";
+import { GridComponent, TooltipComponent } from "echarts/components";
+import { CanvasRenderer } from "echarts/renderers";
+import type { EChartsOption } from "echarts";
+import { debounce } from "@/utils/debounce";
+import styles from "./Sparkline.module.css";
+import type { SparklineProps } from "./Sparkline.types";
+
+echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
+
+const defaultFormat = (v: number) => v.toFixed(1);
+
+function resolveColor(color: string, element: HTMLElement | null): string {
+  if (!color.startsWith("var(")) {
+    return color;
+  }
+  if (typeof window === "undefined" || !element) {
+    return "#6366f1";
+  }
+  const token = color.slice(4, -1).trim();
+  const resolved = getComputedStyle(element).getPropertyValue(token).trim();
+  return resolved || "#6366f1";
+}
+
+function withAlpha(color: string, alpha: number): string {
+  if (color.startsWith("rgba(")) {
+    return color.replace(/rgba\(([^)]+),\s*[\d.]+\)/, `rgba($1, ${alpha})`);
+  }
+  if (color.startsWith("rgb(")) {
+    return color.replace("rgb(", "rgba(").replace(")", `, ${alpha})`);
+  }
+  if (color.startsWith("#") && color.length === 7) {
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return color;
+}
+
+export function Sparkline({
+  data,
+  timestamps,
+  width = 80,
+  height = 28,
+  color = "var(--primary)",
+  strokeWidth = 1.5,
+  filled = true,
+  unit = "",
+  formatValue = defaultFormat,
+  ariaLabel,
+}: SparklineProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<echarts.ECharts | null>(null);
+
+  const seriesPairs = useMemo(() => {
+    const pairs: Array<[number, number]> = [];
+    data.forEach((value, index) => {
+      if (value == null || Number.isNaN(value)) {
+        return;
+      }
+      const ts = timestamps?.[index];
+      pairs.push([ts ?? index, value]);
+    });
+    return pairs;
+  }, [data, timestamps]);
+
+  const hasTimeAxis = useMemo(
+    () => timestamps != null && timestamps.some((ts) => ts != null),
+    [timestamps],
+  );
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || seriesPairs.length < 2) {
+      return undefined;
+    }
+
+    chartRef.current = echarts.init(el, undefined, { renderer: "canvas" });
+
+    const handleResize = debounce(() => chartRef.current?.resize(), 200);
+    let observer: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(handleResize);
+      observer.observe(el);
+    }
+
+    return () => {
+      observer?.disconnect();
+      chartRef.current?.dispose();
+      chartRef.current = null;
+    };
+  }, [seriesPairs.length]);
+
+  useEffect(() => {
+    const chart = chartRef.current;
+    const el = containerRef.current;
+    if (!chart || !el || seriesPairs.length < 2) {
+      return;
+    }
+
+    const resolvedColor = resolveColor(color, el);
+    const option: EChartsOption = {
+      animation: false,
+      grid: { left: 2, right: 2, top: 2, bottom: 2, containLabel: false },
+      xAxis: hasTimeAxis ? { type: "time", show: false } : { type: "value", show: false },
+      yAxis: { type: "value", show: false, scale: true },
+      tooltip: {
+        trigger: "axis",
+        confine: true,
+        backgroundColor: "var(--color-surface-sunken)",
+        borderColor: "var(--color-border-strong)",
+        textStyle: {
+          color: "var(--color-text-primary)",
+          fontSize: 10,
+          fontFamily: "var(--font-geist-mono), monospace",
+        },
+        axisPointer: {
+          type: "line",
+          lineStyle: { color: "var(--color-border-strong)" },
+        },
+        formatter: (params) => {
+          const item = Array.isArray(params) ? params[0] : params;
+          if (!item || item.value == null) {
+            return "";
+          }
+          const raw = item.value as [number, number] | number;
+          const value = Array.isArray(raw) ? raw[1] : raw;
+          const ts = Array.isArray(raw) ? raw[0] : null;
+          const valueText = `${formatValue(value)}${unit}`;
+          if (hasTimeAxis && ts != null) {
+            const when = new Date(ts).toLocaleString();
+            return `${when}<br/>${valueText}`;
+          }
+          return valueText;
+        },
+      },
+      series: [
+        {
+          type: "line",
+          data: seriesPairs,
+          showSymbol: false,
+          smooth: 0.2,
+          lineStyle: { color: resolvedColor, width: strokeWidth },
+          areaStyle: filled
+            ? {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: withAlpha(resolvedColor, 0.25) },
+                  { offset: 1, color: withAlpha(resolvedColor, 0.02) },
+                ]),
+              }
+            : undefined,
+        },
+      ],
+    };
+
+    chart.setOption(option, { notMerge: false });
+    chart.resize();
+  }, [seriesPairs, color, filled, strokeWidth, hasTimeAxis, unit, formatValue]);
+
+  if (seriesPairs.length < 2) {
+    return (
+      <div
+        // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- live chart container, not a static <img>
+        role="img"
+        aria-label={ariaLabel ?? "No data"}
+        data-testid="sparkline-placeholder"
+        className={styles.placeholder}
+        style={{ width, height }}
+      >
+        <div className={styles.placeholderLine} />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- ECharts mounts a canvas here, not a static <img>
+      role="img"
+      aria-label={ariaLabel ?? "Sparkline"}
+      data-testid="sparkline-chart"
+      className={styles.chart}
+      style={{ width, height }}
+    />
+  );
+}

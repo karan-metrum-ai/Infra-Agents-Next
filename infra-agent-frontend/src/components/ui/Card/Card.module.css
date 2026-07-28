@@ -1,0 +1,55 @@
+.card {
+  background-color: var(--card);
+  color: var(--foreground);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  border-radius: var(--radius-xl);
+  padding-top: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.cardBordered {
+  border: 1px solid var(--border);
+}
+
+.cardBorderless {
+  border: 0;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+.cardTitle {
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cardDescription {
+  color: var(--muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.25rem;
+}
+
+.cardContent {
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+.cardAction {
+  margin-left: auto;
+  align-self: start;
+}

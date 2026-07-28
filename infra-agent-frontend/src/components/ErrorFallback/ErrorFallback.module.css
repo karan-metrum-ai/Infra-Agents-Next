@@ -1,0 +1,104 @@
+/* Branded error screen shared by route-level and root error boundaries. */
+
+.overlay {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 200px;
+  padding: var(--spacing-xl);
+  background: var(--background);
+}
+
+.overlayFullScreen {
+  position: fixed;
+  inset: 0;
+  min-height: 100dvh;
+  z-index: 9998;
+}
+
+.overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 50%,
+    color-mix(in oklch, var(--destructive) 8%, transparent) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  background: var(--color-surface-raised);
+  border: 1px solid color-mix(in oklch, var(--destructive) 25%, transparent);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-2xl);
+}
+
+.iconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-danger-subtle);
+  border: 1px solid color-mix(in oklch, var(--destructive) 25%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--destructive);
+  margin-bottom: var(--spacing-md);
+}
+
+.title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-family: var(--font-inter), sans-serif;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-family: var(--font-inter), sans-serif;
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.errorMessage {
+  margin-bottom: var(--spacing-lg);
+  padding: 0.75rem 0.875rem;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: var(--font-size-xs);
+  color: var(--destructive);
+  word-break: break-word;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.brand {
+  position: absolute;
+  bottom: 2rem;
+  font-family: var(--font-inter), sans-serif;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--border);
+  text-transform: uppercase;
+  user-select: none;
+}

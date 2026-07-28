@@ -1,0 +1,16 @@
+.page {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  background: var(--background);
+  color: var(--foreground);
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.page p {
+  color: var(--muted);
+}

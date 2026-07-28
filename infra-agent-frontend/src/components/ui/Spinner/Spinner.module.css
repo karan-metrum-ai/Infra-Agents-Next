@@ -1,0 +1,61 @@
+.base {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sizes                                                             */
+/* ------------------------------------------------------------------ */
+
+.sizeSm {
+  height: 1rem;
+  width: 1rem;
+}
+
+.sizeDefault {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.sizeLg {
+  height: 2rem;
+  width: 2rem;
+}
+
+.sizeXl {
+  height: 3rem;
+  width: 3rem;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Color variants                                                    */
+/* ------------------------------------------------------------------ */
+
+.variantDefault {
+  color: var(--primary);
+}
+
+.variantSecondary {
+  color: var(--muted);
+}
+
+.variantWhite {
+  color: var(--foreground);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Circle / path inside SVG                                          */
+/* ------------------------------------------------------------------ */
+
+.track {
+  opacity: 0.25;
+}
+
+.arc {
+  opacity: 0.75;
+}

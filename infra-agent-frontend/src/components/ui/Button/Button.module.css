@@ -1,0 +1,159 @@
+/* ------------------------------------------------------------------ */
+/*  Base                                                              */
+/* ------------------------------------------------------------------ */
+
+.base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.base:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.base:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.base > [data-icon] {
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: default                                                  */
+/* ------------------------------------------------------------------ */
+
+.variantDefault {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--background);
+  border: 0;
+  box-shadow: var(--shadow-lg);
+}
+
+.variantDefault:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: secondary                                                */
+/* ------------------------------------------------------------------ */
+
+.variantSecondary {
+  background-color: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.variantSecondary:hover {
+  background-color: var(--primary);
+  color: var(--background);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: outline                                                  */
+/* ------------------------------------------------------------------ */
+
+.variantOutline {
+  background-color: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.variantOutline:hover {
+  background-color: var(--card);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: ghost                                                    */
+/* ------------------------------------------------------------------ */
+
+.variantGhost {
+  background-color: transparent;
+  color: var(--foreground);
+  border: none;
+}
+
+.variantGhost:hover {
+  background-color: var(--card);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: link                                                     */
+/* ------------------------------------------------------------------ */
+
+.variantLink {
+  background-color: transparent;
+  color: var(--primary);
+  border: none;
+  text-underline-offset: 4px;
+}
+
+.variantLink:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Variant: destructive                                              */
+/* ------------------------------------------------------------------ */
+
+.variantDestructive {
+  background-color: var(--destructive);
+  color: var(--background);
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+
+.variantDestructive:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sizes                                                             */
+/* ------------------------------------------------------------------ */
+
+.sizeDefault {
+  height: var(--control-height-default);
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.sizeSm {
+  height: var(--control-height-sm);
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.sizeLg {
+  height: var(--control-height-lg);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+  font-size: var(--font-size-base);
+}
+
+.sizeIcon {
+  height: var(--control-height-icon);
+  width: var(--control-height-icon);
+  padding: 0;
+}
+
+.sizeIconSm {
+  height: var(--control-height-icon-sm);
+  width: var(--control-height-icon-sm);
+  padding: 0;
+}

@@ -1,0 +1,146 @@
+.container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  max-width: 400px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border);
+  pointer-events: auto;
+  animation: slideIn 0.3s ease-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.toast:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.message {
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.closeButton {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  margin: -4px -4px -4px 8px;
+  border-radius: var(--radius-sm);
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  color: inherit;
+}
+
+.closeButton:hover {
+  opacity: 1;
+  background: var(--color-surface-hover);
+}
+
+.success {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--success), transparent 75%) 0%,
+    color-mix(in oklab, var(--success), transparent 80%) 100%
+  );
+  border-color: color-mix(in oklab, var(--success), transparent 60%);
+  color: white;
+}
+
+.error {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--destructive), transparent 75%) 0%,
+    color-mix(in oklab, var(--destructive), transparent 80%) 100%
+  );
+  border-color: color-mix(in oklab, var(--destructive), transparent 60%);
+  color: white;
+}
+
+.warning {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--warning), transparent 75%) 0%,
+    color-mix(in oklab, var(--warning), transparent 80%) 100%
+  );
+  border-color: color-mix(in oklab, var(--warning), transparent 60%);
+  color: white;
+}
+
+.info {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary), transparent 75%) 0%,
+    color-mix(in oklab, var(--primary), transparent 80%) 100%
+  );
+  border-color: color-mix(in oklab, var(--primary), transparent 60%);
+  color: white;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .title {
+    font-size: var(--font-size-sm);
+  }
+
+  .message {
+    font-size: var(--font-size-xs);
+  }
+}
