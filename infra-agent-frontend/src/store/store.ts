@@ -4,6 +4,9 @@ import authReducer from "@/features/auth/authSlice";
 import notificationsReducer from "@/features/notifications/notificationsSlice";
 import { healthApi } from "@/features/health/healthApi";
 import healthReducer from "@/features/health/healthSlice";
+import workflowCanvasReducer from "@/features/workflows/workflowCanvasSlice";
+import approvalsReducer from "@/features/approvals/approvalsSlice";
+import flowStreamReducer from "@/features/queryTrace/flowStreamSlice";
 import { uptimeApi } from "@/features/health/uptimeApi";
 import { teamsApi } from "@/features/teams/teamsApi";
 import { workflowsApi } from "@/features/workflows/workflowsApi";
@@ -20,6 +23,9 @@ export const store = configureStore({
     auth: authReducer,
     notifications: notificationsReducer,
     health: healthReducer,
+    workflowCanvas: workflowCanvasReducer,
+    approvals: approvalsReducer,
+    flowStream: flowStreamReducer,
     [authApi.reducerPath]: authApi.reducer,
     [healthApi.reducerPath]: healthApi.reducer,
     [uptimeApi.reducerPath]: uptimeApi.reducer,

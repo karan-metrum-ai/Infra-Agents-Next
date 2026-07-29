@@ -1,0 +1,486 @@
+/* RecommendTeamModal — feature-selection dialog for the "Recommend Team" flow. */
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  background: color-mix(in oklch, black 60%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: backdropIn 0.2s var(--ease-out);
+}
+
+.backdropClosing {
+  opacity: 0;
+  transition: opacity 0.2s var(--ease-out);
+}
+
+@keyframes backdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContainer {
+  background: var(--card);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: var(--radius-xl);
+  max-width: 1100px;
+  width: 100%;
+  max-height: calc(100dvh - 4rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+  animation: modalIn 0.25s var(--ease-out);
+}
+
+.modalClosing {
+  transform: scale(0.97) translateY(8px);
+  opacity: 0;
+  transition: all 0.2s var(--ease-out);
+}
+
+@keyframes modalIn {
+  from {
+    transform: scale(0.97) translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalBackdrop,
+  .modalContainer {
+    animation: none;
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  flex-shrink: 0;
+}
+
+.headerContent {
+  flex: 1;
+}
+
+.modalTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.modalSubtitle {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  margin: var(--spacing-xs) 0 0 0;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--border);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 15%, transparent);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.closeButton:hover {
+  background: color-mix(in oklch, var(--foreground) 12%, var(--border));
+  border-color: color-mix(in oklch, var(--foreground) 22%, transparent);
+  color: var(--foreground);
+  transform: translateY(-1px);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.closeIcon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.modalBody {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  flex: 1;
+  min-height: 0;
+}
+
+.activeFeaturesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.disabledFeaturesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.featureCard {
+  background: var(--card);
+  border: var(--border-width) solid var(--border);
+  border-radius: 14px;
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 160px;
+  justify-content: space-between;
+}
+
+.featureCard:hover {
+  border-color: color-mix(in oklch, var(--foreground) 18%, transparent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.featureCard:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.featureSelected {
+  border-color: color-mix(in oklch, var(--primary) 40%, transparent);
+  background: color-mix(in oklch, var(--primary) 6%, var(--card));
+}
+
+.featureHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
+  width: 100%;
+  position: relative;
+}
+
+.featureIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: color-mix(in oklch, var(--foreground) 8%, var(--border));
+  border-radius: 14px;
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 15%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+
+.featureIcon {
+  width: 24px;
+  height: 24px;
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+}
+
+.checkbox {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid color-mix(in oklch, var(--foreground) 20%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--foreground) 10%, var(--card));
+  transition: all 0.2s var(--ease-out);
+}
+
+.checkboxSelected {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+.checkIcon {
+  width: 14px;
+  height: 14px;
+  color: var(--background);
+}
+
+.featureContent {
+  position: relative;
+  z-index: 1;
+}
+
+.featureName {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 92%, transparent);
+  margin: 0 0 var(--spacing-sm) 0;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.featureDescription {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  margin: 0 0 var(--spacing-sm) 0;
+  line-height: 1.4;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.featureCategory {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+  background: var(--border);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 15%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activityIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--background);
+}
+
+.summaryText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.summaryCount {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  white-space: nowrap;
+}
+
+.summaryDescription {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-top: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  flex-shrink: 0;
+}
+
+.footerSummary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: color-mix(in oklch, var(--success) 12%, var(--card));
+  border: var(--border-width) solid var(--border);
+  border-radius: 10px;
+}
+
+.footerSummary .activityIcon {
+  color: var(--success);
+}
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.cancelButton {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--border);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 15%, transparent);
+  border-radius: var(--radius-lg);
+  color: var(--muted);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+
+.cancelButton:hover {
+  background: color-mix(in oklch, var(--foreground) 12%, var(--border));
+  border-color: color-mix(in oklch, var(--foreground) 22%, transparent);
+  color: var(--foreground);
+}
+
+.cancelButton:focus-visible,
+.primaryButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.primaryButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-lg);
+  color: var(--background);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--primary) 20%, transparent);
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--primary) 85%, black);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px color-mix(in oklch, var(--primary) 30%, transparent);
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.buttonIcon {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 1280px) {
+  .modalBackdrop {
+    padding: var(--spacing-lg);
+  }
+  .modalContainer {
+    max-width: 900px;
+    max-height: calc(100dvh - 3rem);
+  }
+  .activeFeaturesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .disabledFeaturesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .modalBackdrop {
+    padding: var(--spacing-md);
+  }
+  .modalContainer {
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100dvh - 2rem);
+  }
+  .activeFeaturesGrid,
+  .disabledFeaturesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .modalBackdrop {
+    padding: var(--spacing-sm);
+  }
+  .modalContainer {
+    margin: 0;
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+  .modalHeader {
+    padding: var(--spacing-md);
+  }
+  .modalBody {
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+  }
+  .modalFooter {
+    padding: var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .footerSummary {
+    width: 100%;
+    justify-content: center;
+  }
+  .footerActions {
+    width: 100%;
+    flex-direction: column;
+  }
+  .activeFeaturesGrid,
+  .disabledFeaturesGrid {
+    grid-template-columns: 1fr;
+  }
+  .featureCard {
+    min-height: auto;
+  }
+  .modalTitle {
+    font-size: var(--font-size-lg);
+  }
+  .summaryDescription {
+    display: none;
+  }
+  .primaryButton,
+  .cancelButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .modalContainer {
+    max-width: 1100px;
+  }
+}
+@media (min-width: 2560px) and (max-width: 3439px) {
+  .modalContainer {
+    max-width: 1320px;
+  }
+}
+@media (min-width: 3440px) {
+  .modalContainer {
+    max-width: 1500px;
+  }
+}

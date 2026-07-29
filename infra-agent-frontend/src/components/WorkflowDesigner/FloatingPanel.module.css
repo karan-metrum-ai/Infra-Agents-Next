@@ -1,0 +1,648 @@
+/* FloatingPanel — glass chrome shared by every Workflow Designer overlay panel. */
+.floatingPanel {
+  position: fixed;
+  z-index: 100;
+  background: var(--panel-bg);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform-origin: top left;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  pointer-events: auto;
+}
+
+/* Expanded state — sizing props intentionally omit !important so
+   component-specific classes (e.g. actionButtonsFloatingPanel) can override. */
+.floatingPanel:not(.collapsed) {
+  height: auto;
+  width: auto;
+  max-height: none;
+  min-height: auto;
+  border-radius: var(--radius-xl) !important;
+  background: var(--card) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floatingPanel:not(.collapsed) .panelContent {
+  display: flex !important;
+  opacity: 1 !important;
+  transition: opacity 0.3s ease-in 0.1s;
+}
+
+.floatingPanel:not(.collapsed) .panelHeader {
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+  background: color-mix(in oklch, var(--muted) 30%, transparent) !important;
+  border-bottom: var(--border-width) solid var(--border) !important;
+  min-height: 44px !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  transition: all 0.3s ease;
+}
+
+.floatingPanel:not(.collapsed) .panelTitle {
+  font-size: var(--font-size-sm) !important;
+  font-weight: 600 !important;
+  color: var(--foreground) !important;
+  opacity: 1 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  flex: none !important;
+  margin: 0 !important;
+  transition: all 0.3s ease;
+}
+
+.floatingPanel:not(.collapsed) .controlButton {
+  width: 14px !important;
+  height: 14px !important;
+  padding: 0 !important;
+  background: color-mix(in oklch, var(--foreground) 8%, transparent) !important;
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 18%, transparent) !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease;
+}
+
+.floatingPanel:not(.collapsed) .controlIcon {
+  width: 10px !important;
+  height: 10px !important;
+  color: var(--foreground) !important;
+}
+
+/* Position overrides for expanded state */
+.position-left-top:not(.collapsed) {
+  width: 340px !important;
+  max-width: 340px !important;
+  height: calc(100dvh - 100px) !important;
+  min-height: 400px !important;
+  max-height: calc(100dvh - 100px) !important;
+}
+
+/* Panel Header */
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 0%,
+    transparent 100%
+  );
+  min-height: 44px;
+  flex: 0 0 auto;
+}
+
+.panelTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent);
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.panelControls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.panelControls .controlButton {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 14px !important;
+  height: 14px !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 50% !important;
+  color: var(--muted) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+}
+
+.panelControls .controlButton:hover {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+
+.panelControls .controlButton:focus,
+.panelControls .controlButton:focus-visible {
+  outline: none !important;
+  box-shadow: inset 0 0 0 1.5px var(--primary) !important;
+}
+
+.panelControls .controlIcon {
+  width: 10px !important;
+  height: 10px !important;
+  stroke-width: 2 !important;
+  flex-shrink: 0 !important;
+}
+
+/* Panel Content */
+.panelContent {
+  padding: var(--spacing-md);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  opacity: 1;
+  transition: opacity 0.3s ease-in 0.1s;
+}
+
+/* ActionButtonsPanel — symmetric with TeamBuilderPanel, card shape, natural width */
+:global(.actionButtonsFloatingPanel) {
+  width: max-content !important;
+  min-width: unset !important;
+  max-width: none !important;
+  height: var(--nav-panel-h) !important;
+  min-height: var(--nav-panel-h) !important;
+  max-height: var(--nav-panel-h) !important;
+  border-radius: var(--radius-xl) !important;
+  overflow: visible !important;
+}
+
+:global(.actionButtonsFloatingPanel) .panelContent {
+  overflow: visible !important;
+  height: 100% !important;
+  padding: 0 var(--spacing-md) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: max-content !important;
+}
+
+:global(.actionButtonsFloatingPanel):not(.collapsed) {
+  border-radius: var(--radius-xl) !important;
+  height: var(--nav-panel-h) !important;
+  min-height: var(--nav-panel-h) !important;
+  max-height: var(--nav-panel-h) !important;
+  width: max-content !important;
+}
+
+/* Bottom-right positioning with slide-in animation */
+.position-right-top {
+  bottom: 360px;
+  right: 20px;
+  width: 400px;
+  height: 300px;
+  z-index: 85;
+  animation: slideInFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.position-right-bottom {
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  height: 320px;
+  z-index: 80;
+  animation: slideInFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .position-right-top,
+  .position-right-bottom {
+    animation: none;
+  }
+}
+
+/* Other standard positions */
+.position-top-left {
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+}
+
+.position-top-right {
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+}
+
+.position-top-center-right {
+  top: var(--spacing-lg);
+  left: 320px;
+}
+
+.position-bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.position-bottom-center {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.position-left-top {
+  top: 80px;
+  left: 20px;
+  max-height: calc(100dvh - 100px);
+  height: calc(100dvh - 100px);
+  z-index: 90;
+  width: 340px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.position-left-top.collapsed {
+  width: 200px !important;
+  max-width: 200px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+}
+
+.position-left-middle {
+  top: 110px;
+  left: 20px;
+  max-height: calc(100dvh - 150px);
+  height: auto;
+  z-index: 90;
+}
+
+.position-right-top-full-height {
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: 420px;
+  max-height: none;
+  height: auto;
+}
+
+.position-right-middle {
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 400px;
+  height: 320px;
+}
+
+/* Size classes */
+.size-small {
+  min-width: 200px;
+  max-width: 300px;
+  min-height: 150px;
+}
+
+.size-medium {
+  min-width: 300px;
+  max-width: 400px;
+  min-height: 200px;
+}
+
+.size-large {
+  min-width: 400px;
+  max-width: 800px;
+  min-height: 100px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .position-right-top,
+  .position-right-bottom {
+    max-height: calc(40vh - 80px);
+    width: auto;
+    left: 20px;
+    right: 20px;
+  }
+
+  .position-right-top-full-height {
+    width: 340px;
+  }
+
+  .size-medium {
+    min-width: 250px;
+    max-width: 350px;
+  }
+
+  .size-large {
+    min-width: 300px;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .position-top-left {
+    left: var(--spacing-lg);
+    top: var(--spacing-lg);
+  }
+
+  .position-top-right {
+    right: var(--spacing-lg);
+    top: var(--spacing-lg);
+  }
+
+  .position-top-center-right,
+  .position-bottom-left,
+  .position-left-top,
+  .position-left-middle {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+  }
+
+  .position-bottom-center {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    transform: none;
+  }
+
+  .position-right-top,
+  .position-right-bottom {
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: calc(30vh - 60px);
+  }
+
+  .position-right-top-full-height {
+    width: calc(100vw - 20px);
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    border-radius: 14px;
+  }
+
+  .size-small,
+  .size-medium,
+  .size-large {
+    min-width: auto;
+    max-width: none;
+    width: calc(100vw - 20px);
+  }
+}
+
+/* Custom scrollbar */
+.panelContent::-webkit-scrollbar {
+  width: 4px;
+}
+
+.panelContent::-webkit-scrollbar-track {
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  border-radius: var(--radius-sm);
+}
+
+.panelContent::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: var(--radius-sm);
+}
+
+.panelContent::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+}
+
+/* Optional extra blur chrome when props.blur === true */
+.blur {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Collapsed state: compact accordion strip */
+.collapsed {
+  height: 48px !important;
+  width: 200px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: color-mix(in oklch, var(--card) 90%, black 10%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 15%, transparent);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.collapsed .panelContent {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.collapsed .panelHeader {
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+  background: transparent !important;
+  border-bottom: none !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  border-radius: var(--radius-2xl) !important;
+  transition: all 0.3s ease;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.collapsed .panelTitle {
+  font-size: var(--font-size-xs) !important;
+  font-weight: 600 !important;
+  opacity: 0.9 !important;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent) !important;
+  transition: all 0.3s ease;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1 !important;
+  margin: 0 !important;
+}
+
+.collapsed .controlButton {
+  width: 14px !important;
+  height: 14px !important;
+  padding: 0 !important;
+  background: color-mix(in oklch, var(--foreground) 8%, transparent) !important;
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 18%, transparent) !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease;
+  flex-shrink: 0 !important;
+}
+
+.collapsed .controlIcon {
+  width: 10px !important;
+  height: 10px !important;
+  color: color-mix(in oklch, var(--foreground) 80%, transparent) !important;
+}
+
+.collapsed:hover {
+  background: color-mix(in oklch, var(--card) 80%, black 20%) !important;
+  border-color: color-mix(in oklch, var(--foreground) 30%, transparent) !important;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.collapsed:hover .panelTitle {
+  opacity: 1 !important;
+  color: var(--foreground) !important;
+}
+
+.collapsed:hover .controlButton {
+  background: color-mix(in oklch, var(--foreground) 20%, transparent) !important;
+  border-color: color-mix(in oklch, var(--foreground) 40%, transparent) !important;
+}
+
+.collapsed:hover .controlIcon {
+  color: var(--foreground) !important;
+}
+
+/* Mixed-state helpers (when a sibling panel is collapsed/expanded) */
+.tools-expanded {
+  max-height: calc(100dvh - 120px);
+}
+.agents-expanded {
+  max-height: calc(100dvh - 120px);
+}
+
+@media (max-width: 1280px) {
+  .collapsed {
+    width: 180px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+
+  .position-left-top.collapsed {
+    width: 180px !important;
+    max-width: 180px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+
+  .collapsed .panelHeader {
+    padding: 6px 12px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  .collapsed .panelTitle {
+    font-size: var(--font-size-xs) !important;
+  }
+
+  .collapsed .controlButton {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .collapsed {
+    width: 160px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    border-radius: 20px !important;
+  }
+
+  .position-left-top.collapsed {
+    width: 160px !important;
+    max-width: 160px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    top: 10px;
+    left: 10px;
+  }
+
+  .collapsed .panelHeader {
+    padding: 4px 10px !important;
+    min-height: 40px !important;
+    height: 40px !important;
+    border-radius: 20px !important;
+  }
+
+  .collapsed .panelTitle {
+    font-size: var(--font-size-xs) !important;
+  }
+
+  .collapsed .controlButton {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 10px !important;
+  }
+
+  .collapsed .controlIcon {
+    width: 12px !important;
+    height: 12px !important;
+  }
+}
+
+/* Large-viewport scaling (>= 1920px) — widen anchor offsets so panels feel
+   proportional on FHD/2K/Ultrawide/4K monitors. Panel widths are intentionally
+   NOT scaled — the content inside is designed for a fixed column width. */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .position-right-top,
+  .position-right-bottom {
+    right: 32px;
+  }
+  .position-right-top {
+    bottom: 420px;
+  }
+  .position-left-top {
+    left: 32px;
+    top: 96px;
+    max-height: calc(100dvh - 116px);
+    height: calc(100dvh - 116px);
+  }
+  .position-bottom-left {
+    left: 32px;
+  }
+}
+
+@media (min-width: 2560px) and (max-width: 3439px) {
+  .position-right-top,
+  .position-right-bottom {
+    right: 40px;
+  }
+  .position-right-top {
+    bottom: 480px;
+  }
+  .position-left-top {
+    left: 40px;
+    top: 104px;
+    max-height: calc(100dvh - 124px);
+    height: calc(100dvh - 124px);
+  }
+  .position-bottom-left {
+    left: 40px;
+  }
+}
+
+@media (min-width: 3440px) {
+  .position-right-top,
+  .position-right-bottom {
+    right: 48px;
+  }
+  .position-right-top {
+    bottom: 540px;
+  }
+  .position-left-top {
+    left: 48px;
+    top: 112px;
+    max-height: calc(100dvh - 132px);
+    height: calc(100dvh - 132px);
+  }
+  .position-bottom-left {
+    left: 48px;
+  }
+}

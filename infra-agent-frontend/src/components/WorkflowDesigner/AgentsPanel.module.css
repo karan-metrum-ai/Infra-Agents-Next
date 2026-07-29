@@ -1,0 +1,665 @@
+/* ============================================================
+   Agent Catalog Panel — dark glass theme matching Agent Inspector
+   ============================================================ */
+
+/* Push below Team Builder input — match React Flow panel height.
+   Selector repeats .belowTeamBuilder 3x (specificity 0-3-0) on purpose:
+   FloatingPanel.module.css's `.position-left-top:not(.collapsed)` (this
+   panel is never collapsed) hardcodes height/max-height/min-height with
+   !important at specificity 0-2-0, which otherwise beats a plain single
+   -class override regardless of stylesheet order. Bumping our own
+   selector's specificity above it is the only way to win without editing
+   the shared FloatingPanel rule (used by other, non-workflow panels too).
+
+   `--workflow-panel-top`/`--canvas-bottom-inset` are expected to be set by
+   the future `WorkflowDesigner.tsx` orchestrator's own canvas chrome
+   (out of this phase's built scope) — both fall back to a sane default
+   until that lands. */
+.belowTeamBuilder.belowTeamBuilder.belowTeamBuilder {
+  top: var(--workflow-panel-top, 80px) !important;
+  bottom: var(--canvas-bottom-inset, 20px) !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: unset !important;
+}
+
+/* ---- Override FloatingPanel expanded-state CSS-variable styles ----
+   FloatingPanel.module.css forces var(--card), var(--border),
+   var(--foreground), var(--muted) when :not(.collapsed).
+   We override those here to keep the dark glass theme.              */
+.belowTeamBuilder.avoidRfButtons {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--color-bg) 5%, black 95%) 0%,
+    color-mix(in oklch, var(--color-bg) 2%, black 98%) 100%
+  ) !important;
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent) !important;
+  border-radius: 10px !important;
+  box-shadow:
+    0 8px 32px color-mix(in oklch, black 40%, transparent),
+    0 2px 8px color-mix(in oklch, black 30%, transparent),
+    inset 0 1px 0 color-mix(in oklch, var(--foreground) 5%, transparent) !important;
+}
+
+.belowTeamBuilder :global(.panelHeader) {
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 0%,
+    transparent 100%
+  ) !important;
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent) !important;
+  min-height: 44px !important;
+  height: auto !important;
+}
+
+.belowTeamBuilder :global(.panelTitle) {
+  font-size: var(--font-size-sm) !important;
+  font-weight: 600 !important;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent) !important;
+  letter-spacing: 0.02em !important;
+}
+
+.belowTeamBuilder :global(.controlButton) {
+  background: color-mix(in oklch, var(--foreground) 5%, transparent) !important;
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.belowTeamBuilder :global(.controlButton):hover {
+  background: color-mix(in oklch, var(--foreground) 10%, transparent) !important;
+  border-color: color-mix(in oklch, var(--foreground) 20%, transparent) !important;
+}
+
+.belowTeamBuilder :global(.controlIcon) {
+  color: color-mix(in oklch, var(--foreground) 60%, transparent) !important;
+}
+
+.belowTeamBuilder :global(.panelContent) {
+  padding: 0 !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Scrollable body — flex-based sizing like Agent Inspector .container */
+.panelBody {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  padding: var(--spacing-md);
+  padding-bottom: var(--spacing-lg);
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--foreground) 15%, transparent) transparent;
+}
+
+.searchContainer {
+  position: relative;
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 32px;
+  padding: 0 10px 0 30px;
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.searchInput::placeholder {
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+}
+
+.searchInput:focus-visible {
+  outline: none;
+  border-color: color-mix(in oklch, var(--success) 45%, transparent);
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.emptySearch {
+  margin: var(--spacing-md) 0 0;
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  text-align: center;
+}
+
+.panelBody::-webkit-scrollbar {
+  width: 4px;
+}
+.panelBody::-webkit-scrollbar-track {
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border-radius: 4px;
+}
+.panelBody::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--foreground) 15%, transparent);
+  border-radius: 4px;
+}
+.panelBody::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--foreground) 28%, transparent);
+}
+
+/* Section header with divider */
+.sectionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+  padding: 0 var(--spacing-xs);
+}
+
+.sectionRow:first-child {
+  margin-top: 4px;
+}
+
+.sectionCaption {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  white-space: nowrap;
+  padding: var(--spacing-xs) 0;
+}
+
+.sectionDivider {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    color-mix(in oklch, var(--foreground) 10%, transparent),
+    transparent
+  );
+}
+
+/* Leave safe gap above RF controls */
+.avoidRfButtons {
+  max-height: calc(100dvh - 180px);
+}
+
+.avoidRfButtons .panelBody {
+  padding-bottom: var(--spacing-2xl);
+  scroll-padding-bottom: 96px;
+}
+
+/* ---- Agent Card ---- */
+.agentCard {
+  --card-br: 16px;
+  --card-bw: var(--border-width);
+  list-style: none;
+  margin: 0;
+  max-width: 300px;
+  width: 100%;
+  min-height: 180px;
+  position: relative;
+}
+
+/* The actual visual + interactive card. A real `<button>` nested inside
+   the `<li>` (`.agentCard`) — the `<li>` carries the native HTML5 drag
+   attributes (dragging doesn't require an interactive role), while this
+   button owns click/keyboard/focus so the card is a real interactive
+   element rather than a `role`-only div/article (see `jsx-a11y/
+   no-noninteractive-element-interactions`). */
+.agentCardButton {
+  all: unset;
+  box-sizing: border-box;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--color-bg) 5%, black 95%) 0%,
+    color-mix(in oklch, var(--color-bg) 2%, black 98%) 100%
+  );
+  border: var(--card-bw) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--card-br);
+  box-shadow:
+    0 4px 16px color-mix(in oklch, black 30%, transparent),
+    0 2px 6px color-mix(in oklch, black 20%, transparent),
+    inset 0 1px 0 color-mix(in oklch, var(--foreground) 4%, transparent);
+  padding: 0;
+  cursor: grab;
+  user-select: none;
+  transition:
+    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 180px;
+  width: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: 32% 68%;
+  overflow: hidden;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.agentCardButton:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+  box-shadow:
+    0 2px 8px color-mix(in oklch, black 30%, transparent),
+    inset 0 1px 0 color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.agentCardButton:hover {
+  border-color: color-mix(in oklch, var(--success) 40%, transparent);
+  box-shadow:
+    0 8px 24px color-mix(in oklch, var(--success) 10%, transparent),
+    0 4px 12px color-mix(in oklch, black 30%, transparent),
+    inset 0 1px 0 color-mix(in oklch, var(--foreground) 6%, transparent);
+  transform: translateY(-2px);
+}
+
+.agentCardButton:hover::after {
+  opacity: 0.5;
+}
+
+.agentCardButton:focus-visible {
+  border-color: color-mix(in oklch, var(--success) 50%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in oklch, var(--success) 15%, transparent),
+    0 4px 12px color-mix(in oklch, black 30%, transparent);
+  outline: none;
+}
+
+/* Drag affordance */
+.agentCardButton::after {
+  content: "\22EE\22EE";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: var(--font-size-base);
+  color: color-mix(in oklch, var(--foreground) 30%, transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  letter-spacing: -2px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.agentCardSelected {
+  border-color: color-mix(in oklch, var(--success) 50%, transparent) !important;
+  background: color-mix(in oklch, var(--success) 4%, transparent) !important;
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--success) 12%, transparent);
+}
+
+/* Left side — Avatar section */
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md) var(--spacing-sm);
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--success) 6%, transparent) 0%,
+    color-mix(in oklch, var(--success) 2%, transparent) 100%
+  );
+  border-right: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  position: relative;
+  gap: var(--spacing-md);
+}
+
+.avatar {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: none;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--color-bg) 12%, black 88%) 0%,
+    color-mix(in oklch, var(--color-bg) 8%, black 92%) 100%
+  );
+  border: 1.5px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  box-shadow:
+    0 4px 12px color-mix(in oklch, black 30%, transparent),
+    inset 0 1px 0 color-mix(in oklch, var(--foreground) 8%, transparent);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.avatarIcon {
+  width: 36px;
+  height: 36px;
+  color: var(--success);
+  z-index: 2;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  z-index: 2;
+}
+
+/* Right side — Content */
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md) var(--spacing-md);
+  gap: var(--spacing-sm);
+  background: transparent;
+  min-width: 0;
+}
+
+.titleBlock {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.cardTitle {
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  line-height: 1.25;
+  margin: 0;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cardTagline {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Description */
+.cardDescription {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Capabilities */
+.capabilityList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capabilityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 4%, transparent);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.capabilityDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--success);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.capabilityText {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+/* Card list grid */
+.cardList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  justify-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@container sidebar (min-width: 480px) {
+  .cardList {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+  }
+}
+
+/* ---- Skeleton / shimmer loading ---- */
+@keyframes agentShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton {
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklch, var(--foreground) 6%, transparent) 50%,
+    transparent 100%
+  );
+  animation: agentShimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+.skeletonList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  justify-items: center;
+}
+
+.agentCardSkeleton {
+  --card-br: 16px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--color-bg) 5%, black 95%) 0%,
+    color-mix(in oklch, var(--color-bg) 2%, black 98%) 100%
+  );
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--card-br);
+  min-height: 180px;
+  max-width: 300px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 32% 68%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.skeletonCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md) var(--spacing-sm);
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--success) 4%, transparent) 0%,
+    color-mix(in oklch, var(--success) 1%, transparent) 100%
+  );
+  border-right: var(--border-width) solid color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.skeletonAvatar {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 14px;
+}
+
+.skeletonCardContent {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+}
+
+.skeletonTitle {
+  height: 14px;
+  width: 72%;
+  border-radius: 6px;
+}
+
+.skeletonTagline {
+  height: 10px;
+  width: 88%;
+  border-radius: 4px;
+}
+
+.skeletonBadge {
+  height: 22px;
+  width: 64px;
+  border-radius: 20px;
+}
+
+.skeletonDescLine {
+  height: 10px;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.skeletonDescLineShort {
+  height: 10px;
+  width: 65%;
+  border-radius: 4px;
+}
+
+.skeletonCapabilityList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: 2px;
+}
+
+.skeletonCapability {
+  height: 24px;
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.skeletonSectionCaption {
+  height: 10px;
+  width: 120px;
+  border-radius: 4px;
+}
+
+.agentCardSkeleton:nth-of-type(2) .skeleton::after {
+  animation-delay: 0.12s;
+}
+
+.agentCardSkeleton:nth-of-type(3) .skeleton::after {
+  animation-delay: 0.24s;
+}
+
+/* Loading and Error States */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  text-align: center;
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  font-size: var(--font-size-sm);
+  min-height: 200px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  gap: var(--spacing-sm);
+  flex: 1;
+}
+
+.errorIcon {
+  color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  margin-bottom: 2px;
+}
+
+.errorTitle {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+  margin: 0;
+}
+
+.errorDescription {
+  font-size: 0.6875rem;
+  color: color-mix(in oklch, var(--foreground) 30%, transparent);
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 220px;
+}

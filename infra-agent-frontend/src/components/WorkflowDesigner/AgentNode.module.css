@@ -1,0 +1,445 @@
+/* Glassy card with subtle gradient */
+/* Fixed width ensures uniform card sizes across all agent cards */
+.card {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--card), transparent 0%),
+    color-mix(in oklab, var(--background), transparent 0%)
+  );
+  border-color: color-mix(in oklab, var(--border), transparent 0%);
+  position: relative;
+  width: 320px;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+
+/* Avatar */
+.avatarFrame {
+  width: 11rem;
+  height: 11rem;
+  position: relative;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 12px 24px color-mix(in oklch, black 35%, transparent));
+}
+.avatarImg {
+  width: 10.5rem;
+  height: 10.5rem;
+  object-fit: contain;
+  z-index: 1;
+  /* Alpha mask, not a visible color — opaque-to-transparent black fades the avatar's bottom edge. */
+  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 95%);
+  mask-image: linear-gradient(to bottom, black 65%, transparent 95%);
+  transform: translateY(6px);
+}
+
+/* Soft seam-blend where the avatar meets the card */
+.card::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  transform: translateX(-50%);
+  width: 78%;
+  height: 36px;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 90% at 50% 100%,
+    color-mix(in oklab, var(--background), transparent 0%) 0%,
+    color-mix(in oklab, var(--background), transparent 60%) 55%,
+    transparent 90%
+  );
+  filter: blur(6px);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+/* Status dot on avatar */
+.statusDot {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: 4px solid var(--card);
+  box-shadow: 0 4px 10px color-mix(in oklch, black 25%, transparent);
+}
+.dotBlue {
+  background: var(--primary);
+}
+.dotGreen {
+  background: var(--success);
+}
+.dotRed {
+  background: var(--destructive);
+}
+.dotGray {
+  background: var(--muted);
+}
+
+/* Chips */
+.modelChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--foreground);
+  background: color-mix(in oklab, var(--muted), transparent 70%);
+  border: 1px solid color-mix(in oklab, var(--border), transparent 30%);
+  border-radius: 999px;
+  padding: 3px var(--spacing-sm);
+}
+.toolsChip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  background: color-mix(in oklab, var(--muted), transparent 75%);
+  border: 1px solid color-mix(in oklab, var(--border), transparent 30%);
+  border-radius: 999px;
+  padding: 3px var(--spacing-sm);
+}
+.configChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklab, var(--primary), var(--foreground) 15%);
+  background: color-mix(in oklab, var(--primary), transparent 88%);
+  border: 1px solid color-mix(in oklab, var(--primary), transparent 65%);
+  border-radius: 999px;
+  padding: 3px var(--spacing-sm);
+}
+
+/* Settings button */
+.settingsBtn {
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--muted), transparent 65%);
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 0;
+  cursor: pointer;
+}
+.settingsBtn:hover {
+  background: color-mix(in oklab, var(--muted), transparent 50%);
+}
+.settingsBtn:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+.settingsBtn svg {
+  display: block;
+}
+
+/* Divider */
+.rule {
+  height: 1px;
+  margin: 10px 0;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+/* Enhanced status animations */
+.pulsing {
+  animation: statusPulse 2s infinite;
+}
+
+.apiConnected {
+  box-shadow: 0 0 8px color-mix(in oklch, var(--primary) 50%, transparent);
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* API Connection Indicator */
+.apiIndicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+}
+
+.apiDot {
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border-radius: 50%;
+  animation: apiPulse 3s infinite;
+}
+
+@keyframes apiPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Layout                                                             */
+/* ------------------------------------------------------------------ */
+
+.avatarPosition {
+  position: absolute;
+  top: -7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+}
+
+.nodeWrapper {
+  position: relative;
+  overflow: visible;
+}
+
+.handle {
+  width: 0.75rem !important;
+  height: 0.75rem !important;
+  background-color: var(--primary) !important;
+  border: 2px solid var(--foreground) !important;
+  border-radius: 50% !important;
+  z-index: 30 !important;
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--primary), transparent 70%),
+    0 2px 8px color-mix(in oklch, black 45%, transparent);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.handle:hover {
+  transform: scale(1.2);
+  background-color: color-mix(in oklab, var(--primary), white 18%) !important;
+  box-shadow:
+    0 0 0 4px color-mix(in oklab, var(--primary), transparent 55%),
+    0 2px 10px color-mix(in oklch, black 50%, transparent);
+}
+
+.mainCard {
+  padding: 7rem var(--spacing-md) var(--spacing-md);
+  width: 320px;
+  border-radius: 1rem;
+  border: 1px solid;
+  box-shadow: var(--shadow-xl);
+  backdrop-filter: blur(4px);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Live Active Agent — "ghostly" aura                                 */
+/*  Applied when this agent is the one currently working on a device   */
+/*  per the device-agent-activity endpoint. Communicates that          */
+/*  something is leaving this card and traveling toward the rack.      */
+/* ------------------------------------------------------------------ */
+
+.liveAgentAura {
+  position: relative;
+  border-color: color-mix(in oklch, var(--info-300) 55%, transparent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--info-300) 28%, transparent),
+    0 0 18px color-mix(in oklch, var(--color-info) 18%, transparent),
+    0 0 42px color-mix(in oklch, var(--color-info) 10%, transparent),
+    var(--shadow-xl);
+  animation:
+    liveAgentBreathe 5.5s ease-in-out infinite,
+    liveAgentDrift 6s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+@keyframes liveAgentBreathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--info-300) 22%, transparent),
+      0 0 16px color-mix(in oklch, var(--color-info) 14%, transparent),
+      0 0 36px color-mix(in oklch, var(--color-info) 8%, transparent),
+      var(--shadow-xl);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--info-200) 45%, transparent),
+      0 0 26px color-mix(in oklch, var(--color-info) 32%, transparent),
+      0 0 60px color-mix(in oklch, var(--color-info) 18%, transparent),
+      var(--shadow-xl);
+  }
+}
+
+@keyframes liveAgentDrift {
+  0% {
+    transform: translateX(0);
+  }
+  45%,
+  60% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.liveAgentWisp {
+  position: absolute;
+  inset: -18px -80px -18px -18px;
+  border-radius: 999px;
+  background: radial-gradient(
+    62% 55% at 22% 50%,
+    color-mix(in oklch, var(--info-200) 22%, transparent) 0%,
+    color-mix(in oklch, var(--color-info) 12%, transparent) 35%,
+    color-mix(in oklch, var(--color-info) 4%, transparent) 60%,
+    transparent 82%
+  );
+  filter: blur(18px);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: -1;
+  animation: liveAgentWispDrift 6.5s ease-in-out infinite;
+}
+
+@keyframes liveAgentWispDrift {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(-14px);
+    opacity: 0.85;
+  }
+}
+
+.borderRunning {
+  border-color: var(--primary);
+}
+
+.borderCompleted {
+  border-color: var(--success);
+}
+
+.borderError {
+  border-color: var(--destructive);
+}
+
+.borderDefault {
+  border-color: color-mix(in oklch, var(--muted) 60%, transparent);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.headerInfo {
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.agentName {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--foreground);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+.agentTagline {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: var(--spacing-xs);
+  max-width: 220px;
+}
+
+.chipsRow {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.emojiMuted {
+  opacity: 0.8;
+}
+
+.modelNameTrunc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+
+.capabilitiesList {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.capabilityItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.capabilityDot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.capabilityText {
+  font-size: var(--font-size-sm);
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Respect prefers-reduced-motion: kill every looping/pulsing animation and
+   fall back to a static (but still legible) presentation. */
+@media (prefers-reduced-motion: reduce) {
+  .pulsing,
+  .apiDot,
+  .liveAgentAura,
+  .liveAgentWisp {
+    animation: none;
+  }
+
+  .handle,
+  .handle:hover {
+    transition: none;
+  }
+}

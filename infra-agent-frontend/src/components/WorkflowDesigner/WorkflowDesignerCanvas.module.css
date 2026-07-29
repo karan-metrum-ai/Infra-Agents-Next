@@ -1,0 +1,59 @@
+.reactFlowContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.reactFlow {
+  background: var(--background);
+}
+
+.reactFlowControls {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.recommendingOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, black 35%, transparent);
+  backdrop-filter: blur(2px);
+  z-index: 50;
+  border-radius: inherit;
+}
+
+.recommendingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--foreground);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.recommendingSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid color-mix(in oklch, var(--foreground) 20%, transparent);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: recommendingSpin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recommendingSpinner {
+    animation: none;
+  }
+}
+
+@keyframes recommendingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

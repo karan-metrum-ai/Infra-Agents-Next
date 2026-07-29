@@ -1,0 +1,1665 @@
+/* EvaluationModal — KYAI Playground trajectory viewer/evaluator. Shared by
+ * every sibling component this feature was decomposed into (see
+ * EvaluationModal.tsx's doc comment), matching the AgentInspectorPanel
+ * decomposition precedent of one CSS module reused by its section
+ * components rather than one file per sub-component. */
+
+/* ── Overlay / containers ─────────────────────────────────────────── */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, black 65%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fadeIn 0.15s ease;
+  padding: var(--spacing-lg);
+}
+
+.modalContainer {
+  background: var(--card);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 1080px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.2s var(--ease-out);
+  overflow: hidden;
+}
+
+.pageRoot {
+  width: 100%;
+  min-height: 100%;
+}
+
+.pageContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl) var(--spacing-lg);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalOverlay,
+  .modalContainer {
+    animation: none;
+  }
+}
+
+/* ── Header (modal + page variants) ───────────────────────────────── */
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.titleContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pageEyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--color-brand);
+}
+
+.titleText {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.titleSubtext {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.sessionInfo,
+.pageSessionBadge {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.sessionId {
+  font-family: var(--font-mono);
+}
+
+.closeButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.pageTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pageBackLink {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+}
+
+.pageBackLink:hover {
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+}
+
+.pageBackLink:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.pageHero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* ── Tabs ──────────────────────────────────────────────────────────── */
+
+.tabNavigation {
+  padding: 0 var(--spacing-lg);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.tabContainer {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.tabButton {
+  all: unset;
+  cursor: pointer;
+  padding: var(--spacing-md) var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  border-bottom: 2px solid transparent;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.tabButton:hover {
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+}
+
+.tabButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.tabButton.active {
+  color: var(--color-brand);
+  border-bottom-color: var(--color-brand);
+}
+
+.tabContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+/* ── Team / prompt selection screen ───────────────────────────────── */
+
+.teamSelectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.teamSelectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) 0;
+}
+
+.teamSelectionIcon {
+  color: var(--color-brand);
+}
+
+.teamSelectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin: 0;
+}
+
+.teamSelectionSubtitle {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  max-width: 520px;
+}
+
+.teamSelectionLoading,
+.agentsLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-3xl) 0;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.teamSelectionError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-2xl) 0;
+  color: var(--destructive);
+}
+
+.retryButton {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 30%, transparent);
+  background: color-mix(in oklch, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.retryButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.teamSelectionEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-3xl) 0;
+  text-align: center;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.selectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.selectionHint {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+}
+
+.selectionSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+}
+
+.sectionComplete {
+  color: var(--success);
+}
+
+.sectionDivider {
+  height: var(--border-width);
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.teamList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+
+.teamCard {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  box-sizing: border-box;
+}
+
+.teamCard:hover {
+  border-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.teamCard:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.teamCardSelected,
+.teamCardSelected:hover {
+  border-color: color-mix(in oklch, var(--color-brand) 50%, transparent);
+  background: color-mix(in oklch, var(--color-brand) 5%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--color-brand) 25%, transparent);
+}
+
+.teamCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.teamCardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.teamCardTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: 0;
+}
+
+.teamCardDescription {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+}
+
+.teamCardStatus {
+  flex-shrink: 0;
+}
+
+.statusBadgeRunning,
+.statusBadgeNotDeployed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.statusBadgeRunning {
+  background: color-mix(in oklch, var(--success) 12%, transparent);
+  color: var(--success);
+}
+
+.statusBadgeNotDeployed {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.teamCardMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.teamCardMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.teamPagination {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.paginationButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  cursor: pointer;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+}
+
+.paginationButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.paginationButton:not(:disabled):hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.paginationButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.paginationInfo,
+.paginationTotal {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.paginationTotal {
+  margin-left: auto;
+}
+
+.promptSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.promptLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+}
+
+.promptList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.promptCard {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.12s ease;
+}
+
+.promptCard:hover {
+  border-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+}
+
+.promptCard:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.promptCardSelected {
+  border-color: color-mix(in oklch, var(--color-brand) 50%, transparent);
+  background: color-mix(in oklch, var(--color-brand) 5%, transparent);
+}
+
+.promptCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.promptCardTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: 0;
+}
+
+.promptCardCheck {
+  color: var(--color-brand);
+  flex-shrink: 0;
+}
+
+.promptCardDescription {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+}
+
+.additionalInstructionsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.additionalInstructionsInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-radius: var(--radius-md);
+  resize: vertical;
+}
+
+.additionalInstructionsInput:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 1px;
+}
+
+.promptPreview {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--color-brand) 5%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--color-brand) 15%, transparent);
+}
+
+.promptPreviewLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-brand);
+  margin-bottom: 4px;
+}
+
+.promptPreviewContent {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+  white-space: pre-wrap;
+}
+
+.teamSelectionActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.startEvaluationButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-inverse);
+  background: var(--color-brand);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.startEvaluationButton:hover:not(:disabled) {
+  background: var(--color-brand-hover);
+}
+
+.startEvaluationButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.startEvaluationButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.teamSelectionErrorMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Overview tab ──────────────────────────────────────────────────── */
+
+.overviewTab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: 0;
+}
+
+.sectionSubtitle {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.metricCard {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.metricIcon {
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  flex-shrink: 0;
+}
+
+.metricIconPrimary {
+  color: var(--color-brand);
+  flex-shrink: 0;
+}
+
+.metricIconSuccess {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.metricContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metricValue,
+.metricValueLarge {
+  font-weight: 700;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent);
+}
+
+.metricValue {
+  font-size: var(--font-size-lg);
+}
+
+.metricValueLarge {
+  font-size: var(--font-size-2xl);
+}
+
+.metricUnit {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.metricLabel {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.analysisSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.analysisGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.scoreBreakdownCard,
+.insightsCard {
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.cardTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: 0;
+}
+
+.scoreMetrics {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.scoreMetricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scoreMetricLabel {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+}
+
+.scoreBarContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.scoreBar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  overflow: hidden;
+}
+
+.scoreBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.scoreValue {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  min-width: 2ch;
+  text-align: right;
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+}
+
+.reasoningContent {
+  font-size: var(--font-size-sm);
+}
+
+.reasoningText {
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.subsectionTitle {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0 0 4px;
+}
+
+.bulletList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bulletItemSuccess,
+.bulletItemWarning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+}
+
+.bulletItemSuccess {
+  color: color-mix(in oklch, var(--success) 90%, var(--foreground));
+}
+
+.bulletItemWarning {
+  color: color-mix(in oklch, var(--warning) 90%, var(--foreground));
+}
+
+.bulletIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.strengthsSection,
+.improvementSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.errorSection {
+  display: flex;
+}
+
+.errorCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 25%, transparent);
+  background: color-mix(in oklch, var(--destructive) 8%, transparent);
+  width: 100%;
+}
+
+.errorIconLarge {
+  color: var(--destructive);
+  flex-shrink: 0;
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.errorTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: 0;
+  color: var(--destructive);
+}
+
+.errorMessage {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+  margin: 0;
+}
+
+.loadingSection {
+  display: flex;
+}
+
+.loadingCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  width: 100%;
+}
+
+.loadingAnimation {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.loadingBrain {
+  color: var(--color-brand);
+  z-index: 1;
+}
+
+.loadingPulse {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-brand) 20%, transparent);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadingPulse {
+    animation: none;
+  }
+}
+
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.loadingTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: 0;
+}
+
+.loadingDescription {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+}
+
+.loadingSkeletons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.skeletonCard {
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--foreground) 4%, transparent) 25%,
+    color-mix(in oklch, var(--foreground) 9%, transparent) 50%,
+    color-mix(in oklch, var(--foreground) 4%, transparent) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonCard {
+    animation: none;
+  }
+}
+
+.statusTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.timelineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timelineTitle {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+}
+
+.timelineCount {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+}
+
+.timelineList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.timelineItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+}
+
+.timelineItem.active .timelineItemTitle {
+  color: var(--color-brand);
+}
+
+.timelineIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.timelineIconSpinning {
+  color: var(--color-brand);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.timelineIconSuccess {
+  color: var(--success);
+}
+
+.timelineDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--foreground) 30%, transparent);
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timelineItemTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.timelineItemDescription {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.loadingIcon {
+  animation: spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timelineIconSpinning,
+  .loadingIcon {
+    animation: none;
+  }
+}
+
+/* ── Agents tab ────────────────────────────────────────────────────── */
+
+.agentsTab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.agentsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.agentHeaderTop {
+  display: flex;
+  align-items: center;
+}
+
+.filterSelect {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.filterSelect:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 1px;
+}
+
+.agentsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.agentCard {
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.agentCard.expanded {
+  border-color: color-mix(in oklch, var(--color-brand) 30%, transparent);
+}
+
+.agentHeader {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-md) var(--spacing-lg);
+  cursor: pointer;
+}
+
+.agentHeader:hover {
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.agentHeader:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: -2px;
+}
+
+.agentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 140px;
+}
+
+.agentName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: 0;
+}
+
+.agentRole {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+}
+
+.agentMetrics {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.agentMetric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.agentExpandIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  flex-shrink: 0;
+}
+
+.agentSteps {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  padding: var(--spacing-md) var(--spacing-lg);
+  gap: var(--spacing-md);
+}
+
+.noData {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-3xl) 0;
+  text-align: center;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.loadingText {
+  font-size: var(--font-size-sm);
+}
+
+/* ── Agent step card ───────────────────────────────────────────────── */
+
+.stepCard {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.stepIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+}
+
+.stepCard.success .stepNumber {
+  background: color-mix(in oklch, var(--success) 15%, transparent);
+  color: var(--success);
+}
+
+.stepCard.error .stepNumber {
+  background: color-mix(in oklch, var(--destructive) 15%, transparent);
+  color: var(--destructive);
+}
+
+.stepCard.in_progress .stepNumber {
+  background: color-mix(in oklch, var(--color-brand) 15%, transparent);
+  color: var(--color-brand);
+}
+
+.stepCard.pending .stepNumber {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.stepConnector {
+  flex: 1;
+  width: var(--border-width);
+  min-height: 8px;
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+}
+
+.stepContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-md);
+}
+
+.stepHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.stepInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.stepOperation {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: 0;
+}
+
+.stepDescription {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  margin: 0;
+}
+
+.stepMetrics {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.stepTime,
+.stepDuration {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.stepScore {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.stepDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.scoreBreakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.scoreItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+}
+
+.reasoningSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reasoningTitle {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  margin: 0;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+}
+
+.stepFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.tokenUsage,
+.toolsUsed {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+}
+
+.tokenLabel,
+.toolsLabel {
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.tokenStat {
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+}
+
+.toolsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.toolTag {
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--color-brand) 10%, transparent);
+  color: var(--color-brand);
+  font-size: var(--font-size-xs);
+}
+
+/* ── Diagram tab ───────────────────────────────────────────────────── */
+
+.diagramTab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  height: 100%;
+}
+
+.diagramControls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fullscreenButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.fullscreenButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fullscreenButton:not(:disabled):hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.fullscreenButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.buttonText {
+  white-space: nowrap;
+}
+
+.diagramContainer {
+  flex: 1;
+  min-height: 320px;
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.mermaidWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagramPlaceholder {
+  flex: 1;
+  min-height: 320px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed color-mix(in oklch, var(--foreground) 10%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagramLoadingSpinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-align: center;
+  max-width: 420px;
+  padding: var(--spacing-xl);
+}
+
+.placeholderIcon {
+  color: color-mix(in oklch, var(--foreground) 25%, transparent);
+}
+
+.placeholderTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: 0;
+}
+
+.placeholderText {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+}
+
+/* ── Fullscreen diagram viewer ─────────────────────────────────────── */
+
+.fullscreenDiagramModal {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreenOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  pointer-events: none;
+}
+
+.fullscreenControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  width: 100%;
+  max-width: 960px;
+  pointer-events: auto;
+}
+
+.exitFullscreenButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: color-mix(in oklch, var(--color-surface) 90%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 12%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+
+.exitFullscreenButton:hover {
+  background: var(--color-surface);
+}
+
+.exitFullscreenButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.zoomControls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: color-mix(in oklch, var(--color-surface) 90%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 12%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.zoomButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.zoomButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+}
+
+.zoomButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.zoomButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.zoomLevel {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  min-width: 3.5ch;
+  text-align: center;
+}
+
+.fullscreenMermaidContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .modalContainer {
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .teamList,
+  .promptList,
+  .analysisGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .agentMetrics {
+    gap: var(--spacing-md);
+  }
+}

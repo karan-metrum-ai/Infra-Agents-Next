@@ -1,0 +1,581 @@
+/* SaveTeamModal — accessible cluster/name/description save dialog. */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, black 60%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContainer {
+  background: var(--card);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: 14px;
+  width: 95%;
+  max-width: 620px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.2s var(--ease-out);
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalOverlay,
+  .modalContainer {
+    animation: none;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.modalTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent);
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.modalSubtitle {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  margin: 0;
+}
+
+.closeButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.modalContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clusterCount {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 10px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.inputLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.optionalTag {
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  color: color-mix(in oklch, var(--foreground) 25%, transparent);
+}
+
+.textInput,
+.textArea {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.textArea {
+  resize: vertical;
+  min-height: 48px;
+}
+
+.textInput:focus-visible,
+.textArea:focus-visible {
+  border-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.textInput:disabled,
+.textArea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.teamSummary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 5%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.summaryItem {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.summaryItem strong {
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+  font-weight: 600;
+}
+
+.summaryDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--foreground) 20%, transparent);
+  flex-shrink: 0;
+}
+
+.clusterGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.clusterCard {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  text-align: left;
+}
+
+.clusterCard:hover:not(:disabled) {
+  border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.clusterCard:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.clusterCard:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.clusterCardSelected,
+.clusterCardSelected:hover:not(:disabled) {
+  border-color: color-mix(in oklch, var(--success) 50%, transparent);
+  background: color-mix(in oklch, var(--success) 4%, transparent);
+}
+
+.clusterRadio {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in oklch, var(--foreground) 15%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.12s ease;
+}
+
+.clusterCardSelected .clusterRadio {
+  border-color: var(--success);
+}
+
+.clusterRadioInner {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.clusterInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.clusterName {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+}
+
+.clusterDeviceCount {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+.skeletonClusterGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.skeletonClusterCard {
+  height: 50px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--foreground) 4%, transparent) 25%,
+    color-mix(in oklch, var(--foreground) 8%, transparent) 50%,
+    color-mix(in oklch, var(--foreground) 4%, transparent) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonClusterCard {
+    animation: none;
+  }
+}
+
+.emptyState,
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  text-align: center;
+  border: 1px dashed color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.emptyState p,
+.errorState p {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  margin: 0;
+}
+
+.errorState span {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 25%, transparent);
+  margin-top: var(--spacing-xs);
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: color-mix(in oklch, var(--destructive) 6%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 15%, transparent);
+  border-radius: var(--radius-md);
+  color: var(--destructive);
+  font-size: var(--font-size-sm);
+}
+
+.errorMessage svg {
+  flex-shrink: 0;
+}
+
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+  text-align: center;
+}
+
+.successIcon {
+  color: var(--success);
+  margin-bottom: var(--spacing-md);
+  animation: successPulse 0.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .successIcon {
+    animation: none;
+  }
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.successTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.successMessage {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0 0 var(--spacing-sm) 0;
+  max-width: 300px;
+}
+
+.successTeamId {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  margin: 0;
+}
+
+.successTeamId code {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 4px;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.cancelButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  background: transparent;
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+}
+
+.cancelButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cancelButton:focus-visible,
+.saveButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.saveButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--background);
+  background: var(--success);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--success) 85%, black);
+}
+
+.saveButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.buttonSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid color-mix(in oklch, currentColor 30%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buttonSpinner {
+    animation-duration: 1.6s;
+  }
+}
+
+@media (max-width: 768px) {
+  .modalContainer {
+    width: 100%;
+    max-width: none;
+    max-height: 100dvh;
+    border-radius: 0;
+    height: 100%;
+  }
+
+  .modalContent {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .clusterGrid,
+  .skeletonClusterGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .modalContainer {
+    max-width: 760px;
+  }
+  .modalHeader {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+  }
+  .modalContent {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+    gap: var(--spacing-xl);
+  }
+  .modalFooter {
+    padding: var(--spacing-lg) var(--spacing-2xl);
+  }
+}
+
+@media (min-width: 2560px) {
+  .modalContainer {
+    max-width: 880px;
+  }
+  .modalHeader {
+    padding: var(--spacing-2xl) var(--spacing-3xl);
+  }
+  .modalContent {
+    padding: var(--spacing-2xl) var(--spacing-3xl);
+    gap: var(--spacing-2xl);
+  }
+  .modalFooter {
+    padding: var(--spacing-xl) var(--spacing-3xl);
+  }
+}

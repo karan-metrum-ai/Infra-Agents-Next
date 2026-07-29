@@ -12,9 +12,9 @@ export function InitialsAvatar({
   const sizeClass = size === "md" ? styles.md : styles.sm;
 
   return (
-    // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- text initials standing in for a profile image, not a static <img>
     <span
       className={cn(styles.avatar, sizeClass, className)}
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- text initials standing in for a profile image, not a static <img>
       role="img"
       aria-label={alt ?? `Avatar ${initials}`}
     >
