@@ -1,0 +1,160 @@
+/**
+ * Styles for MarkdownRenderer — the shared markdown-lite surface used
+ * by every content-bearing QueryTrace block (text/reasoning/tool
+ * output/sub-agent goal). Partial pull-forward of the relevant subset
+ * of Vite's `styles/QueryTrace.module.css` (1619 lines, 174 classes
+ * shared across the whole QueryTrace tree) — only the ~20 classes
+ * MarkdownRenderer itself renders, co-located per this codebase's
+ * convention instead of a shared cross-tree stylesheet. Reconcile with
+ * the rest of that file's classes as their owning components are
+ * ported in later Phase 8 passes.
+ */
+
+.markdownContent {
+  font-size: var(--font-size-sm);
+  line-height: 1.65;
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  margin: var(--spacing-md) 0;
+  border-radius: 7px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.markdownTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-xs);
+}
+
+.tableHeader {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px var(--spacing-md);
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  white-space: nowrap;
+}
+
+.tableCell {
+  padding: 9px var(--spacing-md);
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+}
+
+.codeBlockWrapper {
+  display: block;
+  margin: 10px 0;
+  padding: 0;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.codeBlock {
+  display: block;
+  padding: var(--spacing-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1.55;
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.inlineCode {
+  padding: var(--spacing-xs) 5px;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+}
+
+.mdHeading1 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: var(--spacing-lg) 0 10px 0;
+  color: color-mix(in oklch, var(--foreground) 92%, transparent);
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  padding-bottom: 6px;
+}
+
+.mdHeading2 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: var(--spacing-md) 0 var(--spacing-sm) 0;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+}
+
+.mdHeading3 {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: var(--spacing-md) 0 6px 0;
+  color: color-mix(in oklch, var(--foreground) 88%, transparent);
+}
+
+.mdHeading4 {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: var(--spacing-md) 0 6px 0;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+}
+
+.mdList {
+  margin: var(--spacing-sm) 0 10px 0;
+  padding-left: var(--spacing-lg);
+}
+
+.mdListItem {
+  margin: var(--spacing-xs) 0;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+  line-height: 1.55;
+}
+
+.mdParagraph {
+  margin: 0 0 10px 0;
+}
+
+.mdLink {
+  color: var(--primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.mdLink:hover {
+  border-bottom-color: var(--primary);
+}
+
+.mdBlockquote {
+  margin: var(--spacing-md) 0;
+  padding: 10px var(--spacing-md);
+  border-left: 3px solid color-mix(in oklch, var(--foreground) 12%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+}
+
+.mdHorizontalRule {
+  margin: var(--spacing-md) 0;
+  border: none;
+  border-top: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.mdStrong {
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 92%, transparent);
+}
+
+.mdEmphasis {
+  font-style: italic;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+}

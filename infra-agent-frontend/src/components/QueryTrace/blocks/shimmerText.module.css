@@ -1,0 +1,59 @@
+/* ReactBits-inspired shiny text — sliding highlight overlay.
+ *
+ * Key difference from the old background-clip approach: text colour is
+ * never set to transparent, so every line is always visible. The shine
+ * is a ::after pseudo-element that sweeps across as an overlay, which
+ * fixes the multi-line clipping bug where text outside the gradient
+ * band became invisible.
+ *
+ * mix-blend-mode: screen ensures the band only brightens — it cannot
+ * darken — so the effect is purely additive regardless of content. */
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 30%,
+    color-mix(in oklch, var(--foreground) 11%, transparent) 44%,
+    color-mix(in oklch, var(--foreground) 22%, transparent) 50%,
+    color-mix(in oklch, var(--foreground) 11%, transparent) 56%,
+    transparent 70%,
+    transparent 100%
+  );
+  background-size: 300% 100%;
+  background-position: 200% 0;
+  animation: shinySlide 2200ms linear infinite;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@keyframes shinySlide {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* Code / pre / links carry their own colours — keep them intact. */
+.shimmer code,
+.shimmer pre,
+.shimmer a {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer::after {
+    display: none;
+  }
+}

@@ -404,14 +404,19 @@ export function getAgentDisplayName(agentKey: string): string {
 
 /**
  * Get agent color based on agent type.
+ *
+ * Returns a `globals.css` design-token reference (not a literal hex) per
+ * this codebase's zero-hardcoded-colors rule — each agent category maps
+ * to the closest-hue existing semantic family so the categorical palette
+ * still reads as visually distinct without inventing new colors.
  */
 export function getAgentColor(agentKey: string): string {
-  if (agentKey.includes("operations_manager")) return "#3B82F6";
-  if (agentKey.includes("wlan")) return "#8B5CF6";
-  if (agentKey.includes("noc") || agentKey.includes("level1")) return "#10B981";
-  if (agentKey.includes("hardware")) return "#F59E0B";
-  if (agentKey.includes("operating")) return "#EF4444";
-  if (agentKey.includes("virtualization")) return "#A855F7";
-  if (agentKey.includes("liquid_cooling")) return "#06B6D4";
-  return "#6B7280";
+  if (agentKey.includes("operations_manager")) return "var(--primary-500)";
+  if (agentKey.includes("wlan")) return "var(--secondary-400)";
+  if (agentKey.includes("noc") || agentKey.includes("level1")) return "var(--success-500)";
+  if (agentKey.includes("hardware")) return "var(--accent-500)";
+  if (agentKey.includes("operating")) return "var(--danger-500)";
+  if (agentKey.includes("virtualization")) return "var(--secondary-600)";
+  if (agentKey.includes("liquid_cooling")) return "var(--info-500)";
+  return "var(--neutral-500)";
 }

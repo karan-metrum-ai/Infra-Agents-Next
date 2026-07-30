@@ -101,28 +101,28 @@ describe("getAgentDisplayName", () => {
 });
 
 describe("getAgentColor", () => {
-  it("returns blue for operations_manager", () => {
-    expect(getAgentColor("operations_manager_agent")).toBe("#3B82F6");
+  it("returns the primary token for operations_manager", () => {
+    expect(getAgentColor("operations_manager_agent")).toBe("var(--primary-500)");
   });
 
-  it("returns purple for wlan", () => {
-    expect(getAgentColor("wlan_network_specialist")).toBe("#8B5CF6");
+  it("returns a secondary token for wlan", () => {
+    expect(getAgentColor("wlan_network_specialist")).toBe("var(--secondary-400)");
   });
 
-  it("returns green for noc/level1 support", () => {
-    expect(getAgentColor("level1_support")).toBe("#10B981");
+  it("returns the success token for noc/level1 support", () => {
+    expect(getAgentColor("level1_support")).toBe("var(--success-500)");
   });
 
-  it("returns amber for hardware", () => {
-    expect(getAgentColor("hardware_ops")).toBe("#F59E0B");
+  it("returns the accent token for hardware", () => {
+    expect(getAgentColor("hardware_ops")).toBe("var(--accent-500)");
   });
 
-  it("returns red for operating", () => {
-    expect(getAgentColor("operating_system_mgmt")).toBe("#EF4444");
+  it("returns the danger token for operating", () => {
+    expect(getAgentColor("operating_system_mgmt")).toBe("var(--danger-500)");
   });
 
-  it("returns gray for unknown", () => {
-    expect(getAgentColor("random_agent")).toBe("#6B7280");
+  it("returns the neutral token for unknown", () => {
+    expect(getAgentColor("random_agent")).toBe("var(--neutral-500)");
   });
 });
 

@@ -1,0 +1,90 @@
+/**
+ * Query Trace Panel shell.
+ * Responsive design for resizable parent panel via container queries.
+ *
+ * Only the root shell classes live here — every section's own styling
+ * (`TraceHeader`, `AgentExecutionCard`, `FinalResponseCard`, etc.) lives
+ * in that component's co-located `.module.css`, split out of Vite's
+ * single 1619-line `styles/QueryTrace.module.css`. Two classes from
+ * that file (`.tracePanelPinned`, `.phaseHeaderWrap`) had zero
+ * consumers anywhere in the Vite app and were dropped as dead CSS.
+ */
+
+.tracePanel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  background: transparent;
+  container-type: inline-size;
+  container-name: trace-panel;
+}
+
+.tracePanelBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--spacing-lg);
+}
+
+.blockStreamWrap {
+  margin-top: 2px;
+}
+
+/* ============================================
+   PENDING APPROVALS SECTION
+   ============================================ */
+.approvalsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================
+   CONTAINER QUERIES - Responsive Design
+   ============================================ */
+@container trace-panel (max-width: 399px) {
+  .tracePanelBody {
+    padding: var(--spacing-md);
+  }
+}
+
+@container trace-panel (min-width: 400px) and (max-width: 599px) {
+  .tracePanelBody {
+    padding: var(--spacing-md);
+  }
+}
+
+@container trace-panel (min-width: 600px) {
+  .tracePanelBody {
+    padding: var(--spacing-lg);
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 768px) {
+    .tracePanelBody {
+      padding: var(--spacing-md);
+    }
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .tracePanelBody {
+    padding: var(--spacing-xl);
+  }
+}
+@media (min-width: 2560px) and (max-width: 3439px) {
+  .tracePanelBody {
+    padding: var(--spacing-2xl);
+  }
+}
+@media (min-width: 3440px) {
+  .tracePanelBody {
+    padding: var(--spacing-2xl);
+  }
+}

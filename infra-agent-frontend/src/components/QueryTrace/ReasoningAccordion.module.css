@@ -1,0 +1,82 @@
+.reasoningSection {
+  margin-bottom: var(--spacing-md);
+  border: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.reasoningToggle {
+  width: 100%;
+  padding: 10px var(--spacing-md);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.reasoningToggle:hover {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+}
+
+.reasoningToggle:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: -2px;
+}
+
+.reasoningCount {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-xs) 6px;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-radius: 4px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.reasoningContent {
+  overflow: hidden;
+}
+
+.reasoningSteps {
+  padding: var(--spacing-md);
+  background: color-mix(in oklch, var(--foreground) 1%, transparent);
+}
+
+.reasoningStep {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+
+.reasoningStep:last-child {
+  margin-bottom: 0;
+}
+
+.stepNumber {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepText {
+  flex: 1;
+  font-size: var(--font-size-xs);
+  line-height: 1.55;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  word-break: break-word;
+}

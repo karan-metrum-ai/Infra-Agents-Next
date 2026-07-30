@@ -1,0 +1,306 @@
+/* Failed trace load — dedicated panel */
+.traceFailed {
+  position: relative;
+  min-height: 360px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--destructive) 6%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 2%, transparent) 42%,
+    color-mix(in oklch, var(--foreground) 1%, transparent) 100%
+  );
+  border: 1px solid color-mix(in oklch, var(--destructive) 18%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, black 40%, transparent) inset,
+    0 12px 40px color-mix(in oklch, black 25%, transparent);
+}
+
+.traceFailedAccent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--danger-400) 0%,
+    color-mix(in oklch, var(--destructive) 35%, transparent) 100%
+  );
+}
+
+.traceFailedBody {
+  padding: 28px 28px 28px 32px;
+}
+
+.traceFailedHeader {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.traceFailedIconWrap {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in oklch, var(--destructive) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--destructive) 22%, transparent);
+  color: var(--danger-400);
+}
+
+.traceFailedHeaderText {
+  flex: 1;
+  min-width: 0;
+}
+
+.traceFailedBadge {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--danger-200);
+  background: color-mix(in oklch, var(--destructive) 15%, transparent);
+  border: 1px solid color-mix(in oklch, var(--destructive) 25%, transparent);
+}
+
+.traceFailedTitle {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent);
+  line-height: 1.3;
+}
+
+.traceFailedSubtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: color-mix(in oklch, var(--foreground) 52%, transparent);
+  max-width: 520px;
+}
+
+.traceFailedErrorPanel {
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: color-mix(in oklch, black 35%, transparent);
+  border: 1px solid color-mix(in oklch, var(--destructive) 20%, transparent);
+  overflow: hidden;
+}
+
+.traceFailedErrorHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: color-mix(in oklch, var(--destructive) 8%, transparent);
+  border-bottom: 1px solid color-mix(in oklch, var(--destructive) 12%, transparent);
+}
+
+.traceFailedErrorLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, var(--danger-200) 85%, transparent);
+}
+
+.traceFailedErrorPre {
+  margin: 0;
+  padding: 12px 14px;
+  max-height: 120px;
+  overflow: auto;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  line-height: 1.5;
+  color: color-mix(in oklch, var(--danger-200) 92%, transparent);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.traceFailedMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.traceFailedMetaLabel {
+  font-size: 12px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.traceFailedMetaValue {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  color: color-mix(in oklch, var(--foreground) 78%, transparent);
+}
+
+.traceFailedCopyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.traceFailedCopyBtn:hover {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+}
+
+.traceFailedCopyBtn:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.traceFailedHints {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.traceFailedHintsTitle {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, var(--foreground) 38%, transparent);
+}
+
+.traceFailedHintsList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+}
+
+.traceFailedHintsList li {
+  margin-bottom: 4px;
+}
+
+.traceFailedHintsList li:last-child {
+  margin-bottom: 0;
+}
+
+.traceFailedActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.traceFailedRetryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklch, var(--destructive) 35%, transparent);
+  background: color-mix(in oklch, var(--destructive) 14%, transparent);
+  color: var(--danger-200);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.traceFailedRetryBtn:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--destructive) 22%, transparent);
+  border-color: color-mix(in oklch, var(--destructive) 50%, transparent);
+}
+
+.traceFailedRetryBtn:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.traceFailedRetryBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.traceFailedRetryBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.traceFailedBtnSpinner {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .traceFailedBtnSpinner {
+    animation: none;
+  }
+}
+
+@container trace-panel (max-width: 480px) {
+  .traceFailedHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .traceFailedHeaderText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .traceFailedSubtitle {
+    max-width: none;
+  }
+
+  .traceFailedHints {
+    text-align: center;
+  }
+
+  .traceFailedHintsList {
+    text-align: left;
+    display: inline-block;
+  }
+
+  .traceFailedActions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .traceFailedRetryBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,255 @@
+/* ─── Shimmer primitive ──────────────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 7%, transparent) 35%,
+    color-mix(in oklch, var(--foreground) 12%, transparent) 50%,
+    color-mix(in oklch, var(--foreground) 7%, transparent) 65%,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  background-color: color-mix(in oklch, var(--foreground) 4%, transparent);
+  animation: shimmerSweep 1500ms ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
+}
+
+.shimmerBlock {
+  display: block;
+}
+
+.shimmerInline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes shimmerSweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  }
+}
+
+/* ─── Pulse dot indicator ────────────────────────────────────────── */
+.pulseDot {
+  display: inline-block;
+  border-radius: 50%;
+  background-color: var(--pulse-dot-color, var(--warning-500));
+  box-shadow: 0 0 0 0
+    var(--pulse-dot-color, color-mix(in oklch, var(--warning-500) 70%, transparent));
+  animation: pulseRing 1600ms ease-out infinite;
+  vertical-align: middle;
+}
+
+@keyframes pulseRing {
+  0% {
+    box-shadow: 0 0 0 0
+      var(--pulse-dot-color, color-mix(in oklch, var(--warning-500) 60%, transparent));
+    opacity: 1;
+  }
+  70% {
+    box-shadow: 0 0 0 8px
+      color-mix(in oklch, var(--pulse-dot-color, var(--warning-500)) 0%, transparent);
+    opacity: 0.85;
+  }
+  100% {
+    box-shadow: 0 0 0 0
+      color-mix(in oklch, var(--pulse-dot-color, var(--warning-500)) 0%, transparent);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulseDot {
+    animation: none;
+  }
+}
+
+/* ─── Trace panel skeleton layout ────────────────────────────────── */
+.tracePanelSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.skeletonHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.skeletonHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.skeletonStatusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.skeletonPhaseBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+.skeletonAgentCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.skeletonAgentHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.skeletonAgentMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.skeletonAgentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid color-mix(in oklch, var(--foreground) 5%, transparent);
+}
+
+.skeletonFinalResponse {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.skeletonFinalResponseHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.skeletonFinalResponseLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 72%, transparent);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ─── Trace state card skeleton ──────────────────────────────────── */
+.traceStateSkeletonIcon {
+  margin-bottom: 16px;
+}
+
+.traceStateSkeletonTitle {
+  margin-bottom: 12px;
+}
+
+.traceStateSkeletonMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.traceStateSkeletonMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.traceStateSkeletonActions {
+  margin-top: 20px;
+}
+
+.traceStateSkeletonStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: 11px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ─── Recent flows skeleton ──────────────────────────────────────── */
+.recentFlowsSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 4px;
+}
+
+.recentFlowsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.recentFlowsRowText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}

@@ -1,0 +1,278 @@
+/* ============================================
+   TRACE HEADER
+   ============================================ */
+.traceHeader {
+  position: relative;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding-right: 180px;
+}
+
+.queryText {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 92%, transparent);
+  margin: 0;
+  line-height: 1.45;
+  min-width: 0;
+  width: 100%;
+  word-break: break-word;
+  letter-spacing: -0.2px;
+}
+
+.headerMeta {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.statusBadge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
+}
+
+.statusCompleted {
+  background: color-mix(in oklch, var(--success) 10%, transparent);
+  color: var(--success);
+}
+
+.statusInProgress {
+  background: color-mix(in oklch, var(--warning-500) 10%, transparent);
+  color: var(--warning);
+}
+
+.statusFailed {
+  background: color-mix(in oklch, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+}
+
+.statusUnknown {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.statusAwaiting {
+  background: color-mix(in oklch, var(--warning-500) 10%, transparent);
+  color: var(--warning-300);
+}
+
+.durationBadge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  white-space: nowrap;
+}
+
+.headerBottom {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.queryIdRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.queryId {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.queryIdCopyBtn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: color-mix(in oklch, var(--foreground) 30%, transparent);
+  flex-shrink: 0;
+  transition: all 0.12s ease;
+}
+
+.queryIdCopyBtn:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+}
+
+.queryIdCopyBtn:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.timestamp {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  flex-shrink: 0;
+  cursor: help;
+}
+
+.kyaiButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.kyaiButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px var(--spacing-md);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-sm);
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+
+.kyaiButton:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 14%, transparent);
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+}
+
+.kyaiButton:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.kyaiButton:active {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+}
+
+.kyaiButtonIcon {
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  flex-shrink: 0;
+}
+
+.kyaiButtonText {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
+   CONTAINER QUERIES - Responsive Design
+   ============================================ */
+@container trace-panel (max-width: 399px) {
+  .headerTop {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .headerMeta {
+    justify-content: flex-start;
+  }
+
+  .queryText {
+    font-size: var(--font-size-base);
+  }
+
+  .headerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .kyaiButtonContainer {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@container trace-panel (min-width: 400px) and (max-width: 599px) {
+  .headerTop {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .headerMeta {
+    justify-content: flex-start;
+  }
+
+  .queryText {
+    font-size: var(--font-size-base);
+  }
+}
+
+@container trace-panel (min-width: 600px) {
+  .queryText {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 768px) {
+    .headerTop {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--spacing-sm);
+    }
+
+    .headerMeta {
+      justify-content: flex-start;
+    }
+
+    .queryText {
+      font-size: var(--font-size-base);
+    }
+
+    .headerBottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+    }
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .traceHeader {
+    padding: var(--spacing-lg);
+  }
+}
+@media (min-width: 2560px) {
+  .traceHeader {
+    padding: var(--spacing-xl);
+  }
+}

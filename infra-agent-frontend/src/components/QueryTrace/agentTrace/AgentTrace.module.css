@@ -1,0 +1,352 @@
+/**
+ * AgentTrace.module.css
+ * Agent-segregated, block-based layout styles (v1 legacy trace renderer).
+ * Dark-first, theme-var driven — every color resolves through a
+ * `globals.css` custom property, no hardcoded hex/rgba values.
+ */
+
+/* Override global focus outline for all buttons in trace view */
+.traceView button:focus,
+.traceView button:focus-visible,
+.agentSection button:focus,
+.agentSection button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ─── Root container ─── */
+.traceView {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+/* ─── Agent Section (recursive) ─── */
+.agentSection {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 0 10px;
+  position: relative;
+}
+
+.agentSection[data-depth="1"] {
+  margin-left: 10px;
+}
+
+.agentSection[data-depth="2"] {
+  margin-left: 20px;
+}
+
+.agentSection[data-depth="3"] {
+  margin-left: 30px;
+}
+
+.agentSection[data-depth="4"] {
+  margin-left: 40px;
+}
+
+.agentSection[data-depth="5"] {
+  margin-left: 50px;
+}
+
+/* ─── Left Rail ─── */
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.railDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+  z-index: 1;
+}
+
+.railDot[data-role="manager"],
+.railDot[data-role="level1"],
+.railDot[data-role="specialist"],
+.railDot[data-role="response"] {
+  background: var(--muted);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--muted) 20%, transparent);
+}
+
+.railLine {
+  width: 1px;
+  flex: 1;
+  margin-top: 4px;
+  background: linear-gradient(to bottom, var(--muted) 0%, transparent 100%);
+  opacity: 0.3;
+}
+
+/* ─── Agent Body ─── */
+.agentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+/* Header */
+.agentHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.agentName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+.statusPill[data-status="working"] {
+  background: color-mix(in oklch, var(--primary) 15%, transparent);
+  color: var(--primary);
+}
+
+.statusPill[data-status="done"] {
+  background: color-mix(in oklch, var(--success) 12%, transparent);
+  color: var(--success);
+}
+
+.statusPill[data-status="failed"] {
+  background: color-mix(in oklch, var(--destructive) 12%, transparent);
+  color: var(--destructive);
+}
+
+.statusPill[data-status="awaiting"] {
+  background: color-mix(in oklch, var(--warning-500) 14%, transparent);
+  color: var(--warning-300);
+}
+
+.statusPill[data-status="executing"] {
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+  color: var(--primary);
+}
+
+.agentMeta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Task query (optional small line) */
+.taskLine {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  padding-left: 2px;
+}
+
+/* ─── Reasoning Block ─── */
+.reasoningBlock {
+  overflow: hidden;
+}
+
+.reasoningToggle {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  min-height: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.15s;
+  width: 100%;
+}
+
+.reasoningToggle:hover {
+  color: var(--foreground);
+}
+
+/* Shiny text effect on the heading label */
+.reasoningLabel {
+  background: linear-gradient(
+    120deg,
+    color-mix(in oklch, var(--muted) 100%, transparent) 40%,
+    color-mix(in oklch, var(--foreground) 90%, transparent) 50%,
+    color-mix(in oklch, var(--muted) 100%, transparent) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shineSlide 3s linear infinite;
+}
+
+@keyframes shineSlide {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reasoningLabel {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: var(--muted);
+    color: var(--muted);
+  }
+}
+
+.reasoningChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-left: 4px;
+  font-size: 13px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  color: var(--muted);
+}
+
+.reasoningChevron[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+.reasoningBody {
+  padding: 2px 0 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: color-mix(in oklch, var(--muted) 85%, transparent);
+  overflow: hidden;
+}
+
+/* ─── Children (sub-agents) ─── */
+.children {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* ─── Response ─── */
+.responseSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.responseSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.responseSectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.responseBlock {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--foreground);
+  padding: 10px 12px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 7%, transparent);
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+.responseBlock[data-variant="awaiting-approval"] {
+  margin-top: 2px;
+  padding: 0 2px;
+}
+
+.responseAwaitingHint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+/* ─── Streaming helpers ─── */
+.streamingCaret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--primary);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streamingCaret {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* Pulse dot for cold-start / loading phase */
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulseDot {
+    animation: none;
+    opacity: 0.7;
+  }
+}

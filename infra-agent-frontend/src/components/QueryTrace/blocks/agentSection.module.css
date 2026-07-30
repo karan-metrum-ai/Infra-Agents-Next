@@ -1,0 +1,248 @@
+/**
+ * Agent hierarchy spine + section chrome shared by `AgentBlockGroup`,
+ * `LiveBlockStream`, and `PlanExecutionNotice`.
+ *
+ * Partial pull-forward of the small subset of Vite's
+ * `QueryTrace/agentTrace/agentHierarchy.module.css` and
+ * `AgentTrace.module.css` these three `blocks/*` components actually
+ * render (`agentNode`/`agentNodeDot`/`agentNodeContent`/`agentNodeTitle`,
+ * `traceView`/`traceTimeline`, `agentHeader`/`statusPill`,
+ * `responseBlock`/`responseExecutingHint`/`executingIcon`) — the rest of
+ * `agentTrace/*` is a separate, not-yet-ported v1 rendering path, out of
+ * this Phase 8 slice's scope. Reconcile with the real `agentTrace/*` port
+ * instead of keeping two copies when that path lands.
+ */
+
+/* Override global focus outline for all buttons in trace blocks */
+.traceView button:focus,
+.traceView button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.traceView {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+/* ─── Timeline spine (shared vertical line) ───────────────────── */
+.traceTimeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 20px;
+  gap: 2px;
+}
+
+.traceTimeline::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklch, var(--foreground) 14%, transparent),
+    color-mix(in oklch, var(--foreground) 6%, transparent)
+  );
+  border-radius: 1px;
+}
+
+/* ─── Agent node ───────────────────────────────────────────────── */
+.agentNode {
+  position: relative;
+  padding-left: 18px;
+  --trace-agent-role: var(--muted);
+}
+
+.agentNode::before {
+  content: "";
+  position: absolute;
+  left: -13px;
+  top: 14px;
+  width: 14px;
+  height: 2px;
+  background: color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+
+.agentNodeDot {
+  position: absolute;
+  left: -20px;
+  top: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--card);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--trace-agent-role) 35%, transparent);
+  background: var(--trace-agent-role);
+}
+
+.agentNode[data-status="in_progress"]::before {
+  background: color-mix(in oklch, var(--trace-agent-role) 40%, transparent);
+}
+
+@keyframes agentNodePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--trace-agent-role) 50%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 5px color-mix(in oklch, var(--trace-agent-role) 0%, transparent);
+  }
+}
+
+.agentNode[data-status="in_progress"] .agentNodeDot {
+  animation: agentNodePulse 2s ease-out infinite;
+}
+
+.agentNode[data-status="completed"]::before {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+}
+
+.agentNode[data-status="completed"] .agentNodeDot {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--trace-agent-role) 20%, transparent);
+}
+
+.agentNode[data-status="failed"] .agentNodeDot {
+  --trace-agent-role: var(--destructive);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--destructive) 35%, transparent);
+}
+
+/* ─── Depth indents (content only, spine stays fixed) ─────────── */
+.agentNodeContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.agentNodeContent[data-depth="1"] {
+  padding-left: 16px;
+}
+
+.agentNodeContent[data-depth="2"] {
+  padding-left: 32px;
+}
+
+.agentNodeContent[data-depth="3"] {
+  padding-left: 48px;
+}
+
+.agentNodeTitle {
+  font-size: var(--trace-type-primary-size, 14px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: color-mix(in oklch, var(--foreground) 92%, transparent);
+}
+
+/* ─── Section header (role label + status pill) ───────────────── */
+.agentHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+.statusPill[data-status="in_progress"] {
+  background: color-mix(in oklch, var(--primary) 15%, transparent);
+  color: var(--primary-300);
+}
+
+.statusPill[data-status="completed"] {
+  background: color-mix(in oklch, var(--success) 12%, transparent);
+  color: var(--success-300);
+}
+
+.statusPill[data-status="failed"] {
+  background: color-mix(in oklch, var(--destructive) 12%, transparent);
+  color: var(--danger-300);
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: sectionPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes sectionPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agentNode[data-status="in_progress"] .agentNodeDot {
+    animation: none;
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--trace-agent-role) 35%, transparent);
+  }
+  .pulseDot {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* ─── Plan-execution notice (PlanExecutionNotice.tsx) ──────────── */
+.responseBlock {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: color-mix(in oklch, var(--foreground) 88%, transparent);
+}
+
+.responseBlock[data-variant="executing"] {
+  margin-top: 2px;
+  padding: 0 2px;
+}
+
+.responseExecutingHint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  opacity: 0.72;
+}
+
+.executingIcon {
+  flex-shrink: 0;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  opacity: 0.55;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .executingIcon {
+    animation: none;
+  }
+}

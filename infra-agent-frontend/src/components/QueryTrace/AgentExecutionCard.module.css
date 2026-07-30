@@ -1,0 +1,248 @@
+/* ============================================
+   AGENT CARD
+   ============================================ */
+.agentCard {
+  display: flex;
+  gap: var(--spacing-md);
+  position: relative;
+  container-type: inline-size;
+  container-name: agent-card;
+}
+
+.timelineConnector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 8px;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--foreground) 4%, transparent);
+  flex-shrink: 0;
+}
+
+.timelineLine {
+  width: 2px;
+  flex: 1;
+  min-height: 32px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklch, var(--foreground) 8%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 2%, transparent) 100%
+  );
+  margin-top: 6px;
+}
+
+.cardContent {
+  flex: 1;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  transition: border-color 0.12s ease;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cardContent:hover {
+  border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+
+/* ============================================
+   CARD HEADER
+   ============================================ */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.agentInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.agentIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.agentName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agentTimestamp {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 30%, transparent);
+  margin-top: 1px;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.durationChip {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 5px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  white-space: nowrap;
+}
+
+/* ============================================
+   QUERY RECEIVED SECTION
+   ============================================ */
+.queryReceived {
+  margin-bottom: var(--spacing-md);
+  padding: 10px var(--spacing-md);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border-left: 2px solid color-mix(in oklch, var(--foreground) 12%, transparent);
+  border-radius: 0 6px 6px 0;
+}
+
+.sectionLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: color-mix(in oklch, var(--foreground) 30%, transparent);
+  margin-bottom: 6px;
+}
+
+/* Flattened combination of the base `.queryText` (TraceHeader.module.css)
+   and the `.queryReceived .queryText` override that applied on top of
+   it in Vite's shared stylesheet — this card only ever renders the
+   nested case, so the effective style is inlined directly here. */
+.queryText {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+  margin: 0;
+  line-height: 1.5;
+  min-width: 0;
+  width: 100%;
+  word-break: break-word;
+  letter-spacing: -0.2px;
+}
+
+/* ============================================
+   RESPONSE SECTION
+   ============================================ */
+.responseSection {
+  margin-top: var(--spacing-md);
+}
+
+/* ============================================
+   CONTAINER QUERIES - Responsive Design
+   ============================================ */
+@container trace-panel (max-width: 399px) {
+  .agentCard {
+    gap: 10px;
+  }
+
+  .timelineConnector {
+    display: none;
+  }
+
+  .cardContent {
+    padding: var(--spacing-md);
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cardMeta {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .agentIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .agentName {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@container trace-panel (min-width: 400px) and (max-width: 599px) {
+  .cardContent {
+    padding: var(--spacing-md);
+  }
+}
+
+@container trace-panel (min-width: 600px) {
+  .cardContent {
+    padding: 18px;
+  }
+}
+
+@container agent-card (max-width: 350px) {
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cardMeta {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 768px) {
+    .agentCard {
+      gap: 10px;
+    }
+
+    .cardContent {
+      padding: var(--spacing-md);
+    }
+
+    .cardHeader {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .cardMeta {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .timelineConnector {
+      display: none;
+    }
+  }
+}

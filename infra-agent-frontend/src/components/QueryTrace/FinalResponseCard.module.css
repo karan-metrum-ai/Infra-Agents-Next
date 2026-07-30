@@ -1,0 +1,60 @@
+.finalResponseCard {
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 7%, transparent);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  container-type: inline-size;
+  container-name: final-card;
+  margin-top: 16px;
+}
+
+.finalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.finalLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, var(--foreground) 38%, transparent);
+}
+
+/* The horizontal rule lines flanking "Response" */
+.finalLabel::before,
+.finalLabel::after {
+  content: "";
+  flex: 1;
+  min-width: 20px;
+  max-width: 48px;
+  height: 1px;
+  background: color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.finalContent {
+  font-size: var(--font-size-sm);
+}
+
+@container final-card (max-width: 350px) {
+  .finalHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 768px) {
+    .finalResponseCard {
+      padding: var(--spacing-md);
+    }
+  }
+}

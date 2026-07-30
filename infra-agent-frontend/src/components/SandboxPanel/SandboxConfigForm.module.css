@@ -1,0 +1,679 @@
+/* SandboxConfigForm — sandbox run config page content (/sandbox/new). */
+
+.pageRoot {
+  min-height: 100dvh;
+  background: var(--background);
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-3xl);
+}
+
+.pageContainer {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.pageTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backButton,
+.historyButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.backButton:hover,
+.historyButton:hover {
+  background: color-mix(in oklch, var(--foreground) 7%, transparent);
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+}
+
+.backButton:focus-visible,
+.historyButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.pageHero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pageEyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--primary);
+}
+
+.titleText {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.titleSubtext {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+  max-width: 56ch;
+}
+
+.sandboxConfigContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  background: var(--card);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.formFieldset {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.formFieldset:disabled {
+  opacity: 0.6;
+}
+
+.configSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.configSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+}
+
+.configSectionHint {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  margin: 0;
+}
+
+.configField,
+.configFieldCompact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.configRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.configRowInline {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.configLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+}
+
+.configInput {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-md);
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.configInputNarrow {
+  max-width: 140px;
+}
+
+.configInput:focus-visible {
+  border-color: color-mix(in oklch, var(--primary) 45%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 15%, transparent);
+}
+
+.configInput[aria-invalid="true"] {
+  border-color: color-mix(in oklch, var(--destructive) 45%, transparent);
+}
+
+.fieldError {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--destructive);
+}
+
+.agentCheckboxGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.agentCheckboxItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.agentCheckboxItem:hover {
+  border-color: color-mix(in oklch, var(--foreground) 14%, transparent);
+}
+
+.agentCheckboxChecked {
+  border-color: color-mix(in oklch, var(--primary) 45%, transparent);
+  background: color-mix(in oklch, var(--primary) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+}
+
+.agentCheckbox {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.radioGroupCompact {
+  flex-direction: row;
+  gap: var(--spacing-lg);
+}
+
+.radioItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+  cursor: pointer;
+}
+
+.radioItem input {
+  accent-color: var(--primary);
+}
+
+.fileUploadRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xs);
+}
+
+.fileUploadButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.fileUploadButton:hover {
+  background: color-mix(in oklch, var(--foreground) 7%, transparent);
+}
+
+.fileUploadButton:has(input:focus-visible) {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.fileUploadButtonDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fileUploadSuccess {
+  font-size: var(--font-size-xs);
+  color: var(--success);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.spinIcon {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinIcon {
+    animation-duration: 1.6s;
+  }
+}
+
+.advancedWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.advancedToggle {
+  all: unset;
+  align-self: flex-start;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--primary);
+  cursor: pointer;
+  padding: var(--spacing-xs) 0;
+}
+
+.advancedToggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.advancedContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-sm);
+  border-top: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.errorBannerInline {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: color-mix(in oklch, var(--destructive) 6%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 15%, transparent);
+  border-radius: var(--radius-md);
+  color: var(--destructive);
+  font-size: var(--font-size-sm);
+}
+
+.configActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.startButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--background);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.startButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--primary) 85%, black);
+}
+
+.startButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.startButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Run history drawer */
+
+.runHistoryOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  background: color-mix(in oklch, black 55%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .runHistoryOverlay {
+    animation: none;
+  }
+}
+
+.runHistoryPanel {
+  width: 100%;
+  max-width: 420px;
+  height: 100dvh;
+  background: var(--card);
+  border-left: var(--border-width) solid var(--panel-border);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.runHistoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.runHistoryTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: 0;
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+}
+
+.closeButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 70%, transparent);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.runHistoryList {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+}
+
+.runHistoryEmpty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.runHistoryItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.runHistoryItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.runHistoryItemName {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+}
+
+.runHistoryItemMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.runHistoryItemId {
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+
+.runHistoryItemDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--foreground) 20%, transparent);
+  flex-shrink: 0;
+}
+
+.runHistoryItemRight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.runHistoryItemStatus {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 2px var(--spacing-sm);
+  border-radius: 10px;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+}
+
+.statusCompleted {
+  color: var(--success);
+  background: color-mix(in oklch, var(--success) 12%, transparent);
+}
+
+.statusRunning {
+  color: var(--info-500);
+  background: color-mix(in oklch, var(--info-500) 12%, transparent);
+}
+
+.statusFailed {
+  color: var(--destructive);
+  background: color-mix(in oklch, var(--destructive) 12%, transparent);
+}
+
+.runHistoryItemActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.runHistoryAction,
+.runHistoryActionDanger {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  transition: all 0.12s ease;
+}
+
+.runHistoryAction:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+}
+
+.runHistoryActionDanger {
+  width: auto;
+  padding: 0 var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--destructive);
+  background: color-mix(in oklch, var(--destructive) 10%, transparent);
+}
+
+.runHistoryAction:focus-visible,
+.runHistoryActionDanger:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.runHistoryItemSkeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 5%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.skeletonContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.skeletonName,
+.skeletonMeta {
+  height: 10px;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.skeletonName {
+  width: 60%;
+}
+
+.skeletonMeta {
+  width: 40%;
+}
+
+.skeletonActions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.skeletonButton {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+@media (max-width: 640px) {
+  .configRow {
+    grid-template-columns: 1fr;
+  }
+
+  .configRowInline {
+    flex-direction: column;
+  }
+
+  .configInputNarrow {
+    max-width: none;
+  }
+
+  .runHistoryPanel {
+    max-width: none;
+  }
+}

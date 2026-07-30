@@ -1,0 +1,96 @@
+/* ─── Reconnect banner ───────────────────────────────────────────── */
+.reconnectBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+  animation: bannerEnter 220ms ease-out;
+}
+
+.reconnectBanner[data-state="connecting"] {
+  border: 1px solid color-mix(in oklch, var(--warning-500) 35%, transparent);
+  background: color-mix(in oklch, var(--warning-500) 8%, transparent);
+}
+
+.reconnectBanner[data-state="failed"] {
+  border: 1px solid color-mix(in oklch, var(--destructive) 35%, transparent);
+  background: color-mix(in oklch, var(--destructive) 8%, transparent);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.reconnectBanner[data-state="failed"] .icon {
+  color: var(--danger-400);
+}
+
+.reconnectBannerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 25%, transparent);
+  border-radius: 6px;
+  background: color-mix(in oklch, var(--muted), transparent 75%);
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.retryBtn:hover {
+  background: color-mix(in oklch, var(--muted), transparent 55%);
+  border-color: color-mix(in oklch, var(--foreground) 40%, transparent);
+}
+
+.retryBtn:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.retryBtn:active {
+  transform: scale(0.97);
+}
+
+@keyframes bannerEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reconnectBanner {
+    animation: none;
+  }
+
+  .retryBtn {
+    transition: none;
+  }
+
+  .retryBtn:active {
+    transform: none;
+  }
+}
