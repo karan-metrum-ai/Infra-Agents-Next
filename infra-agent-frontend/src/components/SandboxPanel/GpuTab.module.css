@@ -1,0 +1,54 @@
+.tabPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.metricSubtitle {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  font-weight: 600;
+  margin-top: var(--spacing-xs);
+}
+
+.metricSubtitleSpaced {
+  composes: metricSubtitle;
+  margin-top: var(--spacing-lg);
+}
+
+.metricSubtitleXlSpaced {
+  composes: metricSubtitle;
+  margin-top: var(--spacing-xl);
+}
+
+.barChart {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.barChartSpaced {
+  composes: barChart;
+  margin-top: var(--spacing-sm);
+}
+
+.gaugeRow {
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.footnote {
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+}

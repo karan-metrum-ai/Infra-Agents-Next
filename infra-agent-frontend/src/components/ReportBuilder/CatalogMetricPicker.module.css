@@ -1,0 +1,217 @@
+/*
+ * Ported from the Vite app's `styles/ReportBuilder.module.css` -- the
+ * `.catalogPicker`/`.catalogStep*`/`.catalogLoading`/`.catalogEmptyHint`/
+ * `.categoryPill*`/`.metricSearch*`/`.metricList*`/`.panelWarning*`/
+ * `.spinner` rule set only.
+ *
+ * Colors converted per the no-hardcoded-color rule:
+ *   rgba(255,255,255,X) -> color-mix(in oklch, var(--foreground) X%, transparent)
+ *   accent blue rgba(91,156,246,X) -> var(--primary) via color-mix
+ *   amber warning rgba(234,179,8,X) -> var(--warning) via color-mix
+ *
+ * `min-width/min-height: unset` on the dense pill/list-row buttons follows
+ * the precedent already set by
+ * `dashboard/TimeSeriesChart/TimeSeriesChart.module.css`'s `.chip` -- the
+ * global 44px touch-target minimum (`globals.css`) would blow up these
+ * small controls.
+ */
+
+.catalogPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.catalogStep {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.catalogStepLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.catalogLoading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.catalogEmptyHint {
+  padding: 6px 0;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.categoryPillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.categoryPill,
+.categoryPillActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: unset;
+  min-height: unset;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.3;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  color: var(--muted);
+}
+
+.categoryPill:hover {
+  color: var(--foreground);
+  border-color: color-mix(in oklch, var(--foreground) 14%, transparent);
+}
+
+.categoryPillActive {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--primary) 30%, transparent);
+}
+
+.categoryPillCount {
+  font-size: 9px;
+  font-weight: 400;
+  opacity: 0.65;
+}
+
+.metricSearchWrap {
+  position: relative;
+}
+
+.metricSearchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.metricSearchClear {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: unset;
+  min-height: unset;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.metricSearchClear:hover {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+}
+
+.metricList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 108px;
+  overflow-y: auto;
+}
+
+.metricListItem,
+.metricListItemActive {
+  display: block;
+  width: 100%;
+  min-width: unset;
+  min-height: unset;
+  padding: 4px 6px;
+  text-align: left;
+  border-radius: 3px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font: inherit;
+}
+
+.metricListItem:hover {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.metricListItemActive {
+  background: color-mix(in oklch, var(--foreground) 7%, transparent);
+}
+
+.metricListItemBody {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.metricListItemLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--foreground);
+  line-height: 1.3;
+}
+
+.metricListItemMeta {
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.panelWarning {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+  color: var(--color-warning-fg);
+  margin: 0 0 var(--spacing-md);
+  padding: 10px 12px;
+  background: color-mix(in oklch, var(--warning) 6%, transparent);
+  border: 1px solid color-mix(in oklch, var(--warning) 12%, transparent);
+  border-left: 3px solid var(--warning);
+  border-radius: var(--radius-md);
+}
+
+.panelWarningIcon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--warning);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  color: var(--primary);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

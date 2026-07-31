@@ -1,0 +1,26 @@
+.coverSection {
+  padding: var(--spacing-xl) var(--spacing-lg);
+  border-left: 3px solid;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--primary) 6%, transparent) 0%,
+    transparent 60%
+  );
+}
+
+.coverEyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: var(--spacing-sm);
+}
+
+.coverSubtitle {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}

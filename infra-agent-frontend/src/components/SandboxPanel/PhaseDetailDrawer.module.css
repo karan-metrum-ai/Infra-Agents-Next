@@ -1,0 +1,268 @@
+/**
+ * PhaseDetailDrawer -- right-side dialog styling.
+ *
+ * Ported from the Vite app's `styles/SandboxPanel.module.css` "Phase
+ * detail drawer" + "Key/value table" sections. Drawer chrome (backdrop /
+ * panel / header / close button) matches this codebase's own established
+ * drawer precedent, `SandboxConfigForm.module.css`'s `.runHistoryOverlay`/
+ * `.runHistoryPanel`/`.closeButton` (flat `var(--card)` surface,
+ * `var(--panel-border)` hairline, `var(--shadow-xl)`), rather than the
+ * source's bespoke near-black gradient. Literal colors converted per this
+ * app's token rules: whites -> `color-mix(in oklch, var(--foreground) X%,
+ * transparent)`, status colors -> `var(--success)` / `var(--destructive)` /
+ * `var(--info-500)` (the "running" accent, matching `.statusRunning` in
+ * `SandboxConfigForm.module.css`), monospace -> `var(--font-mono)`.
+ */
+
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: color-mix(in oklch, black 55%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(580px, 92vw);
+  background: var(--card);
+  border-left: var(--border-width) solid var(--panel-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 101;
+  box-shadow: var(--shadow-xl);
+  animation: slideIn 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+  outline: none;
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.drawerHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.drawerTitleRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.drawerTitle {
+  font-size: var(--font-size-base);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+}
+
+.drawerIdRow {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.drawerClose {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.drawerClose:hover {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+}
+
+.drawerClose:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.drawerBody {
+  flex: 1;
+  overflow: auto;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ── Status pill ──────────────────────────────────────── */
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.statusPillPass {
+  background: color-mix(in oklch, var(--success) 14%, transparent);
+  color: var(--success);
+}
+
+.statusPillFail {
+  background: color-mix(in oklch, var(--destructive) 14%, transparent);
+  color: var(--destructive);
+}
+
+.statusPillRunning {
+  background: color-mix(in oklch, var(--info-500) 16%, transparent);
+  color: var(--info-500);
+}
+
+.statusPillNeutral {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+}
+
+.spinIcon {
+  animation: spin 0.8s linear infinite;
+}
+
+/* ── Snapshot list (started/finished/duration) ───────── */
+
+.snapshotList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.snapshotItem {
+  display: grid;
+  grid-template-columns: minmax(110px, 42%) 1fr;
+  gap: var(--spacing-sm);
+  align-items: baseline;
+  padding: 4px 0;
+}
+
+.snapshotItem + .snapshotItem {
+  border-top: 1px dashed color-mix(in oklch, var(--foreground) 5%, transparent);
+  padding-top: var(--spacing-sm);
+}
+
+.snapshotKey {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.snapshotValue {
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 92%, transparent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.snapshotValueMono {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+}
+
+/* ── Error banner ─────────────────────────────────────── */
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: color-mix(in oklch, var(--destructive) 7%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 32%, transparent);
+  color: var(--destructive);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Detail payload key/value table ───────────────────── */
+
+.detailHeading {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.kvTable {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.kvKey {
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.kvValue {
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.emptyStateInline {
+  padding: var(--spacing-md);
+  color: var(--muted);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawerBackdrop,
+  .drawer {
+    animation: none;
+  }
+
+  .spinIcon {
+    animation-duration: 2.4s;
+  }
+}

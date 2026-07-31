@@ -1,0 +1,86 @@
+/* ReportSummary — compact multi-column KPI summary with threshold-based
+   color coding. Ported from the Vite app's shared
+   `styles/SandboxPanel.module.css` `.kpiTile` rule plus this component's own
+   inline `style={{}}` objects, all converted to CSS Module classes (this
+   app's styling convention -- see `ReconnectBanner`/`SandboxConfigForm`
+   precedent). Colors converted from `rgba(255,255,255,X)` to
+   `color-mix(in oklch, var(--foreground) X%, transparent)`. The one
+   genuinely data-driven inline style kept is `grid-template-columns`
+   (column count varies with how many metric groups have data). */
+
+.grid {
+  display: grid;
+  gap: 12px;
+}
+
+.column {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--foreground) 2.8%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 1.8%, transparent) 100%
+  );
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.columnTitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.itemLabel {
+  font-size: 12px;
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+  font-weight: 500;
+}
+
+.itemValue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklch, var(--foreground) 95%, transparent);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.dotSuccess {
+  background: var(--success);
+}
+
+.dotWarning {
+  background: var(--warning);
+}
+
+.dotDestructive {
+  background: var(--destructive);
+}

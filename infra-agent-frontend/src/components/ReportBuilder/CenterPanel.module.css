@@ -1,0 +1,524 @@
+/*
+ * Ported from the Vite app's `styles/ReportBuilder.module.css` (the
+ * `.centerPanel`/`.centerToolbar`/`.editorLayout`/`.dateRangeGroup`/
+ * `.lockBadge` rule groups + their `.lightMode` overrides). Colors
+ * converted from literal rgba()/hex to this app's CSS-variable system per
+ * the migration's mandatory color rule:
+ *   rgba(255,255,255,X)      -> color-mix(in oklch, var(--foreground) X%, transparent)
+ *   rgba(0,0,0,X)             -> color-mix(in oklch, black X%, transparent)
+ *   amber "needs save" accent -> var(--warning)
+ *   blue "attached" accent    -> var(--primary)
+ *   hairline borders          -> color-mix(in oklch, var(--foreground) 6-8%, transparent)
+ *
+ * `lightMode` here is the Report Builder's own local paper/print-preview
+ * toggle (`CenterPanelProps.lightMode`/`onToggleUiTheme`) -- a page-scoped
+ * feature preserved from the Vite source, independent of the app's global
+ * dark-only theme (`DESIGN.md` §1). Its overrides intentionally use a
+ * fixed light palette (not the app's dark-tuned neutral scale) because
+ * that's what the feature actually is: a literal light/paper preview mode,
+ * matching the Vite source 1:1.
+ */
+
+.centerPanel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  box-shadow: var(--shadow-md);
+  background: var(--color-surface-sunken);
+}
+
+.centerPanel.lightMode {
+  background: #ffffff;
+  border-color: color-mix(in oklch, black 8%, transparent);
+  box-shadow: var(--shadow-md);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Toolbar                                                            */
+/* ------------------------------------------------------------------ */
+
+.centerToolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) auto minmax(0, 1fr);
+  grid-template-rows: auto;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 12px 14px;
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  background: color-mix(in oklch, black 22%, transparent);
+  flex-shrink: 0;
+}
+
+.lightMode .centerToolbar {
+  background: #f8fafc;
+  border-bottom-color: color-mix(in oklch, black 8%, transparent);
+}
+
+.centerToolbarLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  justify-self: start;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.reportIdentity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.reportTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.reportTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.reportSubtitle {
+  font-size: 11px;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.lightMode .reportSubtitle {
+  color: #6b7280;
+}
+
+.lockBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 12%, transparent);
+  background: color-mix(in oklch, black 20%, transparent);
+}
+
+.lightMode .lockBadge {
+  color: #4b5563;
+  border-color: #e5e7eb;
+  background: #f9fafb;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Date range group                                                   */
+/* ------------------------------------------------------------------ */
+
+.dateRangeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+}
+
+.lightMode .dateRangeGroup {
+  border-color: color-mix(in oklch, black 8%, transparent);
+  background: color-mix(in oklch, black 2%, transparent);
+}
+
+.dateField {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dateFieldLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 52%, transparent);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.lightMode .dateFieldLabel {
+  color: #6b7280;
+}
+
+.dateInput {
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in oklch, var(--foreground) 14%, transparent);
+  background: color-mix(in oklch, black 28%, transparent);
+  color: var(--foreground);
+  font-size: 12px;
+  font-family: inherit;
+  line-height: 1;
+  min-width: 128px;
+  color-scheme: dark;
+}
+
+.dateInput:hover {
+  border-color: color-mix(in oklch, var(--foreground) 22%, transparent);
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: color-mix(in oklch, var(--primary) 55%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 18%, transparent);
+}
+
+.lightMode .dateInput {
+  border-color: #d1d5db;
+  background: #fff;
+  color: #111827;
+  color-scheme: light;
+}
+
+.lightMode .dateInput:hover {
+  border-color: #9ca3af;
+}
+
+.lightMode .dateInput:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 2px color-mix(in oklch, #60a5fa 20%, transparent);
+}
+
+.dateSep {
+  font-size: 12px;
+  color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.lightMode .dateSep {
+  color: #9ca3af;
+}
+
+.dateAvailability {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  white-space: nowrap;
+  padding-left: 8px;
+  margin-left: 2px;
+  border-left: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.dateAvailabilityLoading {
+  opacity: 0.8;
+}
+
+.lightMode .dateAvailability {
+  color: #6b7280;
+  border-left-color: color-mix(in oklch, black 10%, transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Editor / preview tab switch                                        */
+/* ------------------------------------------------------------------ */
+
+.centerToggle {
+  display: flex;
+  justify-self: center;
+  align-self: center;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.centerTabs {
+  gap: 0;
+}
+
+.centerTabsList {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 168px;
+  height: 34px;
+  padding: 3px;
+  border-radius: 9px;
+  background-color: color-mix(in oklch, black 36%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  color: var(--muted);
+  gap: 2px;
+  box-shadow: inset 0 1px 0 color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.lightMode .centerTabsList {
+  background-color: #e8ecf1;
+  border-color: color-mix(in oklch, black 8%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklch, white 80%, transparent);
+  color: var(--muted);
+}
+
+.centerTabTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 28px;
+  padding: 0 12px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-radius: 6px;
+  line-height: 1;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  background: transparent;
+  box-shadow: none;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.centerTabTrigger:hover:not([data-active]) {
+  color: color-mix(in oklch, var(--foreground) 82%, transparent);
+}
+
+.centerTabTrigger:focus,
+.centerTabTrigger:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.centerTabTrigger[data-active] {
+  background-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  color: var(--foreground);
+  box-shadow:
+    0 1px 2px color-mix(in oklch, black 22%, transparent),
+    inset 0 1px 0 color-mix(in oklch, var(--foreground) 5%, transparent);
+}
+
+.lightMode .centerTabTrigger {
+  color: #6b7280;
+}
+
+.lightMode .centerTabTrigger:hover:not([data-active]) {
+  color: #374151;
+}
+
+.lightMode .centerTabTrigger[data-active] {
+  background-color: #ffffff;
+  color: #111827;
+  box-shadow:
+    0 1px 2px color-mix(in oklch, black 6%, transparent),
+    0 0 0 1px color-mix(in oklch, black 4%, transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Actions                                                             */
+/* ------------------------------------------------------------------ */
+
+.centerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  justify-self: end;
+  grid-column: 3;
+  grid-row: 1;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.toolbarGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 20px;
+  flex-shrink: 0;
+  background: color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.lightMode .toolbarDivider {
+  background: color-mix(in oklch, black 12%, transparent);
+}
+
+.generateBtn {
+  white-space: nowrap;
+}
+
+.needsSave {
+  opacity: 0.85;
+  border-color: color-mix(in oklch, var(--warning) 65%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warning) 35%, transparent);
+}
+
+.saveBtn {
+  white-space: nowrap;
+}
+
+.savePending {
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--warning) 65%, transparent);
+}
+
+.toolbarBtnLabel {
+  line-height: 1;
+}
+
+.autoSaveStatus {
+  font-size: 11px;
+  color: color-mix(in oklch, var(--foreground) 58%, transparent);
+  padding: 0 4px;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.lightMode .autoSaveStatus {
+  color: #6b7280;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Editor layout (canvas + attached properties dock)                  */
+/* ------------------------------------------------------------------ */
+
+.editorLayout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editorLayoutGenerating {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.editorProperties {
+  flex-shrink: 0;
+  max-height: min(34vh, 280px);
+  overflow-y: auto;
+  border-top: 1px solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  background: color-mix(in oklch, black 32%, transparent);
+  position: relative;
+}
+
+.editorPropertiesAttached {
+  border-top: 1px solid color-mix(in oklch, var(--primary) 25%, transparent);
+  background: color-mix(in oklch, black 38%, transparent);
+}
+
+.editorPropertiesAttached::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--primary) 50%, transparent) 20%,
+    color-mix(in oklch, var(--primary) 50%, transparent) 80%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+.lightMode .editorProperties {
+  border-top-color: color-mix(in oklch, black 8%, transparent);
+  background: #f8fafc;
+}
+
+.lightMode .editorPropertiesAttached {
+  border-top-color: color-mix(in oklch, var(--primary) 35%, transparent);
+  background: #f0f6ff;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Responsive                                                         */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 1280px) {
+  .centerToolbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    gap: 10px 14px;
+  }
+
+  .centerToggle {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .centerActions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    justify-content: flex-start;
+  }
+
+  .dateAvailability {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .centerToolbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .centerToggle {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+
+  .centerActions {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .toolbarBtnLabel {
+    display: none;
+  }
+}

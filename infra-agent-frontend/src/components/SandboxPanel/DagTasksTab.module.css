@@ -1,0 +1,53 @@
+.tabPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.metricSubtitle {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  font-weight: 600;
+  margin-top: var(--spacing-xs);
+}
+
+.outcomeBar {
+  display: flex;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+}
+
+.outcomeCompleted,
+.outcomeRejected,
+.outcomeFailed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.outcomeCompleted {
+  background: var(--success);
+  color: color-mix(in oklch, black 75%, transparent);
+}
+
+.outcomeRejected {
+  background: var(--warning);
+  color: color-mix(in oklch, black 75%, transparent);
+}
+
+.outcomeFailed {
+  background: var(--destructive);
+}

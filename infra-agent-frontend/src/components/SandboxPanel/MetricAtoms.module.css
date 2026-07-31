@@ -1,0 +1,150 @@
+.kpiTile {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--foreground) 2.8%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 1.8%, transparent) 100%
+  );
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.kpiTile:hover {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--foreground) 5%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 100%
+  );
+  border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  transform: translateY(-1px);
+}
+
+.kpiLabel {
+  font-size: 10px;
+  color: color-mix(in oklch, var(--foreground) 52%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+}
+
+.kpiValue {
+  font-size: 24px;
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: color-mix(in oklch, var(--foreground) 97%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiUnit {
+  font-size: 12px;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  font-family: inherit;
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 28%) 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.barLabel {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barTrack {
+  position: relative;
+  height: 8px;
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barFill {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.barFillError {
+  background: var(--destructive);
+}
+
+.barFillSuccess {
+  background: var(--success);
+}
+
+.barValue {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  min-width: 48px;
+  text-align: right;
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.ringTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  background: color-mix(in oklch, var(--foreground) 2.2%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 5%, transparent);
+  border-radius: 12px;
+}
+
+.ringTileLabel {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.gaugeSvg {
+  width: 160px;
+  height: 90px;
+}
+
+.gaugeValue {
+  font-size: 18px;
+  font-weight: 650;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.emptyStateInline {
+  padding: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+}

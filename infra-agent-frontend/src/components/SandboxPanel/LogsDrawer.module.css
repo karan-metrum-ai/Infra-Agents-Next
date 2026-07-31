@@ -1,0 +1,219 @@
+/**
+ * LogsDrawer -- wide right-side dialog + terminal viewer styling.
+ *
+ * Ported from the Vite app's `styles/SandboxPanel.module.css` "Phase
+ * detail drawer" (shared drawer chrome + `.drawerWide`) + "Logs drawer"
+ * sections. Drawer chrome matches `PhaseDetailDrawer.module.css`'s
+ * convention (flat `var(--card)` surface, `var(--panel-border)`,
+ * `var(--shadow-xl)`), duplicated here rather than shared since this is a
+ * flat, barrel-free component folder (co-located styles per component).
+ * The terminal surface (`#0a0a0a` in the source) is kept as a literal --
+ * it's an intentional near-black "terminal" surface independent of the
+ * theme's `--card`/`--background` tokens, same treatment `RawJsonDrawer`'s
+ * viewer gets.
+ */
+
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: color-mix(in oklch, black 55%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(960px, 95vw);
+  background: var(--card);
+  border-left: var(--border-width) solid var(--panel-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 101;
+  box-shadow: var(--shadow-xl);
+  animation: slideIn 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+  outline: none;
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.drawerHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawerTitleRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.drawerTitleIcon {
+  opacity: 0.65;
+}
+
+.drawerTitle {
+  font-size: var(--font-size-base);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+}
+
+.drawerSubtitle {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.drawerClose {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.drawerClose:hover {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+}
+
+.drawerClose:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ── Body states ──────────────────────────────────────── */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-3xl) var(--spacing-md);
+  text-align: center;
+  color: var(--muted);
+  font-size: var(--font-size-sm);
+  flex: 1;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: color-mix(in oklch, var(--destructive) 7%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 32%, transparent);
+  color: var(--destructive);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.spinIcon {
+  animation: spin 0.8s linear infinite;
+}
+
+.emptyStateIcon {
+  opacity: 0.35;
+}
+
+/* ── Pod tabs ─────────────────────────────────────────── */
+
+.logsTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.logsTab {
+  padding: 4px var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.logsTab:hover {
+  color: var(--foreground);
+  border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+
+.logsTab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.logsTabActive {
+  background: var(--primary);
+  color: var(--primary-foreground, white);
+  border-color: var(--primary);
+}
+
+.logsTerminal {
+  flex: 1;
+  background: #0a0a0a;
+  color: color-mix(in oklch, white 86%, transparent);
+  padding: var(--spacing-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow: auto;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawerBackdrop,
+  .drawer {
+    animation: none;
+  }
+
+  .spinIcon {
+    animation-duration: 2.4s;
+  }
+}

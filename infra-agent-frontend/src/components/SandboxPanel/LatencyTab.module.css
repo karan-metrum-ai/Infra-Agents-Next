@@ -1,0 +1,67 @@
+.tabPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.metricSubtitle {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  font-weight: 600;
+  margin-top: var(--spacing-xs);
+}
+
+.barChart {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.phaseList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.phaseLabel {
+  font-size: var(--font-size-sm);
+}
+
+.stackedBarRow {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: var(--spacing-sm);
+  align-items: center;
+  font-size: var(--font-size-sm);
+}
+
+.stackedBarTrack {
+  display: flex;
+  height: 14px;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stackedBarP50 {
+  background: var(--primary);
+}
+
+.stackedBarP95 {
+  background: color-mix(in oklch, var(--primary) 60%, transparent);
+}
+
+.stackedBarLabel {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}

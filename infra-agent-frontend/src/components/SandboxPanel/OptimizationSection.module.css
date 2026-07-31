@@ -1,0 +1,177 @@
+/* OptimizationSection — DSPy before/after score comparison (conditional,
+   only rendered when `report.optimization` is present). Ported from the
+   Vite app's shared `styles/SandboxPanel.module.css` `.section` rules plus
+   this component's own inline `style={{}}` objects, all converted to
+   co-located CSS Module classes -- this app's convention is CSS Modules,
+   not inline style objects (see `ReconnectBanner`/`SandboxConfigForm`
+   precedent). Colors converted per the app's color-token rules:
+   rgba(255,255,255,X) -> color-mix(foreground X%), green/red/amber literals
+   -> var(--success)/var(--destructive)/var(--warning) via color-mix, mono
+   font stacks -> var(--font-mono). */
+
+.section {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 2%, transparent) 100%
+  );
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 18px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  box-shadow:
+    0 4px 20px color-mix(in oklch, black 12%, transparent),
+    0 1px 0 color-mix(in oklch, var(--foreground) 3%, transparent) inset;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 2px;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 650;
+  margin: 0;
+  letter-spacing: -0.01em;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.titleIcon {
+  color: var(--primary);
+}
+
+.sectionSubtitle {
+  font-size: 11px;
+  color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-radius: 6px;
+}
+
+/* ── Lift banner ─────────────────────────────────────── */
+
+.liftBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.liftBannerPositive {
+  background: color-mix(in oklch, var(--success) 8%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--success) 25%, transparent);
+}
+
+.liftBannerNegative {
+  background: color-mix(in oklch, var(--destructive) 8%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 25%, transparent);
+}
+
+.liftBannerNeutral {
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid var(--border);
+}
+
+.liftIconPositive {
+  color: var(--success);
+}
+
+.liftIconNegative {
+  color: var(--destructive);
+}
+
+.liftIconNeutral {
+  color: var(--muted);
+}
+
+.liftText {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.liftTextPositive {
+  color: var(--success);
+}
+
+.liftTextNegative {
+  color: var(--destructive);
+}
+
+.liftTextNeutral {
+  color: var(--foreground);
+}
+
+.liftDetail {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+/* ── Before/after table ──────────────────────────────── */
+
+.table {
+  display: grid;
+  grid-template-columns: 1fr 100px 100px 100px;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  font-size: var(--fs-sm);
+}
+
+.headerCell {
+  padding: 8px 12px;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  font-weight: 600;
+  color: var(--muted);
+  text-align: left;
+}
+
+.headerCellRight {
+  text-align: right;
+}
+
+.cell {
+  padding: 8px 12px;
+  background: var(--card);
+}
+
+.cellRight {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.cellEmphasis {
+  font-weight: 600;
+}
+
+.liftPositive {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.liftNegative {
+  color: var(--destructive);
+  font-weight: 600;
+}
+
+.liftNeutral {
+  color: var(--muted);
+  font-weight: 600;
+}

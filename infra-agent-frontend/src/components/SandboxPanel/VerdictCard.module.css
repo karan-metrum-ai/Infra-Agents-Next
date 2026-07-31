@@ -1,0 +1,236 @@
+.verdictCard {
+  position: relative;
+  width: 100%;
+  background: color-mix(in oklch, var(--foreground) 1.8%, transparent);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: 12px;
+  padding: 14px 14px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.verdictCard:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.verdictCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 2px;
+  background: color-mix(in oklch, var(--foreground) 10%, transparent);
+  transition: background 0.18s ease;
+}
+
+.verdictCard:hover {
+  background: color-mix(in oklch, var(--foreground) 3.5%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  transform: translateY(-1px);
+}
+
+.verdictCardFail {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--destructive) 6%, transparent),
+    color-mix(in oklch, var(--foreground) 1.2%, transparent) 65%
+  );
+  border-color: color-mix(in oklch, var(--destructive) 22%, transparent);
+}
+
+.verdictCardFail::before {
+  background: var(--destructive);
+}
+
+.verdictCardAmber {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--warning) 5%, transparent),
+    color-mix(in oklch, var(--foreground) 1.2%, transparent) 65%
+  );
+  border-color: color-mix(in oklch, var(--warning) 20%, transparent);
+}
+
+.verdictCardAmber::before {
+  background: var(--warning);
+}
+
+.verdictCardPass {
+  border-color: color-mix(in oklch, var(--success) 16%, transparent);
+}
+
+.verdictCardPass::before {
+  background: var(--success);
+  opacity: 0.7;
+}
+
+.verdictCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.verdictName {
+  font-size: 12px;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 62%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.verdictPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.verdictPillPass {
+  background: color-mix(in oklch, var(--success) 14%, transparent);
+  color: var(--success);
+}
+
+.verdictPillFail {
+  background: color-mix(in oklch, var(--destructive) 14%, transparent);
+  color: var(--destructive);
+}
+
+.verdictPillAmber {
+  background: color-mix(in oklch, var(--warning) 16%, transparent);
+  color: var(--warning);
+}
+
+/* Value row -- actual is the headline, target is the supporting
+   caption. The headline gets typographic emphasis instead of pure
+   color emphasis so the card reads cleanly when many cards are
+   in the same state. */
+.verdictValues {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.verdictActual {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.verdictActualValue {
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.verdictActualUnit {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+.verdictActualLabel {
+  font-size: 10px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.verdictTarget {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right;
+}
+
+.verdictTargetValue {
+  font-size: 13px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.verdictTargetLabel {
+  font-size: 10px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.directionIcon {
+  color: var(--muted);
+}
+
+.verdictBar {
+  position: relative;
+  height: 4px;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.verdictBarFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--success);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.verdictBarFillAmber {
+  background: var(--warning);
+}
+
+.verdictBarFillFail {
+  background: var(--destructive);
+}
+
+.verdictBarOvershoot {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: color-mix(in oklch, var(--destructive) 65%, transparent);
+  border-left: 2px solid var(--destructive);
+}
+
+.verdictBarTarget {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: color-mix(in oklch, var(--foreground) 55%, transparent);
+  border-radius: 999px;
+}

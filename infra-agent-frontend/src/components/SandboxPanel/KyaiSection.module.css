@@ -1,0 +1,172 @@
+/* KyaiSection — KYAI sub-evaluator averages + per-query confidence table.
+   Ported from the Vite app's shared `styles/SandboxPanel.module.css`
+   (`.section`, `.qrTable`, `.footerLink`, etc.), colors converted to
+   `color-mix(in oklch, var(--foreground) X%, transparent)` per this app's
+   theming convention. */
+
+.section {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 2%, transparent) 100%
+  );
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 18px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  box-shadow:
+    0 4px 20px color-mix(in oklch, black 12%, transparent),
+    0 1px 0 color-mix(in oklch, var(--foreground) 3%, transparent) inset;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 2px;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 650;
+  margin: 0;
+  letter-spacing: -0.01em;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.titleIcon {
+  color: var(--primary);
+}
+
+.sectionSubtitle {
+  font-size: 11px;
+  color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-radius: 6px;
+}
+
+.confidenceValue {
+  color: var(--foreground);
+}
+
+.emptyStateInline {
+  padding: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+}
+
+.footerLink {
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  color: color-mix(in oklch, var(--foreground) 82%, transparent);
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 550;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.footerLink:hover {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  transform: translateY(-1px);
+}
+
+.footerLink:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.groupLabel {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.groupLabelSpaced {
+  margin-top: var(--spacing-md);
+}
+
+/* ── Per-query confidence table ──────────────────────── */
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 5%, transparent);
+  vertical-align: top;
+}
+
+.table th {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  background: color-mix(in oklch, var(--foreground) 2.2%, transparent);
+  font-weight: 600;
+}
+
+.table tbody tr:hover td {
+  background: color-mix(in oklch, var(--foreground) 2.5%, transparent);
+}
+
+.cellMono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.queryCell {
+  max-width: 360px;
+}
+
+.confidenceHigh {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.confidenceMid {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.confidenceLow {
+  color: var(--destructive);
+  font-weight: 600;
+}

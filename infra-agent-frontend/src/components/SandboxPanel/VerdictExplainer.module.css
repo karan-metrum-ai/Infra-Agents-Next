@@ -1,0 +1,192 @@
+.verdictsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 1279px) {
+  .verdictsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .verdictsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.verdictCard {
+  position: relative;
+  background: color-mix(in oklch, var(--foreground) 1.8%, transparent);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: 12px;
+  padding: 14px 14px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.verdictCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 2px;
+  background: color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.verdictCardFail {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--destructive) 6%, transparent),
+    color-mix(in oklch, var(--foreground) 1.2%, transparent) 65%
+  );
+  border-color: color-mix(in oklch, var(--destructive) 22%, transparent);
+}
+
+.verdictCardFail::before {
+  background: var(--destructive);
+}
+
+.verdictCardPass {
+  border-color: color-mix(in oklch, var(--success) 16%, transparent);
+}
+
+.verdictCardPass::before {
+  background: var(--success);
+  opacity: 0.7;
+}
+
+.verdictCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.verdictName {
+  font-size: 12px;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 62%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.verdictPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.verdictPillPass {
+  background: color-mix(in oklch, var(--success) 14%, transparent);
+  color: var(--success);
+}
+
+.verdictPillFail {
+  background: color-mix(in oklch, var(--destructive) 14%, transparent);
+  color: var(--destructive);
+}
+
+.verdictValues {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.verdictActual {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.verdictActualValue {
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.verdictActualLabel {
+  font-size: 10px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.verdictTarget {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right;
+}
+
+.verdictTargetValue {
+  font-size: 13px;
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.verdictTargetLabel {
+  font-size: 10px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.verdictBar {
+  position: relative;
+  height: 4px;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.verdictBarFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--success);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.verdictBarFillFail {
+  background: var(--destructive);
+}
+
+.verdictBarTarget {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: color-mix(in oklch, var(--foreground) 55%, transparent);
+  border-radius: 999px;
+}
+
+.verdictBarTargetEnd {
+  left: 100%;
+  transform: translateX(-1px);
+}
+
+.explainText {
+  font-size: 11px;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  line-height: 1.5;
+}

@@ -1,0 +1,151 @@
+.leftPanel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--panel-border);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+}
+
+@media (max-width: 768px) {
+  .leftPanel {
+    max-height: 200px;
+  }
+}
+
+.panelTabs {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+  margin: 8px 8px 0;
+  padding: 2px;
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, black 25%, transparent);
+  border: 1px solid color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.panelTab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-md) - 2px);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.panelTab:hover:not(.panelTabActive):not(:disabled) {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+}
+
+.panelTabActive {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--primary) 25%, transparent);
+}
+
+.panelTabDisabled,
+.panelTab:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.panelTabDisabled:hover,
+.panelTab:disabled:hover {
+  color: var(--muted);
+  background: transparent;
+}
+
+.leftPanelBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-top: 4px;
+  padding: 0 12px 8px;
+  scrollbar-gutter: stable;
+}
+
+.leftPanelBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.leftPanelBody::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--foreground) 12%, transparent);
+  border-radius: 3px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.panelHeaderIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.panelHint {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0 0 8px;
+  line-height: 1.45;
+  opacity: 0.75;
+}
+
+.leftPanelFooter {
+  flex-shrink: 0;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  border-top: 1px solid var(--panel-border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, black 12%, transparent) 0%,
+    color-mix(in oklch, black 28%, transparent) 100%
+  );
+}
+
+.customTemplateBtn {
+  width: 100%;
+  height: 36px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent) !important;
+  border-radius: var(--radius-md) !important;
+  background: color-mix(in oklch, var(--foreground) 2%, transparent) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.customTemplateBtn:hover {
+  border-color: color-mix(in oklch, var(--primary) 40%, transparent) !important;
+  background: color-mix(in oklch, var(--primary) 8%, transparent) !important;
+  color: var(--foreground) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--primary) 10%, transparent);
+}

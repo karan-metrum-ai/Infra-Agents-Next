@@ -1,0 +1,110 @@
+/*
+ * Colors converted from the Vite source's literal pink/amber/red/orange
+ * palette to this app's semantic tokens: pink/fuchsia/violet (the "Insight"
+ * highlight) -> --secondary (closest existing hue bucket, no dedicated
+ * accent exists for pink); amber -> --warning; red -> --destructive; orange
+ * (calloutHighlight) -> --accent (accent's hue is orange). On-tint text uses
+ * var(--background) for contrast on saturated chips, matching Badge's
+ * variantDefault convention (bg: var(--primary), color: var(--background)).
+ */
+
+.analysisGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.insight {
+  padding: 10px 12px;
+  background: color-mix(in oklch, var(--secondary) 12%, transparent);
+  border-left: 3px solid var(--secondary);
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+.insightTag {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--background);
+  background: linear-gradient(90deg, var(--destructive) 0%, var(--secondary) 100%);
+}
+
+.insightBody {
+  display: block;
+}
+
+.insightMuted {
+  opacity: 0.85;
+  border-left-color: var(--muted);
+  background: color-mix(in oklch, var(--secondary) 6%, transparent);
+}
+
+.anomalyCallout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-left: 3px solid var(--panel-border);
+}
+
+.anomalyCalloutWarn {
+  background: var(--color-warning-subtle);
+  border-left-color: var(--warning);
+}
+
+.anomalyCalloutCrit {
+  background: var(--color-danger-subtle);
+  border-left-color: var(--destructive);
+}
+
+.anomalyBadge {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--background);
+  background: var(--muted);
+}
+
+.anomalyCalloutWarn .anomalyBadge {
+  background: var(--warning);
+}
+
+.anomalyCalloutCrit .anomalyBadge {
+  background: var(--destructive);
+}
+
+.anomalyDevice {
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+}
+
+.anomalyDetail {
+  flex: 1 1 100%;
+  min-width: 0;
+  color: var(--muted);
+}
+
+.calloutHighlight {
+  padding: 8px 10px;
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--foreground);
+}

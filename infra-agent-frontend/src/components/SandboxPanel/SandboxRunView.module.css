@@ -1,0 +1,400 @@
+.loadingPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
+}
+
+.page {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  padding-bottom: 48px;
+}
+
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.backButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.backButton:hover {
+  background: color-mix(in oklch, var(--foreground) 7%, transparent);
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+}
+
+.backButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: color-mix(in oklch, var(--foreground) 50%, transparent);
+  white-space: nowrap;
+}
+
+.statusBadgePass {
+  color: var(--success);
+}
+
+.statusBadgePass .statusDot {
+  background: var(--success);
+}
+
+.statusBadgeFail {
+  color: var(--destructive);
+}
+
+.statusBadgeFail .statusDot {
+  background: var(--destructive);
+}
+
+.statusBadgeRunning {
+  color: var(--primary);
+}
+
+.statusBadgeRunning .statusDot {
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+  animation: blink 1.4s infinite;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--foreground) 25%, transparent);
+  flex-shrink: 0;
+}
+
+.spinIcon {
+  animation: spin 0.9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinIcon {
+    animation-duration: 2.2s;
+  }
+
+  .statusBadgeRunning .statusDot {
+    animation: none;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.hero {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--card) 98%, var(--foreground) 2%) 0%,
+    var(--card) 100%
+  );
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: 20px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.heroTopRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.runName {
+  font-size: 28px;
+  font-weight: 680;
+  line-height: 1.15;
+  letter-spacing: -0.022em;
+  color: color-mix(in oklch, var(--foreground) 97%, transparent);
+  word-break: break-word;
+  margin: 0;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.idGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  background: color-mix(in oklch, var(--foreground) 2%, transparent);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+
+.idGridItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.idLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+}
+
+.idValue {
+  font-size: 14px;
+  color: color-mix(in oklch, var(--foreground) 92%, transparent);
+  font-weight: 550;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.idValueMono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.section {
+  background: color-mix(in oklch, var(--card) 90%, transparent);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: 18px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sectionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 650;
+  margin: 0;
+  letter-spacing: -0.01em;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+}
+
+.sectionSubtitle {
+  font-size: 11px;
+  color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-radius: 6px;
+}
+
+.liveIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: color-mix(in oklch, var(--success) 12%, transparent);
+  color: var(--success);
+  border: var(--border-width) solid color-mix(in oklch, var(--success) 25%, transparent);
+}
+
+.liveScore {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.5s ease;
+}
+
+.liveScore[data-tone="success"] {
+  color: var(--success);
+}
+
+.liveScore[data-tone="warning"] {
+  color: var(--warning);
+}
+
+.liveScore[data-tone="destructive"] {
+  color: var(--destructive);
+}
+
+.liveScore[data-tone="muted"] {
+  color: color-mix(in oklch, var(--foreground) 28%, transparent);
+}
+
+.liveProgressTrack {
+  width: 100%;
+  height: 7px;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  overflow: hidden;
+  position: relative;
+}
+
+.liveProgressFill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.liveProgressMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: color-mix(in oklch, var(--destructive) 7%, transparent);
+  border: var(--border-width) solid color-mix(in oklch, var(--destructive) 32%, transparent);
+  color: var(--destructive);
+  border-radius: 12px;
+}
+
+.dismissButton {
+  all: unset;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 2px 6px;
+  color: inherit;
+}
+
+.dismissButton:focus-visible {
+  outline: 2px solid var(--destructive);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.confirmBackdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in oklch, black 55%, transparent);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirmDialog {
+  background: var(--card);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: 16px;
+  padding: 22px 24px 20px;
+  width: min(460px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-lg);
+}
+
+.confirmHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  color: var(--destructive);
+}
+
+.confirmTitle {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  line-height: 1.25;
+}
+
+.confirmText {
+  font-size: 13px;
+  color: color-mix(in oklch, var(--foreground) 62%, transparent);
+  line-height: 1.55;
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}

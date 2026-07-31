@@ -1,0 +1,104 @@
+/*
+ * Colors converted from the Vite source's literal violet/green/red palette:
+ * violet (kpiStrip gradient rule, kpiCellLabel) -> --secondary (matches the
+ * source's indigo/violet hue); green trend -> --success; red trend/remove
+ * button -> --destructive.
+ */
+
+.kpiStrip {
+  display: grid;
+  gap: 0;
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--secondary) 35%, transparent) 0,
+    color-mix(in oklch, var(--secondary) 35%, transparent) 2px,
+    transparent 2px
+  );
+}
+
+.kpiCell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 52px;
+  padding: 8px 6px;
+  text-align: center;
+  border-right: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  background: color-mix(in oklch, black 10%, transparent);
+}
+
+.kpiCell:last-child {
+  border-right: none;
+}
+
+.kpiCellRemove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: color-mix(in oklch, var(--destructive) 20%, transparent);
+  color: var(--destructive);
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.kpiCellRemove:hover {
+  opacity: 1;
+  background: color-mix(in oklch, var(--destructive) 35%, transparent);
+}
+
+.kpiCellLabel {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 4px;
+}
+
+.kpiCellValue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--foreground);
+  line-height: 1.25;
+}
+
+.trendUp {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--success);
+  margin-top: 2px;
+}
+
+.trendDown {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--destructive);
+  margin-top: 2px;
+}
+
+.trendFlat {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-top: 2px;
+}

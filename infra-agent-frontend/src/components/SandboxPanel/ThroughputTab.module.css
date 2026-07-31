@@ -1,0 +1,55 @@
+.tabPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.metricSubtitle {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklch, var(--foreground) 55%, transparent);
+  font-weight: 600;
+  margin-top: var(--spacing-xs);
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendLabel {
+  color: var(--muted);
+  min-width: 90px;
+}
+
+.legendValue {
+  font-family: var(--font-mono);
+}

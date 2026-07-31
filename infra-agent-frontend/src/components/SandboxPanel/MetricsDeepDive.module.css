@@ -1,0 +1,51 @@
+/* MetricsDeepDive -- Layer 3 section card + tab bar wrapper. */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  background: var(--card);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 650;
+  margin: 0;
+  letter-spacing: -0.01em;
+  color: color-mix(in oklch, var(--foreground) 96%, transparent);
+}
+
+.sectionSubtitle {
+  font-size: var(--font-size-xs);
+  color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: color-mix(in oklch, var(--foreground) 4%, transparent);
+  border-radius: var(--radius-sm);
+}
+
+/* 8 tabs need to be able to wrap onto a second row on narrow viewports --
+   override the primitive's fixed single-row height for this consumer. */
+.tabsList {
+  height: auto;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-self: flex-start;
+}
+
+.tabsContent {
+  margin-top: var(--spacing-md);
+}
