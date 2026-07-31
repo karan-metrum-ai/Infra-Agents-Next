@@ -1,0 +1,61 @@
+# Infrastructure bulk upload - Level 1 (Foundation Objects) smoke-test sample.
+# Column headers match src/utils/bulkUploadTemplate.ts. Sample values adapted
+# from the Vite app's old per-object-type fixtures (tags/manufacturers/etc.)
+# to the single combined-CSV schema BulkUploadStepper.tsx now uploads in one
+# request via singleStepUpload.
+
+# ------------------------------------------------------------------------------
+# L1 — TAGS
+# ------------------------------------------------------------------------------
+object_type,name,slug,color,description
+tag,Production,production,00ff00,Production environment
+tag,Development,development,0000ff,Development environment
+
+# ------------------------------------------------------------------------------
+# L1 — MANUFACTURERS
+# ------------------------------------------------------------------------------
+object_type,name,slug,description
+manufacturer,Dell,dell,Dell Technologies
+manufacturer,HP,hp,Hewlett Packard Enterprise
+
+# ------------------------------------------------------------------------------
+# L1 — DEVICE ROLES
+# ------------------------------------------------------------------------------
+object_type,name,slug,color,vm_role,description
+device_role,Server,server,0000ff,,Compute server
+device_role,Network Switch,network-switch,00ff00,,Network switching device
+
+# ------------------------------------------------------------------------------
+# L1 — RACK ROLES
+# ------------------------------------------------------------------------------
+object_type,name,slug,color,description
+rack_role,Compute,compute,0000ff,Compute rack
+rack_role,Storage,storage,ff6600,Storage rack
+
+# ------------------------------------------------------------------------------
+# L1 — REGIONS
+# ------------------------------------------------------------------------------
+object_type,name,slug,description,parent
+region,North America,north-america,North American region,
+region,Europe,europe,European region,
+
+# ------------------------------------------------------------------------------
+# L1 — SITE GROUPS
+# ------------------------------------------------------------------------------
+object_type,name,slug,description
+site_group,Primary,primary,Primary data centers
+site_group,Secondary,secondary,Secondary/DR data centers
+
+# ------------------------------------------------------------------------------
+# L1 — TENANT GROUPS
+# ------------------------------------------------------------------------------
+object_type,name,slug,description
+tenant_group,Enterprise,enterprise,Enterprise customers
+tenant_group,SMB,smb,Small and medium business
+
+# ------------------------------------------------------------------------------
+# L1 — TENANTS
+# ------------------------------------------------------------------------------
+object_type,name,slug,group,description,cluster_id
+tenant,Acme Corp,acme-corp,enterprise,Acme Corporation,
+tenant,TechStart,techstart,smb,TechStart Inc,
