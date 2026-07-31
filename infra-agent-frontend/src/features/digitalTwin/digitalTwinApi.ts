@@ -2,6 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBaseQuery } from "@/features/api/baseQuery";
 import type {
   BulkLiveDevicesResponse,
+  CommandCenterSitesResponse,
   DigitalTwinApiResponse,
   DigitalTwinQueryParams,
   LiveClustersResponse,
@@ -20,11 +21,22 @@ import type {
  * Topology/globe endpoints landed in Phase 6: `getDigitalTwinData` (globe +
  * rack layout source of truth), `getLiveClusters` (cluster health polling),
  * `getLiveBulkDevices` (per-cluster telemetry freshness for the 3D rack
- * view). `getCommandCenterSites` (Live Dashboard globe enrichment) and
- * `getDeviceAgentActivity` (ghost-technician-only, dead feature) are
+ * view). `getDeviceAgentActivity` (ghost-technician-only, dead feature) is
  * explicitly out of scope here. The `/topology` route itself was dropped
  * from this migration per explicit direction (superseded/outdated) — only
- * `/digital-twin` (`DigitalTwinRoute`) consumes this endpoint today.
+ * `/digital-twin` (`DigitalTwinRoute`) consumes the topology endpoints today.
+ *
+ * `getCommandCenterSites` (Live Dashboard globe enrichment) landed in
+ * Phase 13 — same `/digital-twin-api` base as the topology endpoints above
+ * (confirmed against the Vite source's `digitalTwinApiSlice.ts`: despite the
+ * "digital twin" name, this base rewrites to the `/onboarding` backend
+ * service in production, which is genuinely where `/command-center/sites`
+ * lives too — it is not a copy-paste mistake). It feeds
+ * `LiveDashboardOverview`'s globe via `commandCenterSiteToGlobeSite`
+ * (`src/utils/commandCenterSites.ts`); the deeper "merge in digital-twin
+ * hierarchy for split-view" behavior (`mergeTwinIntoCommandCenterSite`) is
+ * ported too but deliberately unused by that call site today — see the doc
+ * comment on `mergeTwinIntoCommandCenterSite` itself.
  *
  * `getDigitalTwinData` returns the RAW `/devices/digital-twin` response
  * (region/site/location/rack/device tree, NetBox-shaped wire fields)
@@ -89,6 +101,16 @@ export const digitalTwinApi = createApi({
       keepUnusedDataFor: 30,
     }),
 
+    /**
+     * Command Center sites (globe + DATACENTERS sidebar). Live-or-zero
+     * utilization/power — never simulated.
+     */
+    getCommandCenterSites: builder.query<CommandCenterSitesResponse, void>({
+      query: () => "/command-center/sites",
+      providesTags: ["CommandCenterSites"],
+      keepUnusedDataFor: 15,
+    }),
+
     /** Comprehensive live device detail (system/BIOS/BMC, hardware inventory, thermal/power, events). */
     getLiveDeviceDetail: builder.query<LiveDeviceDetailResponse, number>({
       query: (deviceId) => `/bulk-upload/live/device/${deviceId}/detail`,
@@ -134,6 +156,7 @@ export const {
   useGetDigitalTwinDataQuery,
   useGetLiveClustersQuery,
   useGetLiveBulkDevicesQuery,
+  useGetCommandCenterSitesQuery,
   useGetLiveDeviceDetailQuery,
   useGetLiveSwitchDetailQuery,
   useGetDeviceTimeseriesQuery,

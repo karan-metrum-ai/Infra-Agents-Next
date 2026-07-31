@@ -169,15 +169,20 @@ export interface DataCenterAPIResponse {
 // Health status for sites (from live cluster data)
 export type SiteHealthStatus = "healthy" | "unhealthy" | "warning" | "unknown";
 
-/** Role utilization from GET /command-center/sites (0–100, live-or-zero). */
+/**
+ * Role utilization from GET /command-center/sites (0–100).
+ * null = no live sample / error / not present; 0 = real zero. (Fixed to be
+ * nullable in Phase 13 — matches the Vite source and the real backend
+ * contract; every consumer already null-guards via `?? 0`.)
+ */
 export interface GlobeSiteUtilization {
-  compute: number;
-  storage: number;
-  network: number;
-  cpu: number;
-  gpu: number;
-  ram: number;
-  disk: number;
+  compute: number | null;
+  storage: number | null;
+  network: number | null;
+  cpu: number | null;
+  gpu: number | null;
+  ram: number | null;
+  disk: number | null;
 }
 
 export interface GlobeSiteIncidentCounts {
@@ -221,8 +226,8 @@ export interface GlobeSite {
   incidentCounts?: GlobeSiteIncidentCounts;
   inventory?: GlobeSiteInventory;
   utilization?: GlobeSiteUtilization;
-  powerWattsAvg?: number;
-  powerWattsTotal?: number;
+  powerWattsAvg?: number | null;
+  powerWattsTotal?: number | null;
 }
 
 // 3D Device representation (for Three.js scene)

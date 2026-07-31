@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BrainCircuit, Boxes, Presentation, Radar } from "lucide-react";
+import { ApprovalAlertBadge } from "@/components/ApprovalAlertBadge/ApprovalAlertBadge";
 import { ClusterTeamSelector } from "@/components/dashboard/ClusterTeamSelector/ClusterTeamSelector";
 import { cn } from "@/lib/utils";
 import styles from "./LiveDashboardShell.module.css";
@@ -100,6 +101,15 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
             );
           })}
         </nav>
+
+        {/*
+         * Enabled only on the "teams" tab, matching the Vite source's
+         * `disabled={currentView !== 'teams'}`. `onPlanApprovalClick` is
+         * left unset — no route here mounts a trace panel to scroll to
+         * yet; wire it once `/dashboard/live/teams` gets a real chat/query
+         * view (see the doc comment in ApprovalAlertBadge.tsx).
+         */}
+        <ApprovalAlertBadge disabled={!pathname.startsWith("/dashboard/live/teams")} />
       </div>
 
       <div className={styles.content}>{children}</div>

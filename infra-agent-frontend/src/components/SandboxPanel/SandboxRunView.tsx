@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/Button/Button";
 import { Spinner } from "@/components/ui/Spinner/Spinner";
 import { useDialogFocusTrap } from "@/hooks/useDialogFocusTrap";
+import { useRegisterCommand } from "@/hooks/useCommandRegistry";
 import { useCancelRunMutation } from "@/features/sandbox/sandboxApi";
 import { PHASE_LABELS, type Verdict } from "@/features/sandbox/sandboxApi.types";
 import { formatDuration } from "@/lib/formatters";
@@ -153,6 +154,28 @@ export function SandboxRunView({ runId }: SandboxRunViewProps) {
       setActionError(err instanceof Error ? err.message : "Delete failed");
     }
   }, [cancelRun, runId, router]);
+
+  useRegisterCommand({
+    id: "sandbox:re-run",
+    label: "Re-run sandbox evaluation",
+    group: "Actions",
+    disabled: !run,
+    perform: handleReRun,
+  });
+  useRegisterCommand({
+    id: "sandbox:download-run",
+    label: "Download sandbox run JSON",
+    group: "Actions",
+    disabled: !run,
+    perform: handleDownload,
+  });
+  useRegisterCommand({
+    id: "sandbox:delete-run",
+    label: "Delete sandbox run",
+    group: "Actions",
+    disabled: !run,
+    perform: () => setConfirmDelete(true),
+  });
 
   if (!run && isLoading) {
     return (

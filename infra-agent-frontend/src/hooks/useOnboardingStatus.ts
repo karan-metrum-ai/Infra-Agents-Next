@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useMountEffect } from "./useMountEffect";
 
 export type OnboardingStep = "discovery" | "topology" | "workflows" | "complete";
 
@@ -55,21 +56,24 @@ function saveOnboardingState(state: OnboardingState): void {
  * Tracks onboarding progress (Login -> Onboarding -> Digital Twin -> Workflows
  * -> Dashboard) in localStorage so the post-login redirect resumes wherever
  * the user left off.
+ *
+ * Sans-effect: the Vite original had 2 direct `useEffect` calls -- one
+ * reading `localStorage` on mount into state, one re-saving state on every
+ * change after that initial load. The mount-time read is a genuine external
+ * sync (Pattern 4, `useMountEffect`); the save-on-change effect is
+ * eliminated entirely (Pattern 3) since every state mutation already goes
+ * through one of this hook's own setters below -- each setter now persists
+ * the computed next state itself, right where it's produced, instead of
+ * a separate effect watching for the change.
  */
 export function useOnboardingStatus() {
   const [state, setState] = useState<OnboardingState>(DEFAULT_ONBOARDING_STATE);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  useMountEffect(() => {
     setState(loadOnboardingState());
     setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      saveOnboardingState(state);
-    }
-  }, [state, isLoading]);
+  });
 
   const isOnboardingComplete = useCallback((): boolean => {
     return state.completedAt !== null || state.workflowsComplete;
@@ -125,18 +129,23 @@ export function useOnboardingStatus() {
           next.completedAt = new Date().toISOString();
           break;
       }
+      saveOnboardingState(next);
       return next;
     });
   }, []);
 
   const markOnboardingComplete = useCallback((): void => {
-    setState((prev) => ({
-      ...prev,
-      discoveryComplete: true,
-      topologyComplete: true,
-      workflowsComplete: true,
-      completedAt: new Date().toISOString(),
-    }));
+    setState((prev) => {
+      const next = {
+        ...prev,
+        discoveryComplete: true,
+        topologyComplete: true,
+        workflowsComplete: true,
+        completedAt: new Date().toISOString(),
+      };
+      saveOnboardingState(next);
+      return next;
+    });
   }, []);
 
   const resetOnboarding = useCallback((): void => {

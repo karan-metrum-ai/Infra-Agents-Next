@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, ChevronLeft, History, Loader2, Play } from "lucide-react";
 import { useStartRunMutation } from "@/features/sandbox/sandboxApi";
+import { useRegisterCommand } from "@/hooks/useCommandRegistry";
 import {
   defaultSandboxRunConfigFormValues,
   sandboxRunConfigSchema,
@@ -80,6 +81,20 @@ export function SandboxConfigForm() {
     } catch (error) {
       setSubmitError(extractErrorMessage(error));
     }
+  });
+
+  useRegisterCommand({
+    id: "sandbox:start-run",
+    label: "Start sandbox run",
+    group: "Actions",
+    disabled: isStarting,
+    perform: () => onSubmit(),
+  });
+  useRegisterCommand({
+    id: "sandbox:run-history",
+    label: "Show sandbox run history",
+    group: "Actions",
+    perform: () => setShowHistory(true),
   });
 
   return (

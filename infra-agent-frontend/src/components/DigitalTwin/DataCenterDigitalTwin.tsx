@@ -23,6 +23,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
 import { useOnboardingStatus } from "@/hooks/useOnboardingStatus";
+import { useRegisterCommand } from "@/hooks/useCommandRegistry";
 import { DigitalTwinBuildingStats } from "./DigitalTwinBuildingStats";
 import { DigitalTwinCanvasView } from "./DigitalTwinCanvasView";
 import { DigitalTwinDeviceDetailPanel } from "./DigitalTwinDeviceDetailPanel";
@@ -89,6 +90,28 @@ export function DataCenterDigitalTwin({
     markStepComplete("topology");
     router.push("/workflows");
   }, [router, markStepComplete]);
+
+  useRegisterCommand({
+    id: "digital-twin:back-to-globe",
+    label: "Back to globe view",
+    group: "Actions",
+    disabled: viewMode === "globe",
+    perform: handleBackToGlobe,
+  });
+  useRegisterCommand({
+    id: "digital-twin:reset-view",
+    label: "Reset digital twin view",
+    group: "Actions",
+    disabled: viewMode === "globe",
+    perform: handleResetView,
+  });
+  useRegisterCommand({
+    id: "digital-twin:continue-to-workflows",
+    label: "Continue to Workflows",
+    group: "Actions",
+    disabled: viewMode !== "globe",
+    perform: handleContinueToWorkflows,
+  });
 
   if (viewMode === "globe") {
     return (

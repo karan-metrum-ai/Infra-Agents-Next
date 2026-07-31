@@ -109,9 +109,9 @@ export default function CatalogMetricPicker({
     (async () => {
       for (const cat of categories) {
         try {
-          // eslint-disable-next-line no-await-in-loop -- deliberately sequential: this is a
-          // short-circuiting search (stop at the first category containing the metric), not a
-          // batch of independent fetches to parallelize.
+          // Deliberately sequential: this is a short-circuiting search (stop at the first
+          // category containing the metric), not a batch of independent fetches to parallelize.
+          // eslint-disable-next-line no-await-in-loop
           const data = await triggerCategory(cat.id).unwrap();
           const match = data.metrics.find(
             (m) => (metricId && m.id === metricId) || (hintTable && m.table === hintTable),

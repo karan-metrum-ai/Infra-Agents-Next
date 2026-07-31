@@ -5,6 +5,7 @@ import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useGetTeamsQuery } from "@/features/teams/teamsApi";
 import { useGetKyaiEvaluationQuery, useGetTrajectoryMermaidQuery } from "@/features/kyai/kyaiApi";
 import { useDialogFocusTrap } from "@/hooks/useDialogFocusTrap";
+import { useRegisterCommand } from "@/hooks/useCommandRegistry";
 import { EvaluationModalHeader } from "./EvaluationModalHeader";
 import { EvaluationModalTabs } from "./EvaluationModalTabs";
 import { EvaluationTeamSelection } from "./EvaluationTeamSelection";
@@ -113,6 +114,14 @@ function EvaluationModalContent({ correlationId, onClose, layout }: EvaluationMo
     setActiveTab("overview");
     stream.startEvaluation(selectedTeamId, prompt);
   };
+
+  useRegisterCommand({
+    id: "kyai:start-evaluation",
+    label: "Start KYAI evaluation",
+    group: "Actions",
+    disabled: Boolean(correlationId) || inTabView || !selectedTeamId || !hasValidPrompt,
+    perform: handleStartEvaluation,
+  });
 
   const modalBody = (
     <>

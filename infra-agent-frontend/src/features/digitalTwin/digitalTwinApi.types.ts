@@ -835,3 +835,60 @@ export interface BulkLiveDevicesResponse {
   data_freshness: string;
   message: string;
 }
+
+/* =============================================================================
+ * Command Center sites (GET /command-center/sites) — flat per-site rollup
+ * used to enrich the Live Dashboard overview globe. Live-or-zero
+ * utilization/power — never simulated; missing telemetry stays `null`.
+ * ========================================================================== */
+
+export interface CommandCenterSiteInventory {
+  compute: number;
+  storage: number;
+  network: number;
+  other: number;
+}
+
+export interface CommandCenterSiteIncidentCounts {
+  critical: number;
+  warning: number;
+  unknown: number;
+}
+
+/** Utilization pct; null when no live samples (not the same as 0%). */
+export type UtilPercent = number | null;
+
+export interface CommandCenterSiteUtilization {
+  compute: UtilPercent;
+  storage: UtilPercent;
+  network: UtilPercent;
+  cpu: UtilPercent;
+  gpu: UtilPercent;
+  ram: UtilPercent;
+  disk: UtilPercent;
+}
+
+export interface CommandCenterSite {
+  id: number;
+  name: string;
+  location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  cluster_id: number | null;
+  status: "healthy" | "warning" | "unhealthy" | "unknown" | string;
+  health_percent: number;
+  assets: number;
+  rack_count: number;
+  inventory: CommandCenterSiteInventory;
+  incident_counts: CommandCenterSiteIncidentCounts;
+  utilization: CommandCenterSiteUtilization;
+  power_watts_avg: number | null;
+  power_watts_total: number | null;
+  issue_summary: string | null;
+}
+
+export interface CommandCenterSitesResponse {
+  success: boolean;
+  timestamp: string;
+  sites: CommandCenterSite[];
+}

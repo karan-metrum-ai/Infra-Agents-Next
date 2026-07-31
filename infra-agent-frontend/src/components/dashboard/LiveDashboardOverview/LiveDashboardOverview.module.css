@@ -6,7 +6,17 @@
   min-height: calc(100dvh - 64px);
 }
 
-.globePlaceholder {
+.globeContainer {
+  flex: 1;
+  min-height: 420px;
+  position: relative;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+.globeStatus {
   flex: 1;
   min-height: 320px;
   display: flex;
@@ -22,14 +32,18 @@
   padding: var(--spacing-xl);
 }
 
-.globePlaceholder h2 {
+.globeStatusError {
+  color: var(--color-danger);
+}
+
+.globeStatus h2 {
   font-size: var(--font-size-lg);
   font-weight: 600;
   color: var(--foreground);
   margin: 0;
 }
 
-.globePlaceholder p {
+.globeStatus p {
   margin: 0;
   max-width: 32rem;
   font-size: var(--font-size-sm);

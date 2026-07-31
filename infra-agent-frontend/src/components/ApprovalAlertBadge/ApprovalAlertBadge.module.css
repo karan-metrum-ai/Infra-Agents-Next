@@ -1,0 +1,301 @@
+.container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Alert Button - icon only, no background */
+.alertButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+  line-height: 1;
+}
+
+.alertButton:hover:not(:disabled) {
+  color: var(--foreground);
+}
+
+.alertButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.alertButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.alertButtonActive {
+  color: var(--warning);
+}
+
+.alertButtonActive:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+/* Badge count - positioned relative to icon */
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 var(--spacing-xs);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--warning-950);
+  background: var(--warning);
+  border-radius: var(--radius-md);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+}
+
+/* Icon animation - subtle */
+.iconPulse {
+  animation: subtlePulse 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconPulse {
+    animation: none;
+  }
+}
+
+@keyframes subtlePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Popover */
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 340px;
+  max-height: 420px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--foreground) 3%, transparent),
+    var(--shadow-2xl);
+  overflow: hidden;
+  z-index: 1000;
+  animation: popoverIn 0.15s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popover {
+    animation: none;
+  }
+}
+
+@keyframes popoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Popover header */
+.popoverHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--panel-border);
+  background: var(--background);
+}
+
+.popoverTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.popoverIcon {
+  color: var(--warning);
+}
+
+.popoverTitleText {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.popoverCount {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--muted);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+
+/* Approval list */
+.approvalList {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.approvalItem {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: none;
+  border-bottom: 1px solid var(--panel-border);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.approvalItem:last-child {
+  border-bottom: none;
+}
+
+.approvalItem:hover,
+.approvalItem:focus-visible {
+  background: var(--background);
+}
+
+.approvalItem:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.approvalIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: color-mix(in oklch, var(--warning) 8%, transparent);
+  border: 1px solid color-mix(in oklch, var(--warning) 12%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--warning);
+  flex-shrink: 0;
+}
+
+.approvalContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.approvalTool {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.approvalMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+}
+
+.approvalAgent {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.approvalDot {
+  width: 2px;
+  height: 2px;
+  background: var(--muted);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.approvalTime {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+}
+
+.approvalArrow {
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-left: auto;
+  transition: transform 0.12s ease;
+}
+
+.approvalItem:hover .approvalArrow,
+.approvalItem:focus-visible .approvalArrow {
+  transform: translateX(2px);
+  color: var(--foreground);
+}
+
+/* Plan-level approval item (secondary accent instead of warning) */
+.planApprovalItem .approvalIndicator {
+  background: color-mix(in oklch, var(--secondary) 10%, transparent);
+  border-color: color-mix(in oklch, var(--secondary) 20%, transparent);
+  color: var(--secondary);
+}
+
+.planApprovalItem:hover .approvalArrow,
+.planApprovalItem:focus-visible .approvalArrow {
+  color: var(--secondary);
+}
+
+/* Empty state */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl) var(--spacing-md);
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--muted);
+  margin-bottom: var(--spacing-md);
+  opacity: 0.6;
+}
+
+.emptyText {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  margin: 0;
+}

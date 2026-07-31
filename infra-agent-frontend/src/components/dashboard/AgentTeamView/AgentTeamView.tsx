@@ -11,6 +11,8 @@ import {
 import "@xyflow/react/dist/style.css";
 import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { selectMostRecentDeployedClusterId } from "@/features/workflows/workflowCanvasSelectors";
 import { ErrorOverlay } from "./ErrorOverlay";
 import { StatsHeader } from "./StatsHeader";
 import { TeamNodePlaceholder } from "./TeamNodePlaceholder";
@@ -30,9 +32,20 @@ const NODE_TYPES = { agent: TeamNodePlaceholder };
  * (useFlowStream + QueryTrace) all landing first.
  */
 export function AgentTeamView({ className, showControls = true, clusterId }: AgentTeamViewProps) {
+  // Phase 11: when no `cluster` query param is present, fall back to the
+  // most-recently-deployed team's cluster id (mirrors the Vite source's
+  // `getMostRecentDeployedTeamId()` usage in `TeamsDashboard`/
+  // `AgentTeamView`) instead of leaving the view permanently empty.
+  // Derived inline (sans-effect Pattern 1) — no effect needed.
+  const mostRecentDeployedClusterId = useAppSelector(selectMostRecentDeployedClusterId);
+  const effectiveClusterId = clusterId ?? mostRecentDeployedClusterId;
+
   const { nodes, edges, setNodes, onNodesChange, onEdgesChange, isLoading } =
-    useClusterTeamGraph(clusterId);
-  const { teamHealth, agentsStatus, error, clearError } = useAgentTeamHealth(clusterId, setNodes);
+    useClusterTeamGraph(effectiveClusterId);
+  const { teamHealth, agentsStatus, error, clearError } = useAgentTeamHealth(
+    effectiveClusterId,
+    setNodes,
+  );
 
   const stats = useMemo(() => {
     const agentNodes = nodes.filter((node) => node.type === "agent");
@@ -55,7 +68,7 @@ export function AgentTeamView({ className, showControls = true, clusterId }: Age
           <Users className={styles.noDataIcon} aria-hidden="true" />
           <h3 className={styles.noDataTitle}>No Agent Team</h3>
           <p className={styles.noDataMessage}>
-            {clusterId
+            {effectiveClusterId
               ? "This cluster has no actively deployed team."
               : "Select a cluster with an active deployed team."}
           </p>

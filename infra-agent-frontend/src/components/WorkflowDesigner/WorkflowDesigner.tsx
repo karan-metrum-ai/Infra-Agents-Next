@@ -11,7 +11,7 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { useOnboardingStatus } from "@/hooks/useOnboardingStatus";
 import { useGetHealthQuery } from "@/features/health/healthApi";
-import { setHasDeployedTeams } from "@/features/workflows/workflowCanvasSlice";
+import { setHasDeployedTeams, addDeployedTeam } from "@/features/workflows/workflowCanvasSlice";
 import { selectHasDeployedTeams } from "@/features/workflows/workflowCanvasSelectors";
 import type { TeamDeployedInfo } from "./ActionButtonsPanel.types";
 import { AgentsPanel } from "./AgentsPanel";
@@ -81,8 +81,21 @@ function WorkflowDesignerContent() {
   const [showDeploySavedTeamModal, setShowDeploySavedTeamModal] = useState(false);
   const [showSaveTeamModal, setShowSaveTeamModal] = useState(false);
 
-  const handleTeamDeployed = (_info: TeamDeployedInfo) => {
+  const handleTeamDeployed = (info: TeamDeployedInfo) => {
     dispatch(setHasDeployedTeams(true));
+    // Phase 11: grow the persisted `deployedTeams` list so `AgentTeamView`'s
+    // most-recently-deployed fallback (and any future "recent deployments"
+    // UI) has real data to read, matching the Vite source's
+    // `addAndPersistDeployedTeam` call on successful deploy.
+    dispatch(
+      addDeployedTeam({
+        id: info.teamId,
+        name: info.teamName,
+        deployedAt: new Date().toISOString(),
+        deploymentStatus: "deployed",
+        clusterId: info.clusterId,
+      }),
+    );
   };
 
   const handleTeamCreated = () => {

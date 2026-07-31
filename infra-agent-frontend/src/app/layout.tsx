@@ -5,6 +5,8 @@ import { ReduxProvider } from "@/providers/ReduxProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { NotificationToast } from "@/components/NotificationToast/NotificationToast";
 import { MobileBlocker } from "@/components/MobileBlocker/MobileBlocker";
+import { CommandPalette } from "@/components/CommandPalette/CommandPalette";
+import { GlobalCommands } from "@/components/CommandPalette/GlobalCommands";
 import "./globals.css";
 
 const inter = Inter({
@@ -51,6 +53,8 @@ export default function RootLayout({
             />
             <NotificationToast />
             <MobileBlocker />
+            <GlobalCommands />
+            <CommandPalette />
           </ThemeProvider>
         </ReduxProvider>
       </body>

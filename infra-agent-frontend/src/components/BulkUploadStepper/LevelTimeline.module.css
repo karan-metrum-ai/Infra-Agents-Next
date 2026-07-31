@@ -1,0 +1,225 @@
+/* Level timeline (used in uploading + result phases). Ported from the
+ * Vite app's `styles/BulkUpload.module.css` (level* rules). */
+.levelList {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.levelListHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.levelOrderedList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.levelRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  position: relative;
+  padding-bottom: var(--spacing-md);
+}
+
+.levelRow:last-child {
+  padding-bottom: 0;
+}
+
+.connector {
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+  border-radius: 1px;
+}
+
+.connectorDone {
+  background: var(--color-success);
+}
+
+.levelDot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--muted);
+  position: relative;
+  z-index: 1;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    color 0.2s;
+}
+
+.dotInner {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.levelActive .levelDot {
+  border-color: var(--color-brand);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand);
+}
+
+.levelDone .levelDot {
+  border-color: var(--color-success);
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+}
+
+.levelFail .levelDot {
+  border-color: var(--color-danger);
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+}
+
+.levelSkip .levelDot {
+  opacity: 0.4;
+}
+
+.levelContent {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.levelTop {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  justify-content: space-between;
+}
+
+.levelName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.levelSkip .levelName {
+  opacity: 0.4;
+}
+
+.levelDesc {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  margin: 2px 0 0;
+  line-height: 1.4;
+}
+
+.levelBadge {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badgeDone {
+  background: var(--color-success-subtle);
+  color: var(--color-success-fg);
+}
+
+.badgeFail {
+  background: var(--color-danger-subtle);
+  color: var(--color-danger-fg);
+}
+
+.badgeSkip {
+  background: var(--color-surface-raised);
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+.badgeActive {
+  background: var(--color-brand-subtle);
+  color: var(--color-brand);
+}
+
+/* Object-type breakdown */
+.typeList {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 2px;
+}
+
+.typeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.typeCode {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+}
+
+.typeStats {
+  display: flex;
+  gap: var(--spacing-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+}
+
+.statCreated {
+  color: var(--color-success);
+}
+
+.statSkipped {
+  color: var(--muted);
+}
+
+.statFailed {
+  color: var(--color-danger);
+}
+
+.spin {
+  animation: levelTimelineSpin 0.8s linear infinite;
+}
+
+@keyframes levelTimelineSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
