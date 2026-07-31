@@ -93,6 +93,11 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
                 onClick={() => navigateTo(href)}
                 disabled={disabled}
                 aria-current={active ? "page" : undefined}
+                // Phase 16: the label `<span>` is hidden below 900px
+                // (`.navButton span { display: none }`), which would
+                // otherwise strip these buttons of any accessible name for
+                // screen reader users at that viewport width.
+                aria-label={label}
                 title={disabled ? "Select a cluster with an active deployed team" : undefined}
               >
                 <Icon size={16} aria-hidden="true" />

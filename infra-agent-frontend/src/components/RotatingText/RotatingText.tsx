@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import styles from "./RotatingText.module.css";
 import type { RotatingTextProps } from "./RotatingText.types";
@@ -36,6 +36,10 @@ export function RotatingText({
   ...rest
 }: RotatingTextProps) {
   const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
+  /** Phase 16: static fallback when the user has reduced motion enabled — no
+   * flying/staggered character transitions, per `004-design-a11y-animation.mdc`. */
+  const prefersReducedMotion = useReducedMotion();
+  const noMotionTransition = { duration: 0 };
 
   const elements = useMemo(() => {
     const currentText: string = texts[currentTextIndex];
@@ -130,15 +134,15 @@ export function RotatingText({
     <motion.span
       className={cn(styles.textRotate, mainClassName)}
       {...rest}
-      layout
-      transition={transition}
+      layout={!prefersReducedMotion}
+      transition={prefersReducedMotion ? noMotionTransition : transition}
     >
       <span className={styles.srOnly}>{texts[currentTextIndex]}</span>
       <AnimatePresence mode={animatePresenceMode} initial={animatePresenceInitial}>
         <motion.span
           key={currentTextIndex}
           className={cn(splitBy === "lines" ? styles.lines : styles.textRotate)}
-          layout
+          layout={!prefersReducedMotion}
           aria-hidden="true"
         >
           {elements.map((wordObj, wordIndex, array) => {
@@ -150,16 +154,20 @@ export function RotatingText({
                 {wordObj.characters.map((char, charIndex) => (
                   <motion.span
                     key={charIndex}
-                    initial={initial}
+                    initial={prefersReducedMotion ? false : initial}
                     animate={animate}
-                    exit={exit}
-                    transition={{
-                      ...transition,
-                      delay: getStaggerDelay(
-                        previousCharsCount + charIndex,
-                        array.reduce((sum, word) => sum + word.characters.length, 0),
-                      ),
-                    }}
+                    exit={prefersReducedMotion ? undefined : exit}
+                    transition={
+                      prefersReducedMotion
+                        ? noMotionTransition
+                        : {
+                            ...transition,
+                            delay: getStaggerDelay(
+                              previousCharsCount + charIndex,
+                              array.reduce((sum, word) => sum + word.characters.length, 0),
+                            ),
+                          }
+                    }
                     className={cn(styles.element, elementLevelClassName)}
                   >
                     {char}

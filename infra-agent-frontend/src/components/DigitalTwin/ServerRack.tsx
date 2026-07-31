@@ -20,6 +20,7 @@
  *   - `RackCduBay` — the coolant-distribution-unit bay (when present)
  */
 
+import { memo } from "react";
 import type { Device3D, Rack3D } from "./types";
 import { getCardMeshFactor, isSwitchDevice } from "./rackUtils";
 import { RackPSU } from "./RackPSU";
@@ -49,7 +50,7 @@ interface ServerRackProps {
   onToggleRackDeviceLabels?: (rackId: string) => void;
 }
 
-export function ServerRack({
+function ServerRackComponent({
   rack,
   selectedDeviceIds,
   selectedRackId,
@@ -138,5 +139,16 @@ export function ServerRack({
     </group>
   );
 }
+
+/**
+ * Memoized (Phase 15): a digital twin scene can have dozens of these, one
+ * per rack. Without `memo`, every rack re-renders whenever any parent
+ * state changes (camera move, selection elsewhere in the scene, an
+ * unrelated rack's telemetry update) instead of only the racks actually
+ * affected. Full identity-stability for unchanged racks upstream (in
+ * `layoutRacksTo3D`/`useDigitalTwinTelemetry`) is a separate, larger
+ * follow-up not undertaken in this pass — see `CLAUDE.md`'s Phase 15 notes.
+ */
+export const ServerRack = memo(ServerRackComponent);
 
 export default ServerRack;

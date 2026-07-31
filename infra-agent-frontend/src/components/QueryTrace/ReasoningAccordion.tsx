@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer";
 import styles from "./ReasoningAccordion.module.css";
@@ -16,6 +16,8 @@ interface ReasoningAccordionProps {
  */
 function ReasoningAccordion({ reasoning }: ReasoningAccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
+  /** Phase 16: instant expand/collapse when reduced motion is enabled. */
+  const prefersReducedMotion = useReducedMotion();
 
   if (!reasoning || reasoning.length === 0) {
     return null;
@@ -39,10 +41,12 @@ function ReasoningAccordion({ reasoning }: ReasoningAccordionProps) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
+            initial={prefersReducedMotion ? false : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={
+              prefersReducedMotion ? { duration: 0 } : { duration: 0.2, ease: "easeInOut" }
+            }
             className={styles.reasoningContent}
           >
             <div className={styles.reasoningSteps}>

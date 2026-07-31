@@ -1,7 +1,7 @@
 "use client";
 
 import { Children, cloneElement, isValidElement, useState, type ReactElement } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import styles from "./NavHoverEffect.module.css";
 import type { NavHoverEffectProps } from "./NavHoverEffect.types";
@@ -17,6 +17,9 @@ export function NavHoverEffect({
   activeIndex = -1,
 }: NavHoverEffectProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  /** Phase 16: static fallback when reduced motion is enabled — no
+   * shared-layout slide, no fade transition. */
+  const prefersReducedMotion = useReducedMotion();
 
   const childArray = Children.toArray(children).filter(isValidElement);
 
@@ -37,10 +40,18 @@ export function NavHoverEffect({
               {showHoverBg && (
                 <motion.span
                   className={styles.hoverBackground}
-                  layoutId="navHoverBackground"
+                  layoutId={prefersReducedMotion ? undefined : "navHoverBackground"}
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { duration: 0.15 } }}
-                  exit={{ opacity: 0, transition: { duration: 0.15, delay: 0.2 } }}
+                  animate={{
+                    opacity: 1,
+                    transition: { duration: prefersReducedMotion ? 0 : 0.15 },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    transition: prefersReducedMotion
+                      ? { duration: 0 }
+                      : { duration: 0.15, delay: 0.2 },
+                  }}
                 />
               )}
             </AnimatePresence>

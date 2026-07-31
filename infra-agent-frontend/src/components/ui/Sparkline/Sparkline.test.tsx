@@ -5,7 +5,11 @@ const mockSetOption = vi.fn<(...args: unknown[]) => void>();
 const mockResize = vi.fn<() => void>();
 const mockDispose = vi.fn<() => void>();
 const mockInit = vi.fn<
-  () => { setOption: typeof mockSetOption; resize: typeof mockResize; dispose: typeof mockDispose }
+  (...args: unknown[]) => {
+    setOption: typeof mockSetOption;
+    resize: typeof mockResize;
+    dispose: typeof mockDispose;
+  }
 >(() => ({
   setOption: mockSetOption,
   resize: mockResize,

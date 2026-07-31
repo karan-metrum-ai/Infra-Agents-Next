@@ -155,8 +155,16 @@ export function Plasma({
 
     const mesh = new Mesh(gl, { geometry, program });
 
+    // Phase 16: a continuous full-viewport shader animation is exactly the
+    // case `prefers-reduced-motion` exists for. Render one static frame
+    // instead of starting the RAF loop, and skip mouse-driven motion too.
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const interactive = mouseInteractive && !prefersReducedMotion;
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (!mouseInteractive) return;
+      if (!interactive) return;
       const rect = parent.getBoundingClientRect();
       mousePos.current.x = e.clientX - rect.left;
       mousePos.current.y = e.clientY - rect.top;
@@ -165,7 +173,7 @@ export function Plasma({
       u[1] = mousePos.current.y;
     };
 
-    if (mouseInteractive) {
+    if (interactive) {
       parent.addEventListener("mousemove", handleMouseMove);
     }
 
@@ -185,19 +193,22 @@ export function Plasma({
     const start = performance.now();
     let frame = 0;
 
-    const loop = () => {
-      const timeSec = ((performance.now() - start) / 1000) * speed;
-      (program.uniforms.iTime as { value: number }).value = timeSec;
+    if (prefersReducedMotion) {
       renderer.render({ scene: mesh });
-      frame = requestAnimationFrame(loop);
-    };
-
-    loop();
+    } else {
+      const loop = () => {
+        const timeSec = ((performance.now() - start) / 1000) * speed;
+        (program.uniforms.iTime as { value: number }).value = timeSec;
+        renderer.render({ scene: mesh });
+        frame = requestAnimationFrame(loop);
+      };
+      loop();
+    }
 
     return () => {
       cancelAnimationFrame(frame);
       ro.disconnect();
-      if (mouseInteractive) {
+      if (interactive) {
         parent.removeEventListener("mousemove", handleMouseMove);
       }
       loseTimerRef.current = setTimeout(() => {

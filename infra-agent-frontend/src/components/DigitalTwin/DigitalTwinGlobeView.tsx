@@ -5,12 +5,15 @@
  * profile avatar, and the "Continue with team building" onboarding CTA.
  */
 
+import dynamic from "next/dynamic";
 import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
-import { DataCenterGlobe } from "./DataCenterGlobe";
 import { GlobalInfrastructurePanel } from "./GlobalInfrastructurePanel";
 import { TransitionOverlay } from "./TransitionOverlay";
 import styles from "./DataCenterDigitalTwin.module.css";
 import type { DigitalTwinGlobeViewProps } from "./DataCenterDigitalTwin.types";
+
+/** `react-globe.gl` is a heavy, WebGL-dependent, client-only library (Phase 15). */
+const DataCenterGlobe = dynamic(() => import("./DataCenterGlobe"), { ssr: false });
 
 export function DigitalTwinGlobeView({
   sites,

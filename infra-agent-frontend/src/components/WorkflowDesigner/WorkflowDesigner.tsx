@@ -3,6 +3,7 @@
 import "@xyflow/react/dist/style.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { ReactFlowProvider, type Node } from "@xyflow/react";
 import { Monitor } from "lucide-react";
 import type { AgentNodeData } from "./AgentNode.types";
@@ -22,11 +23,22 @@ import { TeamBuilderPanel } from "./TeamBuilderPanel";
 import { RecommendTeamModal } from "./RecommendTeamModal";
 import { DeploySavedTeamModal } from "./DeploySavedTeamModal";
 import { SaveTeamModal } from "./SaveTeamModal";
-import { WorkflowDesignerCanvas } from "./WorkflowDesignerCanvas";
 import { useWorkflowCanvas } from "./useWorkflowCanvas";
 import { useWorkflowTeamLoader } from "./useWorkflowTeamLoader";
 import { useAgentInspectorSelection } from "./useAgentInspectorSelection";
 import styles from "./WorkflowDesigner.module.css";
+
+/**
+ * The `<ReactFlow>` tree itself -- dynamically imported per Phase 15's
+ * `next/dynamic` mandate for the `@xyflow/react` canvas. `ssr: false`
+ * avoids attempting to server-render a component that measures its
+ * container via `ResizeObserver` and manages its own imperative viewport
+ * state, neither of which exist during SSR.
+ */
+const WorkflowDesignerCanvas = dynamic(
+  () => import("./WorkflowDesignerCanvas").then((mod) => mod.WorkflowDesignerCanvas),
+  { ssr: false },
+);
 
 /**
  * `/workflows` — visual team-build -> save -> deploy -> evaluate flow.

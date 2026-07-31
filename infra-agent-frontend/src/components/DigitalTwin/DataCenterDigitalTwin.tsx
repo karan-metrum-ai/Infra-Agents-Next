@@ -21,11 +21,11 @@
 
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
 import { useOnboardingStatus } from "@/hooks/useOnboardingStatus";
 import { useRegisterCommand } from "@/hooks/useCommandRegistry";
 import { DigitalTwinBuildingStats } from "./DigitalTwinBuildingStats";
-import { DigitalTwinCanvasView } from "./DigitalTwinCanvasView";
 import { DigitalTwinDeviceDetailPanel } from "./DigitalTwinDeviceDetailPanel";
 import { DigitalTwinFloorSelector } from "./DigitalTwinFloorSelector";
 import { DigitalTwinGlobeView } from "./DigitalTwinGlobeView";
@@ -36,6 +36,18 @@ import { useDigitalTwinTelemetry } from "./useDigitalTwinTelemetry";
 import { useDigitalTwinViewState } from "./useDigitalTwinViewState";
 import styles from "./DataCenterDigitalTwin.module.css";
 import type { DataCenterDigitalTwinProps } from "./DataCenterDigitalTwin.types";
+
+/**
+ * `DigitalTwinCanvasView` pulls in `@react-three/fiber`/`@react-three/drei`/
+ * `three` (the interior rack scene and the exterior building scene) --
+ * genuinely heavy, WebGL-dependent, client-only libraries per Phase 15's
+ * `next/dynamic` mandate. `ssr: false` is required (not just `"use client"`)
+ * since WebGL canvases cannot render during SSR/prerendering.
+ */
+const DigitalTwinCanvasView = dynamic(
+  () => import("./DigitalTwinCanvasView").then((mod) => mod.DigitalTwinCanvasView),
+  { ssr: false },
+);
 
 const TOTAL_FLOORS = 9;
 const FLOOR_HEIGHT = 4;

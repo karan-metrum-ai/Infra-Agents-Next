@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import MarkdownRenderer from "../MarkdownRenderer";
 import { useReasoningToggleState } from "./useReasoningToggleState";
 import styles from "./AgentTrace.module.css";
@@ -25,6 +25,8 @@ interface ReasoningBlockProps {
  */
 function ReasoningBlock({ thoughts, streaming = false, defaultOpen = false }: ReasoningBlockProps) {
   const [isOpen, setIsOpen] = useReasoningToggleState(streaming, defaultOpen);
+  /** Phase 16: instant expand/collapse when reduced motion is enabled. */
+  const prefersReducedMotion = useReducedMotion();
 
   if (!thoughts || thoughts.length === 0) {
     return null;
@@ -50,10 +52,12 @@ function ReasoningBlock({ thoughts, streaming = false, defaultOpen = false }: Re
         {isOpen && (
           <motion.div
             key="reasoning-body"
-            initial={{ height: 0, opacity: 0 }}
+            initial={prefersReducedMotion ? false : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={
+              prefersReducedMotion ? { duration: 0 } : { duration: 0.2, ease: "easeInOut" }
+            }
             className={styles.reasoningBody}
           >
             <MarkdownRenderer content={joined} context="reasoning" />

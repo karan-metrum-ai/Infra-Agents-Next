@@ -1,27 +1,23 @@
 "use client";
 
 import { useMemo } from "react";
-import {
-  Background,
-  BackgroundVariant,
-  MarkerType,
-  ReactFlow,
-  ReactFlowProvider,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
+import dynamic from "next/dynamic";
 import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectMostRecentDeployedClusterId } from "@/features/workflows/workflowCanvasSelectors";
 import { ErrorOverlay } from "./ErrorOverlay";
 import { StatsHeader } from "./StatsHeader";
-import { TeamNodePlaceholder } from "./TeamNodePlaceholder";
 import { useAgentTeamHealth } from "./useAgentTeamHealth";
 import { useClusterTeamGraph } from "./useClusterTeamGraph";
 import styles from "./AgentTeamView.module.css";
 import type { AgentTeamViewProps } from "./AgentTeamView.types";
 
-const NODE_TYPES = { agent: TeamNodePlaceholder };
+/** `@xyflow/react` canvas, dynamically imported per Phase 15 (see `AgentTeamGraphCanvas.tsx`). */
+const AgentTeamGraphCanvas = dynamic(
+  () => import("./AgentTeamGraphCanvas").then((mod) => mod.AgentTeamGraphCanvas),
+  { ssr: false },
+);
 
 /**
  * Live view of a cluster's deployed agent team: read-only org-chart canvas
@@ -91,33 +87,12 @@ export function AgentTeamView({ className, showControls = true, clusterId }: Age
       )}
 
       <div className={styles.flowContainer}>
-        <ReactFlowProvider>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            nodeTypes={NODE_TYPES}
-            fitView
-            fitViewOptions={{ padding: 0.2 }}
-            defaultEdgeOptions={{
-              type: "smoothstep",
-              markerEnd: { type: MarkerType.ArrowClosed },
-              style: { stroke: "var(--primary)", strokeWidth: 2 },
-            }}
-            className={styles.reactFlow}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            elementsSelectable={false}
-          >
-            <Background
-              variant={BackgroundVariant.Dots}
-              gap={20}
-              size={1}
-              color="rgba(148, 163, 184, 0.2)"
-            />
-          </ReactFlow>
-        </ReactFlowProvider>
+        <AgentTeamGraphCanvas
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+        />
       </div>
 
       {error && <ErrorOverlay message={error} onDismiss={clearError} />}

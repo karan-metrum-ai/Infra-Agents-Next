@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, LogOut, Building2, Sparkles, Loader2 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import { Banner } from "@/components/ui/Banner/Banner";
 import { Button } from "@/components/ui/Button/Button";
@@ -47,6 +47,9 @@ export function Landing() {
   const [isAccepting, setIsAccepting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  /** Phase 16: static fallback for both Motion animations below when the
+   * user has reduced motion enabled. */
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const authError = searchParams.get("auth_error");
@@ -217,9 +220,10 @@ export function Landing() {
               {isOpen && (
                 <motion.div
                   id="landing-mobile-menu"
-                  initial={{ height: 0 }}
+                  initial={prefersReducedMotion ? false : { height: 0 }}
                   animate={{ height: "auto" }}
                   exit={{ height: 0 }}
+                  transition={prefersReducedMotion ? { duration: 0 } : undefined}
                   className={styles.mobileMenu}
                 >
                   <div className={styles.mobileMenuContent}>
@@ -309,10 +313,10 @@ export function Landing() {
               {showTermsHint && !agreedToTerms && (
                 <motion.p
                   className={styles.termsHint}
-                  initial={{ opacity: 0, y: 4 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 4 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
                 >
                   Please accept the Terms &amp; Conditions to continue.
                 </motion.p>

@@ -2,7 +2,6 @@
 
 import { useEffect, useId, useState } from "react";
 import DOMPurify from "dompurify";
-import mermaid from "mermaid";
 import { useMountEffect } from "@/hooks/useMountEffect";
 
 export interface MermaidDiagramRenderer {
@@ -33,6 +32,16 @@ function resolveThemeColor(cssVariable: string): string {
  * change over the component's lifetime (not just on mount), which rules
  * out `useMountEffect`.
  *
+ * `mermaid` is loaded via a dynamic `import()` (Phase 15) rather than a
+ * static top-level import — it's a genuinely heavy, diagram-rendering
+ * library only actually needed once this hook's owning component mounts
+ * (the evaluation diagram tab), per Next's own "Loading External
+ * Libraries" lazy-loading pattern (`next/dynamic` itself only wraps React
+ * *components*; a plain library needs the `import()` form directly). The
+ * module resolves from the bundler's own module cache on the second call
+ * (theme init vs. render), so calling `import("mermaid")` in both effects
+ * below does not re-fetch it twice.
+ *
  * Theme colors are resolved from the app's real CSS custom properties at
  * render time (`resolveThemeColor`) rather than hardcoded hex, since
  * Mermaid's `themeVariables` API requires literal color strings and can't
@@ -50,31 +59,38 @@ export function useMermaidDiagramRenderer(
   const [isRendering, setIsRendering] = useState(false);
 
   useMountEffect(() => {
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "strict",
-      theme: "dark",
-      themeVariables: {
-        primaryColor: resolveThemeColor("--color-brand"),
-        primaryTextColor: resolveThemeColor("--color-text-primary"),
-        primaryBorderColor: resolveThemeColor("--primary-600"),
-        lineColor: resolveThemeColor("--color-text-muted"),
-        secondaryColor: resolveThemeColor("--color-surface-hover"),
-        tertiaryColor: resolveThemeColor("--color-surface-sunken"),
-        background: resolveThemeColor("--color-bg"),
-        mainBkg: resolveThemeColor("--color-surface"),
-        secondBkg: resolveThemeColor("--color-surface-raised"),
-        tertiaryBkg: resolveThemeColor("--color-surface-sunken"),
-        secondaryBorderColor: resolveThemeColor("--color-border"),
-        tertiaryBorderColor: resolveThemeColor("--color-border-strong"),
-        clusterBkg: resolveThemeColor("--color-surface"),
-        clusterBorder: resolveThemeColor("--color-border"),
-        defaultLinkColor: resolveThemeColor("--color-text-muted"),
-        titleColor: resolveThemeColor("--color-text-primary"),
-        edgeLabelBackground: resolveThemeColor("--color-surface"),
-        nodeTextColor: resolveThemeColor("--color-text-primary"),
-      },
+    let cancelled = false;
+    import("mermaid").then(({ default: mermaid }) => {
+      if (cancelled) return;
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "strict",
+        theme: "dark",
+        themeVariables: {
+          primaryColor: resolveThemeColor("--color-brand"),
+          primaryTextColor: resolveThemeColor("--color-text-primary"),
+          primaryBorderColor: resolveThemeColor("--primary-600"),
+          lineColor: resolveThemeColor("--color-text-muted"),
+          secondaryColor: resolveThemeColor("--color-surface-hover"),
+          tertiaryColor: resolveThemeColor("--color-surface-sunken"),
+          background: resolveThemeColor("--color-bg"),
+          mainBkg: resolveThemeColor("--color-surface"),
+          secondBkg: resolveThemeColor("--color-surface-raised"),
+          tertiaryBkg: resolveThemeColor("--color-surface-sunken"),
+          secondaryBorderColor: resolveThemeColor("--color-border"),
+          tertiaryBorderColor: resolveThemeColor("--color-border-strong"),
+          clusterBkg: resolveThemeColor("--color-surface"),
+          clusterBorder: resolveThemeColor("--color-border"),
+          defaultLinkColor: resolveThemeColor("--color-text-muted"),
+          titleColor: resolveThemeColor("--color-text-primary"),
+          edgeLabelBackground: resolveThemeColor("--color-surface"),
+          nodeTextColor: resolveThemeColor("--color-text-primary"),
+        },
+      });
     });
+    return () => {
+      cancelled = true;
+    };
   });
 
   useEffect(() => {
@@ -85,8 +101,8 @@ export function useMermaidDiagramRenderer(
     let cancelled = false;
     setIsRendering(true);
 
-    mermaid
-      .render(`kyai-mermaid-${renderId}`, diagram)
+    import("mermaid")
+      .then(({ default: mermaid }) => mermaid.render(`kyai-mermaid-${renderId}`, diagram))
       .then((result) => {
         if (cancelled) return;
         setSvgHtml(DOMPurify.sanitize(result.svg, { USE_PROFILES: { svg: true } }));

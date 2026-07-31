@@ -244,6 +244,21 @@ export function NetworkCables({ racks }: NetworkCablesProps) {
     return Math.max(CORRIDOR_LENGTH, maxX - minX);
   }, [racks]);
 
+  // Phase 15: `buildCableSpecs` only reads each rack's `position`/`row_name`
+  // (confirmed above) — never device/health data — but `racks` gets a
+  // brand-new object graph from `useDigitalTwinTelemetry`'s 30s poll even
+  // when no rack has actually moved. Depending the geometry memo on the
+  // full `racks` array meant every telemetry-only poll disposed and
+  // rebuilt the entire merged cable-tube geometry (a `mergeGeometries`
+  // over dozens of tubes), the exact "dispose+recreate on data update"
+  // anti-pattern `005-echarts.mdc`'s 3D-scene equivalent bans. Keying on a
+  // derived, position-only string means telemetry-only updates leave this
+  // memo — and the geometry it produces — untouched.
+  const rackPositionsKey = useMemo(
+    () => racks.map((r) => `${r.rack_id}:${r.row_name}:${r.position.join(",")}`).join("|"),
+    [racks],
+  );
+
   const mergedCableGeometry = useMemo(() => {
     const specs = buildCableSpecs(racks, trayHeight, CORRIDOR_LENGTH);
     const parts = specs.map((s) => createCableTubeGeometry(s));
@@ -251,7 +266,8 @@ export function NetworkCables({ racks }: NetworkCablesProps) {
     const merged = mergeGeometries(parts);
     for (const p of parts) p.dispose();
     return merged;
-  }, [racks]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: rebuild only when rack positions/rows actually change (rackPositionsKey), not on every telemetry-only `racks` reference change; `racks` itself is still read fresh in the body.
+  }, [rackPositionsKey]);
 
   useEffect(() => {
     return () => {

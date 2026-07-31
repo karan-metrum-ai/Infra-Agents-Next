@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Handle, Position, type NodeProps, type Node } from "@xyflow/react";
 import Image from "next/image";
 import { Bot } from "lucide-react";
@@ -16,8 +17,14 @@ const STATUS_COLOR: Record<string, string> = {
 /**
  * Minimal ReactFlow node standing in for the real `WorkflowDesigner/AgentNode`
  * (a later-phase component). Swap for the real one once Phase 7 lands.
+ *
+ * Wrapped in `memo` (Phase 15): React Flow re-renders every custom node
+ * component whenever the `nodes` array reference changes, regardless of
+ * whether that specific node's data changed — without `memo` here, the
+ * 30s health poll in `useAgentTeamHealth.ts` re-renders every agent card
+ * in the org chart, not just the ones whose status actually changed.
  */
-export function TeamNodePlaceholder({ data }: NodeProps<Node<TeamNodeData>>) {
+function TeamNodePlaceholderComponent({ data }: NodeProps<Node<TeamNodeData>>) {
   return (
     <div className={cn(styles.node, data.isOrchestrator && styles.nodeOrchestrator)}>
       <Handle type="target" position={Position.Top} />
@@ -50,5 +57,7 @@ export function TeamNodePlaceholder({ data }: NodeProps<Node<TeamNodeData>>) {
     </div>
   );
 }
+
+export const TeamNodePlaceholder = memo(TeamNodePlaceholderComponent);
 
 export default TeamNodePlaceholder;

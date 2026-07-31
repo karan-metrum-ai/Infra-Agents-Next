@@ -2,9 +2,9 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { AlertCircle } from "lucide-react";
 import { BottomStatsRow } from "@/components/dashboard/BottomStatsRow/BottomStatsRow";
-import { DataCenterGlobe } from "@/components/DigitalTwin/DataCenterGlobe";
 import type { GlobeSite } from "@/components/DigitalTwin/types";
 import { Spinner } from "@/components/ui/Spinner/Spinner";
 import {
@@ -22,6 +22,16 @@ const HEALTH_POLLING_INTERVAL = 12000;
 const TICKETS_POLLING_INTERVAL = 60000;
 const INCIDENTS_POLLING_INTERVAL = 45000;
 const CC_SITES_POLLING_INTERVAL = 15000;
+
+/** `react-globe.gl` is a heavy, WebGL-dependent, client-only library (Phase 15). */
+const DataCenterGlobe = dynamic(() => import("@/components/DigitalTwin/DataCenterGlobe"), {
+  ssr: false,
+  loading: () => (
+    <div className={styles.globeStatus}>
+      <Spinner size="lg" aria-hidden="true" />
+    </div>
+  ),
+});
 
 /** Live Dashboard overview: site globe (Phase 6 component, Phase 13 data) + Command Center summary row. */
 export function LiveDashboardOverview() {

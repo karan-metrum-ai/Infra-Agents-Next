@@ -66,11 +66,16 @@ export function useAgentTeamHealth(
             const agentName = agent.name.toLowerCase();
             return agentName.includes(nodeLabel) || nodeLabel.includes(agentName);
           });
-          if (!match) return node;
-          return {
-            ...node,
-            data: { ...node.data, status: status.status === "ready" ? "running" : "idle" },
-          };
+          const nextStatus = status.status === "ready" ? "running" : "idle";
+          // Phase 15: skip the rebuild when nothing actually changed. Every
+          // poll otherwise produced a brand-new node object for every
+          // matched agent (even when its status was already correct),
+          // which — combined with `TeamNodePlaceholder` needing its own
+          // `memo` fix for this same reason — re-rendered the entire org
+          // chart every 30s regardless of whether any agent's status
+          // actually flipped.
+          if (!match || node.data.status === nextStatus) return node;
+          return { ...node, data: { ...node.data, status: nextStatus } };
         }),
       );
     } catch {

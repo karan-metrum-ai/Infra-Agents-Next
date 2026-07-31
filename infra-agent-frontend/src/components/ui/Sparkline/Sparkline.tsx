@@ -4,13 +4,13 @@
 
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import * as echarts from "echarts/core";
 import { LineChart } from "echarts/charts";
 import { GridComponent, TooltipComponent } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 import type { EChartsOption } from "echarts";
-import { debounce } from "@/utils/debounce";
+import { useSparklineChart } from "./useSparklineChart";
 import styles from "./Sparkline.module.css";
 import type { SparklineProps } from "./Sparkline.types";
 
@@ -18,15 +18,23 @@ echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 const defaultFormat = (v: number) => v.toFixed(1);
 
-function resolveColor(color: string, element: HTMLElement | null): string {
+/**
+ * Resolves a `var(--token)` reference to its computed value. Reads from
+ * `document.documentElement` rather than the chart's own container -- CSS
+ * custom properties used here are theme tokens set at `:root`, so the
+ * computed value is identical either way, and reading from the document
+ * root (always present) instead of the chart container (only present
+ * post-mount) lets this run during render, not just inside an effect.
+ */
+function resolveColor(color: string): string {
   if (!color.startsWith("var(")) {
     return color;
   }
-  if (typeof window === "undefined" || !element) {
+  if (typeof window === "undefined") {
     return "#6366f1";
   }
   const token = color.slice(4, -1).trim();
-  const resolved = getComputedStyle(element).getPropertyValue(token).trim();
+  const resolved = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
   return resolved || "#6366f1";
 }
 
@@ -78,37 +86,15 @@ export function Sparkline({
     [timestamps],
   );
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || seriesPairs.length < 2) {
-      return undefined;
+  const hasEnoughData = seriesPairs.length >= 2;
+
+  const option = useMemo<EChartsOption | null>(() => {
+    if (!hasEnoughData) {
+      return null;
     }
 
-    chartRef.current = echarts.init(el, undefined, { renderer: "canvas" });
-
-    const handleResize = debounce(() => chartRef.current?.resize(), 200);
-    let observer: ResizeObserver | undefined;
-    if (typeof ResizeObserver !== "undefined") {
-      observer = new ResizeObserver(handleResize);
-      observer.observe(el);
-    }
-
-    return () => {
-      observer?.disconnect();
-      chartRef.current?.dispose();
-      chartRef.current = null;
-    };
-  }, [seriesPairs.length]);
-
-  useEffect(() => {
-    const chart = chartRef.current;
-    const el = containerRef.current;
-    if (!chart || !el || seriesPairs.length < 2) {
-      return;
-    }
-
-    const resolvedColor = resolveColor(color, el);
-    const option: EChartsOption = {
+    const resolvedColor = resolveColor(color);
+    return {
       animation: false,
       grid: { left: 2, right: 2, top: 2, bottom: 2, containLabel: false },
       xAxis: hasTimeAxis ? { type: "time", show: false } : { type: "value", show: false },
@@ -161,12 +147,11 @@ export function Sparkline({
         },
       ],
     };
+  }, [seriesPairs, color, filled, strokeWidth, hasTimeAxis, unit, formatValue, hasEnoughData]);
 
-    chart.setOption(option, { notMerge: false });
-    chart.resize();
-  }, [seriesPairs, color, filled, strokeWidth, hasTimeAxis, unit, formatValue]);
+  useSparklineChart(containerRef, chartRef, hasEnoughData, option);
 
-  if (seriesPairs.length < 2) {
+  if (!hasEnoughData) {
     return (
       <div
         // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- live chart container, not a static <img>
