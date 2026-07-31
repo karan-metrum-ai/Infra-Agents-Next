@@ -1,0 +1,45 @@
+services:
+  # The Next.js app server (standalone output). Not exposed to the host
+  # directly — nginx is the public entrypoint, same as the Vite app, but
+  # now proxying to a live app server instead of serving a static dist/.
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmmirror.com}
+    container_name: Infra-Agents-Next-App
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - frontend-network
+
+  nginx:
+    image: nginx:1.31-alpine
+    container_name: Infra-Agents-UI
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template:ro
+    environment:
+      - FRONTEND_UPSTREAM=http://frontend:3000
+      - AUTH_API_UPSTREAM=http://host.docker.internal:3001
+      - BACKEND_UPSTREAM=http://host.docker.internal:80
+      # Istio gateway cluster prefix for /report-api/ (matches next.config.ts dev rewrite intent)
+      - CLUSTER_ID=${CLUSTER_ID:-8001}
+      # K8s NodePort 30825; port-forward sandbox evaluator to host:30825
+      - SANDBOX_EVALUATOR_UPSTREAM=http://host.docker.internal:30825
+      # Uptime monitor service (`/stack/uptime` etc.)
+      - UPTIME_MONITOR_UPSTREAM=http://host.docker.internal:8030
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - frontend
+    networks:
+      - frontend-network
+
+networks:
+  frontend-network:
+    driver: bridge
