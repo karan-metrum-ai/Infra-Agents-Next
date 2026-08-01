@@ -19,7 +19,6 @@ function useNavCommand(id: string, label: string, path: string, allowedRoles: st
   useRegisterCommand({
     id,
     label: `Go to ${label}`,
-    description: path,
     group: "Navigation",
     keywords: [path],
     disabled: isOrgResolved && !allowedRoles.includes(userRole),
@@ -93,8 +92,8 @@ export function GlobalCommands() {
   useRegisterCommand({
     id: "nav:home",
     label: "Go to Home",
-    description: "/",
     group: "Navigation",
+    keywords: ["/"],
     perform: () => router.push("/"),
   });
 

@@ -14,7 +14,7 @@
   transform: translateX(-50%);
   z-index: 301;
   width: min(640px, 92vw);
-  max-height: min(60vh, 520px);
+  max-height: min(72vh, 560px);
   display: flex;
   flex-direction: column;
   background: var(--card);
@@ -49,7 +49,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: var(--border-width) solid var(--panel-border);
   flex-shrink: 0;
 }
@@ -65,6 +65,11 @@
   background: transparent;
   color: var(--foreground);
   font-size: var(--font-size-base);
+  outline: none;
+}
+
+.input:focus,
+.input:focus-visible {
   outline: none;
 }
 
@@ -92,13 +97,17 @@
 }
 
 .helpToggle:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  outline: none;
+  background: color-mix(in oklch, var(--foreground) 7%, transparent);
+  color: var(--foreground);
 }
 
 .list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
-  padding: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
 }
 
 .empty {
@@ -109,7 +118,8 @@
 }
 
 .group [cmdk-group-heading] {
-  padding: var(--spacing-sm) var(--spacing-sm) 4px;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-xs);
+  margin-top: var(--spacing-xs);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -117,11 +127,15 @@
   color: color-mix(in oklch, var(--foreground) 45%, transparent);
 }
 
+.group:first-child [cmdk-group-heading] {
+  margin-top: 0;
+}
+
 .item {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
   cursor: pointer;
   color: var(--foreground);
@@ -157,11 +171,13 @@
 
 .footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   border-top: var(--border-width) solid var(--panel-border);
   font-size: 11px;
+  line-height: 1.4;
   color: color-mix(in oklch, var(--foreground) 45%, transparent);
   flex-shrink: 0;
 }
@@ -170,4 +186,5 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }

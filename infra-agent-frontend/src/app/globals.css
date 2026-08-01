@@ -231,6 +231,32 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
+  /* Command Center brand gradient (cyan → indigo → violet) — Vite parity */
+  --brand-cyan: #38bdf8;
+  --brand-cyan-glow: #22d3ee;
+  --brand-indigo: #6366f1;
+  --brand-violet: #7c3aed;
+  --brand-gradient: linear-gradient(90deg, #38bdf8 0%, #6366f1 52%, #7c3aed 100%);
+  --brand-gradient-soft: linear-gradient(
+    90deg,
+    rgba(56, 189, 248, 0.18) 0%,
+    rgba(167, 139, 250, 0.14) 100%
+  );
+  --brand-glow-border: 1.5px solid #22d3ee;
+  --brand-glow-shadow: 0 0 0 1px rgba(34, 211, 238, 0.25), 0 4px 14px rgba(34, 211, 238, 0.28);
+  --brand-cyan-tint: rgba(56, 189, 248, 0.12);
+  --brand-cyan-tint-strong: rgba(56, 189, 248, 0.2);
+  --brand-violet-tint: rgba(124, 58, 237, 0.12);
+  --brand-violet-tint-strong: rgba(124, 58, 237, 0.2);
+  --brand-border-soft: rgba(34, 211, 238, 0.35);
+  --brand-primary: var(--brand-cyan);
+  --brand-secondary: var(--brand-indigo);
+  --brand-accent: var(--brand-violet);
+  --brand-primary-tint: var(--brand-cyan-tint);
+  --brand-primary-tint-strong: var(--brand-cyan-tint-strong);
+  --brand-secondary-tint: var(--brand-violet-tint);
+  --brand-secondary-tint-strong: var(--brand-violet-tint-strong);
+
   /* Gold/brown legacy -- now expressed via the accent scale so the
    * earthy sub-palette is consistent with the main system. */
   --gold-light: var(--accent-200);

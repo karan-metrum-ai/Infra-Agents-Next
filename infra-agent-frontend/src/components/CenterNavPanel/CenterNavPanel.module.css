@@ -1,4 +1,4 @@
-/* Center Navigation Panel - Global App Navigation */
+/* Center Navigation Panel - Global App Navigation (Vite parity) */
 
 .centerNavPanel {
   position: relative;
@@ -13,30 +13,34 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: var(--color-surface-raised);
-  border: var(--border-width) solid var(--color-border);
+  background: transparent;
+  border: none;
   border-radius: 50%;
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--color-text-primary);
+  color: white;
 }
 
 .floatingButton svg {
-  stroke: currentColor;
-  color: currentColor;
+  stroke: white;
+  color: white;
 }
 
 .floatingButton:hover {
   transform: scale(1.05);
-  border-color: color-mix(in oklch, var(--color-brand) 35%, transparent);
   box-shadow:
-    0 0 0 1px color-mix(in oklch, var(--color-brand) 20%, transparent),
+    0 6px 16px rgba(59, 130, 246, 0.4),
     var(--shadow-lg);
 }
 
 .floatingButton:active {
   transform: scale(0.95);
+}
+
+.floatingButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 .dropdownMenu {
@@ -158,8 +162,6 @@
 }
 
 .dropdownItem:hover {
-  /* Blue-tinted hover that sits in the same family as the active pill
-   * (gradient: var(--primary) -> var(--secondary)) below. */
   background: color-mix(in oklch, var(--primary-500) 18%, transparent);
   border: 1px solid color-mix(in oklch, var(--primary-400) 35%, transparent);
   color: var(--foreground);
@@ -177,7 +179,6 @@
 }
 
 .dropdownItem.active:hover {
-  /* Don't stack the translucent blue on top of the active gradient. */
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   border-color: transparent;
 }

@@ -9,6 +9,7 @@ import { CenterNavPanel } from "@/components/CenterNavPanel/CenterNavPanel";
 import { ClusterTeamSelector } from "@/components/dashboard/ClusterTeamSelector/ClusterTeamSelector";
 import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
 import { Separator } from "@/components/ui/Separator/Separator";
+import { NavHoverEffect } from "@/components/ui/NavHoverEffect/NavHoverEffect";
 import { cn } from "@/lib/utils";
 import styles from "./LiveDashboardShell.module.css";
 import type { LiveDashboardShellProps } from "./LiveDashboardShell.types";
@@ -41,7 +42,7 @@ const NAV_ITEMS = [
   },
 ];
 
-/** Shared top bar across the three /dashboard/live tabs: logo, cluster/team selector, tab nav. */
+/** Shared top bar across the /dashboard/live tabs — Vite LiveDashboard parity. */
 export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -49,6 +50,7 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
   const [hasActiveTeam, setHasActiveTeam] = useState(false);
 
   const selectedClusterId = searchParams.get("cluster");
+  const activeIndex = NAV_ITEMS.findIndex(({ match }) => match(pathname));
 
   const handleClusterChange = useCallback(
     (clusterId: string, active: boolean) => {
@@ -76,18 +78,26 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
           <Image
             src="/metrum-logo-white.webp"
             alt="Metrum AI"
-            width={110}
-            height={28}
+            width={140}
+            height={40}
             className={styles.logo}
             priority
           />
+          <Image
+            src="/android-chrome-512x512.png"
+            alt="Metrum AI"
+            width={28}
+            height={28}
+            className={styles.logoIcon}
+          />
           <Separator orientation="vertical" className={styles.separatorSm} />
           <h1 className={styles.title}>Dashboard</h1>
+          <Separator orientation="vertical" className={styles.separatorMd} />
           <ClusterTeamSelector value={selectedClusterId} onClusterChange={handleClusterChange} />
         </div>
 
-        <div className={styles.rightSection}>
-          <nav className={styles.navPanel} aria-label="Live dashboard sections">
+        <nav className={styles.navPanel} aria-label="Live dashboard sections">
+          <NavHoverEffect activeIndex={activeIndex}>
             {NAV_ITEMS.map(({ href, label, Icon, match, requiresTeam }) => {
               const active = match(pathname);
               const disabled = requiresTeam && !hasActiveTeam;
@@ -95,11 +105,11 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
                 <button
                   key={href}
                   type="button"
-                  className={cn(styles.navButton, active && styles.navButtonActive)}
+                  className={cn(styles.navButton, active && styles.active)}
                   onClick={() => navigateTo(href)}
                   disabled={disabled}
                   aria-current={active ? "page" : undefined}
-                  // Phase 16: the label `<span>` is hidden below 900px
+                  // Phase 16: the label `<span>` is hidden below 1024px
                   // (`.navButton span { display: none }`), which would
                   // otherwise strip these buttons of any accessible name for
                   // screen reader users at that viewport width.
@@ -111,7 +121,9 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
                 </button>
               );
             })}
-          </nav>
+          </NavHoverEffect>
+
+          <Separator orientation="vertical" className={styles.separatorSm} />
 
           {/*
            * Enabled only on the "teams" tab, matching the Vite source's
@@ -120,11 +132,10 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
            * yet; wire it once `/dashboard/live/teams` gets a real chat/query
            * view (see the doc comment in ApprovalAlertBadge.tsx).
            */}
-          <div className={styles.rightPanel}>
-            <ApprovalAlertBadge disabled={!pathname.startsWith("/dashboard/live/teams")} />
-            <ProfileAvatar position="inline" />
-          </div>
-        </div>
+          <ApprovalAlertBadge disabled={!pathname.startsWith("/dashboard/live/teams")} />
+          <Separator orientation="vertical" className={styles.separatorSm} />
+          <ProfileAvatar position="inline" />
+        </nav>
       </div>
 
       <div className={styles.content}>{children}</div>

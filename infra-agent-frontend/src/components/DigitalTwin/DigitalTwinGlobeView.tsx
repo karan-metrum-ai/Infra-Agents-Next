@@ -1,13 +1,12 @@
 "use client";
 
 /**
- * Globe view mode of `DataCenterDigitalTwin`: the world globe, top nav,
+ * Globe view mode of `DataCenterDigitalTwin`: the world globe,
  * profile avatar, and the "Continue with team building" onboarding CTA.
  */
 
 import dynamic from "next/dynamic";
 import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
-import { GlobalInfrastructurePanel } from "./GlobalInfrastructurePanel";
 import { TransitionOverlay } from "./TransitionOverlay";
 import styles from "./DataCenterDigitalTwin.module.css";
 import type { DigitalTwinGlobeViewProps } from "./DataCenterDigitalTwin.types";
@@ -27,7 +26,6 @@ export function DigitalTwinGlobeView({
     <div className={styles.twinRoot}>
       <TransitionOverlay transitionState={transitionState} />
 
-      {!hideNavigation && <GlobalInfrastructurePanel />}
       {!hideNavigation && <ProfileAvatar position="fixed" />}
 
       <div

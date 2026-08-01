@@ -1,72 +1,88 @@
+/* Live Dashboard shell — Vite LiveDashboard.module.css parity */
+
 .shell {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  width: 100%;
   height: 100dvh;
   max-height: 100dvh;
   overflow: hidden;
   background: var(--background);
 }
 
+/* ============================================ */
+/* TOP BAR - Logo + Navigation (floating panels) */
+/* ============================================ */
+
 .topBar {
-  position: relative;
-  z-index: 100;
-  flex-shrink: 0;
+  position: fixed;
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+  right: var(--spacing-lg);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-md);
   flex-wrap: nowrap;
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  pointer-events: auto;
 }
 
+/* Left Panel - Logo & Title */
 .logoPanel {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  flex-shrink: 0;
-  height: 40px;
-  min-width: 0;
+  background: var(--card);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: var(--border-width) solid var(--border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 52px;
 }
 
 .logo {
-  height: 28px;
+  height: 40px;
   width: auto;
-  flex-shrink: 0;
+  min-width: 100px;
   object-fit: contain;
 }
 
-.separatorSm {
-  height: 1.5rem;
+/* Square icon shown only on small screens */
+.logoIcon {
+  display: none;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
-  margin-left: var(--spacing-sm);
-  margin-right: var(--spacing-sm);
 }
 
 .title {
-  font-size: var(--font-size-base);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: var(--font-size-xl);
   font-weight: 600;
   color: var(--foreground);
   margin: 0;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.rightSection {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-  flex-shrink: 0;
-  margin-left: auto;
-}
-
+/* Right Panel - Navigation Buttons */
 .navPanel {
   display: flex;
   align-items: center;
-  gap: 2px;
+  background: var(--card);
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: var(--border-width) solid var(--border);
+  height: 52px;
 }
 
 .navButton {
@@ -77,16 +93,23 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-lg);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   font-size: var(--font-size-sm);
   font-weight: 500;
   color: var(--muted);
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
+  height: 38px;
 }
 
-.navButton:hover:not(.active):not(:disabled) {
+.navPanel .navButton:hover:not(.active):not(:disabled) {
   color: var(--foreground);
+  background: transparent;
 }
 
 .navButton:disabled {
@@ -96,31 +119,156 @@
 
 .navButton:focus-visible {
   outline: 2px solid var(--primary);
-  outline-offset: -2px;
+  outline-offset: 2px;
 }
 
-.navButtonActive {
-  background: linear-gradient(90deg, #38bdf8 0%, #6366f1 52%, #7c3aed 100%);
+.navButton.active,
+.navButton.active:hover {
+  background: var(--brand-gradient);
   color: #ffffff;
+  border: var(--brand-glow-border);
+  box-shadow: var(--brand-glow-shadow);
 }
 
-.rightPanel {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
+.separatorSm {
+  height: 1.5rem;
+  margin-left: var(--spacing-sm);
+  margin-right: var(--spacing-sm);
 }
 
+.separatorMd {
+  height: 1.5rem;
+  margin-left: var(--spacing-md);
+  margin-right: var(--spacing-md);
+}
+
+/* Content sits below the floating top bar (Vite .mainContent parity). */
 .content {
-  flex: 1;
+  position: absolute;
+  top: calc(var(--spacing-lg) + 72px);
+  left: var(--spacing-lg);
+  right: var(--spacing-lg);
+  bottom: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  /* Command Center fills this and locks overflow; other tabs scroll here. */
   overflow: auto;
+  border-radius: var(--radius-xl);
 }
 
-@media (max-width: 900px) {
+@media (prefers-reduced-motion: reduce) {
+  .logoPanel {
+    transition: none;
+  }
+
+  .navButton {
+    transition: none;
+  }
+}
+
+/* Tablet: hide labels, compress panels */
+@media (max-width: 1024px) {
+  .topBar {
+    flex-wrap: nowrap;
+    gap: var(--spacing-sm);
+  }
+
+  .logoPanel {
+    flex-shrink: 1;
+    min-width: 0;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .navPanel {
+    flex-shrink: 0;
+    padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .navButton span {
+    display: none;
+  }
+
+  .navButton {
+    min-width: 36px;
+    min-height: 36px;
+    padding: var(--spacing-sm);
+    justify-content: center;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .separatorMd {
+    display: none;
+  }
+
+  .logo {
+    height: 28px;
+    min-width: unset;
+    max-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topBar {
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-xs);
+  }
+
+  .content {
+    top: calc(var(--spacing-sm) + 68px);
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    bottom: var(--spacing-sm);
+  }
+
+  .logoPanel {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-sm);
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .logoIcon {
+    display: block;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .separatorMd,
+  .separatorSm {
+    display: none;
+  }
+
+  .navPanel {
+    flex-shrink: 0;
+    padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-xs);
+  }
+
+  .navButton {
+    justify-content: center;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    min-width: 36px;
+    min-height: 36px;
+  }
+
   .navButton span {
     display: none;
   }
