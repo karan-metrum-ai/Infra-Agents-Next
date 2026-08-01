@@ -716,7 +716,8 @@
   right: var(--spacing-lg);
   top: calc(var(--spacing-lg) + 64px);
   width: min(380px, calc(100vw - 2 * var(--spacing-lg)));
-  max-height: calc(100vh - var(--spacing-lg) - 64px - 180px);
+  /* Stay above Command Center bottom stats; --cc-bottom-clearance is set on .overview. */
+  max-height: calc(100dvh - var(--spacing-lg) - 64px - var(--cc-bottom-clearance, 180px));
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -727,7 +728,9 @@
 
 .siteListPanelNavHidden {
   top: calc(var(--spacing-lg) + 88px);
-  max-height: calc(100vh - var(--spacing-lg) - 88px - var(--spacing-lg));
+  max-height: calc(
+    100dvh - var(--spacing-lg) - 88px - var(--cc-bottom-clearance, var(--spacing-lg))
+  );
 }
 
 .siteListHeader {

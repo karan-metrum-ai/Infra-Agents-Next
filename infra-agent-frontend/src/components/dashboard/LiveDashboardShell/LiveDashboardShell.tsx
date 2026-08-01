@@ -5,7 +5,9 @@ import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BrainCircuit, Boxes, Presentation, Radar } from "lucide-react";
 import { ApprovalAlertBadge } from "@/components/ApprovalAlertBadge/ApprovalAlertBadge";
+import { CenterNavPanel } from "@/components/CenterNavPanel/CenterNavPanel";
 import { ClusterTeamSelector } from "@/components/dashboard/ClusterTeamSelector/ClusterTeamSelector";
+import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
 import { cn } from "@/lib/utils";
 import styles from "./LiveDashboardShell.module.css";
 import type { LiveDashboardShellProps } from "./LiveDashboardShell.types";
@@ -69,6 +71,7 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
     <div className={styles.shell}>
       <div className={styles.topBar}>
         <div className={styles.logoPanel}>
+          <CenterNavPanel />
           <Image
             src="/metrum-logo-white.webp"
             alt="Metrum AI"
@@ -81,40 +84,45 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
           <ClusterTeamSelector value={selectedClusterId} onClusterChange={handleClusterChange} />
         </div>
 
-        <nav className={styles.navPanel} aria-label="Live dashboard sections">
-          {NAV_ITEMS.map(({ href, label, Icon, match, requiresTeam }) => {
-            const active = match(pathname);
-            const disabled = requiresTeam && !hasActiveTeam;
-            return (
-              <button
-                key={href}
-                type="button"
-                className={cn(styles.navButton, active && styles.navButtonActive)}
-                onClick={() => navigateTo(href)}
-                disabled={disabled}
-                aria-current={active ? "page" : undefined}
-                // Phase 16: the label `<span>` is hidden below 900px
-                // (`.navButton span { display: none }`), which would
-                // otherwise strip these buttons of any accessible name for
-                // screen reader users at that viewport width.
-                aria-label={label}
-                title={disabled ? "Select a cluster with an active deployed team" : undefined}
-              >
-                <Icon size={16} aria-hidden="true" />
-                <span>{label}</span>
-              </button>
-            );
-          })}
-        </nav>
+        <div className={styles.rightSection}>
+          <nav className={styles.navPanel} aria-label="Live dashboard sections">
+            {NAV_ITEMS.map(({ href, label, Icon, match, requiresTeam }) => {
+              const active = match(pathname);
+              const disabled = requiresTeam && !hasActiveTeam;
+              return (
+                <button
+                  key={href}
+                  type="button"
+                  className={cn(styles.navButton, active && styles.navButtonActive)}
+                  onClick={() => navigateTo(href)}
+                  disabled={disabled}
+                  aria-current={active ? "page" : undefined}
+                  // Phase 16: the label `<span>` is hidden below 900px
+                  // (`.navButton span { display: none }`), which would
+                  // otherwise strip these buttons of any accessible name for
+                  // screen reader users at that viewport width.
+                  aria-label={label}
+                  title={disabled ? "Select a cluster with an active deployed team" : undefined}
+                >
+                  <Icon size={16} aria-hidden="true" />
+                  <span>{label}</span>
+                </button>
+              );
+            })}
+          </nav>
 
-        {/*
-         * Enabled only on the "teams" tab, matching the Vite source's
-         * `disabled={currentView !== 'teams'}`. `onPlanApprovalClick` is
-         * left unset — no route here mounts a trace panel to scroll to
-         * yet; wire it once `/dashboard/live/teams` gets a real chat/query
-         * view (see the doc comment in ApprovalAlertBadge.tsx).
-         */}
-        <ApprovalAlertBadge disabled={!pathname.startsWith("/dashboard/live/teams")} />
+          {/*
+           * Enabled only on the "teams" tab, matching the Vite source's
+           * `disabled={currentView !== 'teams'}`. `onPlanApprovalClick` is
+           * left unset — no route here mounts a trace panel to scroll to
+           * yet; wire it once `/dashboard/live/teams` gets a real chat/query
+           * view (see the doc comment in ApprovalAlertBadge.tsx).
+           */}
+          <div className={styles.rightPanel}>
+            <ApprovalAlertBadge disabled={!pathname.startsWith("/dashboard/live/teams")} />
+            <ProfileAvatar position="inline" />
+          </div>
+        </div>
       </div>
 
       <div className={styles.content}>{children}</div>

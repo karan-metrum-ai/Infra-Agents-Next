@@ -14,7 +14,7 @@ import type {
  */
 export const infrastructureApi = createApi({
   reducerPath: "infrastructureApi",
-  baseQuery: createBaseQuery("/api"),
+  baseQuery: createBaseQuery("/digital-twin-api"),
   tagTypes: ["CommandCenterHealth", "Tickets", "Incidents", "AgentActivity"],
   endpoints: (builder) => ({
     getCommandCenterAgentActivity: builder.query<CommandCenterAgentActivityResponse, void>({
