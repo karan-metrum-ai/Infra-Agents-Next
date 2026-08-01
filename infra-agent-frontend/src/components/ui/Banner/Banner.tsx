@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMountEffect } from "@/hooks/useMountEffect";
 import styles from "./Banner.module.css";
 import type { BannerPosition, BannerProps, BannerVariant } from "./Banner.types";
 
@@ -34,15 +35,15 @@ export function Banner({
   ref,
   ...rest
 }: BannerProps & { ref?: React.Ref<HTMLElement> }) {
-  const [visible, setVisible] = useState(() => {
-    if (storageKey) {
-      try {
-        return localStorage.getItem(storageKey) !== "dismissed";
-      } catch {
-        return true;
-      }
+  const [visible, setVisible] = useState(true);
+
+  useMountEffect(() => {
+    if (!storageKey) return;
+    try {
+      if (localStorage.getItem(storageKey) === "dismissed") setVisible(false);
+    } catch {
+      /* noop */
     }
-    return true;
   });
 
   if (!visible) return null;

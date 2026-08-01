@@ -10,12 +10,14 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        // Dev-only convenience: proxies to a locally running auth BFF.
-        // In production this is unreachable — nginx's `/auth-api/` location
-        // (see infra-agent-frontend/nginx.conf) intercepts and forwards to
-        // the real auth service before the request ever reaches Next.
-        source: "/auth-api/:path*",
-        destination: "http://localhost:3001/:path*",
+        // The auth BFF itself (login/callback/session/logout/verify/health/
+        // organization/user/mfa/admin) is now served natively by
+        // `src/app/auth-api/auth/**` Route Handlers — no proxy needed.
+        // Only the privacy-policy sub-router (part of the separate
+        // `infra_agents.compliance` Python package, not yet ported) still
+        // proxies to the standalone auth service.
+        source: "/auth-api/auth/privacy-policy/:path*",
+        destination: "http://localhost:3001/auth/privacy-policy/:path*",
       },
     ];
   },
