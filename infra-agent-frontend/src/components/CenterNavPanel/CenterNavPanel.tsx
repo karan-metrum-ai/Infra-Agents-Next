@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * CenterNavPanel — global floating navigation menu (Onboarding / Team
- * Building / Dashboard), role-filtered.
+ * CenterNavPanel — global floating navigation menu, role-filtered and
+ * driven by the shared `appNav` config (labels, descriptions, groups).
  *
  * The Vite source additionally did manual chunk-prefetching on hover/focus
  * (`import()` of the destination route's top-level component) and rendered
@@ -16,39 +16,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Menu, Rocket, UsersRound } from "lucide-react";
+import { Menu } from "lucide-react";
+import {
+  APP_NAV_ITEMS,
+  filterAppNavByRole,
+  groupAppNavItems,
+  isAppNavItemActive,
+} from "@/config/appNav";
 import { selectIsOrgResolved, selectUserRole } from "@/features/auth/authSelectors";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { cn } from "@/lib/utils";
 import styles from "./CenterNavPanel.module.css";
-
-interface NavItem {
-  label: string;
-  path: string;
-  icon: React.ReactNode;
-  allowedRoles: string[];
-}
-
-const navItems: NavItem[] = [
-  {
-    label: "Onboarding",
-    path: "/onboarding",
-    icon: <Rocket data-icon size={16} aria-hidden="true" />,
-    allowedRoles: ["platform_admin"],
-  },
-  {
-    label: "Team Building",
-    path: "/workflows",
-    icon: <UsersRound data-icon size={16} aria-hidden="true" />,
-    allowedRoles: ["platform_admin", "infra_admin"],
-  },
-  {
-    label: "Dashboard",
-    path: "/dashboard/live",
-    icon: <LayoutDashboard data-icon size={16} aria-hidden="true" />,
-    allowedRoles: ["platform_admin", "infra_admin", "operator", "viewer"],
-  },
-];
 
 /** Global floating navigation menu, filtered to the routes the current role may access. */
 export function CenterNavPanel() {
@@ -60,21 +38,12 @@ export function CenterNavPanel() {
   const userRole = useAppSelector(selectUserRole);
   const isOrgResolved = useAppSelector(selectIsOrgResolved);
 
-  // Only filter once the role is known. Before that, show all items.
-  const visibleItems = isOrgResolved
-    ? navItems.filter((item) => item.allowedRoles.includes(userRole))
-    : navItems;
+  const visibleItems = filterAppNavByRole(APP_NAV_ITEMS, userRole, isOrgResolved);
+  const sections = groupAppNavItems(visibleItems);
 
-  const isActive = (path: string): boolean => {
-    if (path === "/dashboard/live") {
-      return pathname.startsWith("/dashboard/live");
-    }
-    return pathname === path || pathname.startsWith(`${path}/`);
-  };
-
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path: string, active: boolean) => {
     setIsOpen(false);
-    if (isActive(path)) {
+    if (active) {
       return;
     }
     router.push(path);
@@ -139,18 +108,30 @@ export function CenterNavPanel() {
           role="menu"
           aria-label="Navigation Menu"
         >
-          {visibleItems.map((item) => (
-            <button
-              key={item.path}
-              type="button"
-              role="menuitem"
-              onClick={() => handleNavigation(item.path)}
-              className={cn(styles.dropdownItem, isActive(item.path) && styles.active)}
-              aria-current={isActive(item.path) ? "page" : undefined}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
+          {sections.map((section) => (
+            <fieldset key={section.group} className={styles.group}>
+              <legend className={styles.groupHeader}>{section.group}</legend>
+              {section.items.map((item) => {
+                const active = isAppNavItemActive(item, pathname);
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="menuitem"
+                    onClick={() => handleNavigation(item.path, active)}
+                    className={cn(styles.dropdownItem, active && styles.active)}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    <Icon data-icon size={16} aria-hidden="true" className={styles.itemIcon} />
+                    <span className={styles.itemText}>
+                      <span className={styles.itemLabel}>{item.label}</span>
+                      <span className={styles.itemDescription}>{item.description}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </fieldset>
           ))}
         </div>
       )}

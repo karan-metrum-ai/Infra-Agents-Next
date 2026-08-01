@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { getAppNavItemById } from "@/config/appNav";
 import { logout } from "@/features/auth/authApi";
 import {
   selectIsAuthenticated,
@@ -26,6 +27,11 @@ function useNavCommand(id: string, label: string, path: string, allowedRoles: st
   });
 }
 
+function useAppNavCommand(navId: string) {
+  const item = getAppNavItemById(navId);
+  useNavCommand(item.id, item.label, item.path, item.allowedRoles);
+}
+
 /**
  * Registers app-wide navigation and account commands, mounted once in the
  * root layout. Per-page action commands (Save, Generate, Undo, view-mode
@@ -39,8 +45,8 @@ function useNavCommand(id: string, label: string, path: string, allowedRoles: st
  * invariant obvious at a glance instead of relying on a route list's
  * length never changing.
  *
- * Route list mirrors `CenterNavPanel.tsx`'s `allowedRoles` for the 3 routes
- * it already covers, extended to every other real page in the app.
+ * Primary destinations come from `appNav` so Cmd+K labels match the
+ * floating menu. Dashboard sub-tabs stay as secondary command-only entries.
  * Legal pages and dynamic detail routes (`/sandbox/runs/[id]`,
  * `/kyai/sessions/[id]`) are intentionally not registered here -- they're
  * either low-value command-search targets or need a specific id to be
@@ -50,25 +56,13 @@ export function GlobalCommands() {
   const router = useRouter();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
-  useNavCommand("nav:onboarding", "Onboarding", "/onboarding", ["platform_admin"]);
-  useNavCommand("nav:workflows", "Team Building", "/workflows", ["platform_admin", "infra_admin"]);
-  useNavCommand("nav:sandbox-new", "New Sandbox Run", "/sandbox/new", [
-    "platform_admin",
-    "infra_admin",
-  ]);
-  useNavCommand("nav:kyai", "KyAI Playground", "/kyai", ["platform_admin", "infra_admin"]);
-  useNavCommand("nav:digital-twin", "Digital Twin", "/digital-twin", [
-    "platform_admin",
-    "infra_admin",
-    "operator",
-    "viewer",
-  ]);
-  useNavCommand("nav:dashboard", "Dashboard — Command Center", "/dashboard/live", [
-    "platform_admin",
-    "infra_admin",
-    "operator",
-    "viewer",
-  ]);
+  useAppNavCommand("nav:onboarding");
+  useAppNavCommand("nav:digital-twin");
+  useAppNavCommand("nav:workflows");
+  useAppNavCommand("nav:dashboard");
+  useAppNavCommand("nav:kyai");
+  useAppNavCommand("nav:sandbox-new");
+
   useNavCommand(
     "nav:dashboard-hardware",
     "Dashboard — Physical Systems",
