@@ -1,0 +1,252 @@
+.siteRoomView {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--background);
+  overflow: hidden;
+}
+
+.layoutWarningBanner {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: color-mix(in oklch, var(--warning) 75%, black 15%);
+  color: #fff;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border: 1px solid color-mix(in oklch, var(--warning) 60%, transparent);
+  max-width: 90%;
+  text-align: center;
+}
+
+.canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.statsOverlay {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: var(--spacing-md);
+  z-index: 10;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  min-width: 60px;
+}
+
+.statValue {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.statLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.deviceInfo {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 280px;
+  background: rgba(10, 10, 15, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  padding: var(--spacing-md);
+  z-index: 10;
+  animation: slideIn 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deviceInfo {
+    animation: none;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.deviceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.3);
+  margin-bottom: 10px;
+}
+
+.deviceName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.deviceStatus {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 9999px;
+}
+
+.deviceStatus[data-status="online"] {
+  background: color-mix(in oklch, var(--success) 20%, transparent);
+  color: var(--success);
+}
+
+.deviceStatus[data-status="degraded"] {
+  background: color-mix(in oklch, var(--warning) 20%, transparent);
+  color: var(--warning);
+}
+
+.deviceStatus[data-status="offline"] {
+  background: color-mix(in oklch, var(--destructive) 20%, transparent);
+  color: var(--destructive);
+}
+
+.deviceDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detailLabel {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+}
+
+.detailValue {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--foreground);
+}
+
+.closeDeviceInfo {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.closeDeviceInfo:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--foreground);
+}
+
+/* Hidden as soon as the canvas paints — matches the same convention used elsewhere in DigitalTwin. */
+.loadingFallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  background: var(--background);
+  color: var(--muted);
+  font-size: var(--font-size-sm);
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.siteRoomView:not(:has(canvas)) .loadingFallback {
+  opacity: 1;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  color: var(--primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .statsOverlay {
+    padding: var(--spacing-lg);
+  }
+  .statValue {
+    font-size: var(--font-size-xl);
+  }
+}
+@media (min-width: 2560px) and (max-width: 3439px) {
+  .statsOverlay {
+    padding: var(--spacing-xl);
+  }
+  .statValue {
+    font-size: var(--font-size-2xl);
+  }
+}
+@media (min-width: 3440px) {
+  .statsOverlay {
+    padding: var(--spacing-xl);
+  }
+  .statValue {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+@media (max-aspect-ratio: 21/9) and (max-height: 1100px) {
+  .statsOverlay {
+    padding: var(--spacing-sm);
+  }
+}

@@ -8,6 +8,7 @@ import { ApprovalAlertBadge } from "@/components/ApprovalAlertBadge/ApprovalAler
 import { CenterNavPanel } from "@/components/CenterNavPanel/CenterNavPanel";
 import { ClusterTeamSelector } from "@/components/dashboard/ClusterTeamSelector/ClusterTeamSelector";
 import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
+import { Separator } from "@/components/ui/Separator/Separator";
 import { cn } from "@/lib/utils";
 import styles from "./LiveDashboardShell.module.css";
 import type { LiveDashboardShellProps } from "./LiveDashboardShell.types";
@@ -80,6 +81,7 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
             className={styles.logo}
             priority
           />
+          <Separator orientation="vertical" className={styles.separatorSm} />
           <h1 className={styles.title}>Dashboard</h1>
           <ClusterTeamSelector value={selectedClusterId} onClusterChange={handleClusterChange} />
         </div>

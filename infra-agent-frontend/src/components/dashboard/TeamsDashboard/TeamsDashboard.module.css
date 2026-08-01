@@ -1,0 +1,221 @@
+.splitLayout {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  gap: 12px;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns:
+    minmax(220px, 1fr)
+    minmax(260px, 1fr)
+    minmax(320px, var(--trace-panel-width, 34%));
+  padding: 12px;
+  background: var(--background);
+}
+
+/* Shared card chrome across all 3 panels. */
+.digitalTwinPanel,
+.teamCompositionPanel,
+.tracePanelInner {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.digitalTwinPanel {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+}
+
+.teamCompositionPanel {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.flowCanvasContainer {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.agentTeamViewFill {
+  position: absolute;
+  inset: 0;
+}
+
+.chatBar {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--foreground) 2%, transparent) 0%,
+    transparent 100%
+  );
+}
+
+.tracePanelColumn {
+  grid-column: 3;
+  grid-row: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.tracePanelInner {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+}
+
+.resizeHandle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+  background: transparent;
+  z-index: 20;
+  transition: background-color 0.15s ease;
+}
+
+.resizeHandle:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.resizeHandle::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 48px;
+  background: color-mix(in oklch, var(--foreground) 15%, transparent);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.resizeHandle:hover::before {
+  opacity: 1;
+}
+
+.tracePanelMain {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.tracePanelHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 6px var(--spacing-sm);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.tracePanelTitle {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.traceBackButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.traceBackButton:hover {
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: var(--foreground);
+}
+
+.traceBackButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--spacing-xl);
+  color: var(--muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resizeHandle,
+  .resizeHandle::before,
+  .traceBackButton {
+    transition: none;
+  }
+}
+
+@media (max-width: 1280px) {
+  .splitLayout {
+    grid-template-columns: minmax(200px, 0.9fr) minmax(240px, 1fr) minmax(
+        300px,
+        var(--trace-panel-width, 36%)
+      );
+  }
+}
+
+@media (max-width: 1024px) {
+  .splitLayout {
+    grid-template-rows: minmax(240px, 1fr) minmax(320px, 1.4fr) minmax(260px, 1fr);
+    grid-template-columns: 1fr;
+  }
+
+  .digitalTwinPanel {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .teamCompositionPanel {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .tracePanelColumn {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .resizeHandle {
+    display: none;
+  }
+}

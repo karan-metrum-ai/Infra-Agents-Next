@@ -665,3 +665,15 @@ button:focus-visible {
     overflow-y: auto;
   }
 }
+
+/* sonner (Toaster, src/app/layout.tsx) defaults its close button to the
+ * top-left corner of each toast regardless of the stack's own screen
+ * position (an LTR-direction default, not a `position` option) --
+ * `!important` is needed since sonner's own `[dir='ltr']` rule setting
+ * these same custom properties has higher specificity and would
+ * otherwise win regardless of source order. */
+[data-sonner-toast][data-styled="true"] [data-close-button] {
+  left: auto !important;
+  right: 0 !important;
+  transform: translate(35%, -35%) !important;
+}

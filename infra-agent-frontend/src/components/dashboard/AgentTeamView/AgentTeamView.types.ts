@@ -1,8 +1,12 @@
+import type { AgentMeta, AgentStatus } from "@/components/WorkflowDesigner/AgentNode.types";
+
 export interface AgentTeamViewProps {
   className?: string;
   showControls?: boolean;
   /** Cluster to load the deployed team for. No team renders until this is set. */
   clusterId: string | null;
+  /** Agent name currently processing a live query — lights up its pulsing aura. */
+  activeAgentName?: string | null;
 }
 
 export interface AgentDetail {
@@ -34,13 +38,16 @@ export interface AgentsStatus {
   status: string;
 }
 
+/** Node `data` payload for the "agent" node type — renders via the real `AgentNode`. */
 export interface TeamNodeData extends Record<string, unknown> {
   label: string;
   agentType: string;
   description: string;
+  tagline: string;
   tools: string[];
   capabilities: string[];
-  status: string;
+  status: AgentStatus;
   isOrchestrator: boolean;
-  avatar: string | undefined;
+  agentMeta: AgentMeta;
+  apiConnected?: boolean;
 }

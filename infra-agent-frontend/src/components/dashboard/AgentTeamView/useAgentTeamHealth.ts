@@ -70,12 +70,12 @@ export function useAgentTeamHealth(
           // Phase 15: skip the rebuild when nothing actually changed. Every
           // poll otherwise produced a brand-new node object for every
           // matched agent (even when its status was already correct),
-          // which — combined with `TeamNodePlaceholder` needing its own
-          // `memo` fix for this same reason — re-rendered the entire org
-          // chart every 30s regardless of whether any agent's status
-          // actually flipped.
-          if (!match || node.data.status === nextStatus) return node;
-          return { ...node, data: { ...node.data, status: nextStatus } };
+          // which — combined with `AgentNode` needing its own `memo` fix
+          // for this same reason — re-rendered the entire org chart every
+          // 30s regardless of whether any agent's status actually flipped.
+          if (!match) return node;
+          if (node.data.status === nextStatus && node.data.apiConnected === true) return node;
+          return { ...node, data: { ...node.data, status: nextStatus, apiConnected: true } };
         }),
       );
     } catch {

@@ -1,4 +1,4 @@
-import { AgentTeamView } from "@/components/dashboard/AgentTeamView/AgentTeamView";
+import { TeamsDashboard } from "@/components/dashboard/TeamsDashboard/TeamsDashboard";
 
 export default async function TeamsPage({
   searchParams,
@@ -6,5 +6,5 @@ export default async function TeamsPage({
   searchParams: Promise<{ cluster?: string }>;
 }) {
   const { cluster } = await searchParams;
-  return <AgentTeamView clusterId={cluster ?? null} />;
+  return <TeamsDashboard clusterId={cluster ?? null} />;
 }

@@ -14,8 +14,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
+  gap: var(--spacing-xl);
+  flex-wrap: nowrap;
   padding: var(--spacing-md) var(--spacing-lg);
   background: var(--card);
   border-bottom: 1px solid var(--border);
@@ -25,12 +25,23 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  flex-shrink: 0;
   height: 40px;
+  min-width: 0;
 }
 
 .logo {
   height: 28px;
   width: auto;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.separatorSm {
+  height: 1.5rem;
+  flex-shrink: 0;
+  margin-left: var(--spacing-sm);
+  margin-right: var(--spacing-sm);
 }
 
 .title {
@@ -41,12 +52,15 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .rightSection {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .navPanel {

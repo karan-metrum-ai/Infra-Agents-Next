@@ -5,8 +5,9 @@
  * injection in production; in dev mode, identity headers are attached
  * client-side from the resolved session (see `authTokenProvider`).
  *
- * 401 responses redirect to the BFF login endpoint. 403 responses surface
- * as user-facing toast notifications.
+ * 401 responses redirect to the BFF login endpoint. 403 responses are not
+ * surfaced as toasts — a component-level empty/disabled state is the right
+ * place for "you can't do this," not an interrupting notification.
  */
 
 import {
@@ -47,40 +48,15 @@ function shouldSkipRedirect(url: string): boolean {
 
 const TOAST_COOLDOWN_MS = 4000;
 let last401Toast = 0;
-let last403Toast = 0;
 
-export function showAuthToast(status: 401 | 403, detail?: string): void {
+export function showAuthToast(): void {
   const now = Date.now();
-
-  if (status === 401) {
-    if (now - last401Toast < TOAST_COOLDOWN_MS) return;
-    last401Toast = now;
-    toast.error("Session Expired", {
-      description: "Your session has expired or is invalid. Redirecting to login...",
-      duration: 4000,
-    });
-  } else {
-    if (now - last403Toast < TOAST_COOLDOWN_MS) return;
-    last403Toast = now;
-    toast.warning("Access Denied", {
-      description:
-        detail ||
-        "You do not have permission to perform this action. Contact your administrator if you believe this is an error.",
-      duration: 6000,
-    });
-  }
-}
-
-function extractDetail(data: unknown): string | undefined {
-  if (
-    data &&
-    typeof data === "object" &&
-    "detail" in data &&
-    typeof (data as Record<string, unknown>).detail === "string"
-  ) {
-    return (data as Record<string, string>).detail;
-  }
-  return undefined;
+  if (now - last401Toast < TOAST_COOLDOWN_MS) return;
+  last401Toast = now;
+  toast.error("Session Expired", {
+    description: "Your session has expired or is invalid. Redirecting to login...",
+    duration: 4000,
+  });
 }
 
 /**
@@ -127,13 +103,9 @@ export function createBaseQuery(
       const status = result.error.status;
       const requestUrl = typeof args === "string" ? args : args.url || "";
 
-      if (status === 401) {
-        if (!shouldSkipRedirect(requestUrl)) {
-          showAuthToast(401);
-          window.location.href = "/auth-api/auth/login";
-        }
-      } else if (status === 403) {
-        showAuthToast(403, extractDetail(result.error.data));
+      if (status === 401 && !shouldSkipRedirect(requestUrl)) {
+        showAuthToast();
+        window.location.href = "/auth-api/auth/login";
       }
     }
 

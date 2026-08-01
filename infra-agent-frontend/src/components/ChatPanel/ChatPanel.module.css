@@ -1,0 +1,145 @@
+.chatPanelWrapper {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* Embedded inside a split panel (TeamsDashboard's center column). */
+.chatPanelEmbedded {
+  max-width: none;
+  margin: 0;
+}
+
+.chatPanelEmbedded .chatInputContainer {
+  background: color-mix(in oklch, var(--foreground) 3%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 8px 10px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.chatPanelEmbedded .chatInputContainer:focus-within {
+  border-color: color-mix(in oklch, var(--secondary) 35%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--secondary) 8%, transparent);
+}
+
+.chatForm {
+  width: 100%;
+}
+
+.chatInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: color-mix(in oklch, var(--card) 95%, black 8%);
+  border: 1px solid color-mix(in oklch, var(--secondary) 20%, transparent);
+  border-radius: var(--radius-xl);
+  padding: 10px 12px;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chatInputContainer:focus-within {
+  border-color: color-mix(in oklch, var(--secondary) 50%, transparent);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 3px color-mix(in oklch, var(--secondary) 9%, transparent);
+}
+
+.chatInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--foreground);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  resize: none;
+  min-height: 20px;
+  max-height: 96px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--secondary) 30%, transparent) transparent;
+}
+
+.chatInput::placeholder {
+  color: var(--muted);
+}
+
+.sendButton {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  border: 1px solid color-mix(in oklch, var(--primary) 30%, transparent);
+  border-radius: var(--radius-md);
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.sendButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--primary) 20%, transparent);
+  border-color: color-mix(in oklch, var(--primary) 50%, transparent);
+  transform: scale(1.05);
+}
+
+.sendButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.sendButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  color: var(--muted);
+}
+
+.sendIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.shortcutHint {
+  flex-shrink: 0;
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.chatInputContainer:focus-within .shortcutHint {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sendButton,
+  .shortcutHint {
+    transition: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .chatInputContainer {
+    padding: 9px 10px;
+    gap: 8px;
+  }
+
+  .sendButton {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  .shortcutHint {
+    display: none;
+  }
+}

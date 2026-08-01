@@ -1,4 +1,15 @@
-import { Activity, Bot, Play, Radio, Shield, Zap } from "lucide-react";
+import {
+  Activity,
+  AlertCircle,
+  Bot,
+  CheckCircle,
+  Clock,
+  Loader2,
+  Play,
+  Radio,
+  Shield,
+  Zap,
+} from "lucide-react";
 import styles from "./AgentTeamView.module.css";
 
 const STATUS_COLOR: Record<string, string> = {
@@ -12,6 +23,23 @@ const STATUS_COLOR: Record<string, string> = {
 
 function statusColor(status: string): string {
   return STATUS_COLOR[status.toLowerCase()] ?? "var(--muted)";
+}
+
+function StatusIcon({ status }: { status: string }) {
+  switch (status.toLowerCase()) {
+    case "healthy":
+    case "ready":
+    case "completed":
+      return <CheckCircle size={16} aria-hidden="true" />;
+    case "processing":
+    case "running":
+      return <Loader2 size={16} className={styles.spinning} aria-hidden="true" />;
+    case "error":
+    case "failed":
+      return <AlertCircle size={16} aria-hidden="true" />;
+    default:
+      return <Clock size={16} aria-hidden="true" />;
+  }
 }
 
 interface StatsHeaderProps {
@@ -44,6 +72,9 @@ export function StatsHeader({
             <span className={styles.statValue}>{teamHealthStatus.toUpperCase()}</span>
             <span className={styles.statLabel}>Team Health</span>
           </div>
+          <span style={{ color: statusColor(teamHealthStatus) }}>
+            <StatusIcon status={teamHealthStatus} />
+          </span>
         </div>
 
         <div className={styles.statCard} style={{ borderColor: statusColor(systemStatus) }}>

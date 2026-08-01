@@ -70,6 +70,8 @@ function buildAgentNode(
   isOrchestrator: boolean,
 ): Node<TeamNodeData> {
   const label = getMappedLabel(agent.display_name);
+  const tools = extractTools(agent);
+  const capabilities = extractCapabilities(agent);
   return {
     id: agent.agent_name,
     type: "agent",
@@ -78,11 +80,12 @@ function buildAgentNode(
       label,
       agentType: agent.agent_name,
       description: agent.description,
-      tools: extractTools(agent),
-      capabilities: extractCapabilities(agent),
+      tagline: agent.description,
+      tools,
+      capabilities,
       status: "idle",
       isOrchestrator,
-      avatar: getAvatar(label),
+      agentMeta: { avatar: getAvatar(label), tools, capabilities },
     },
   };
 }
@@ -127,6 +130,8 @@ export function useClusterTeamGraph(clusterId: string | null) {
       return;
     }
 
+    // Sized to the real `AgentNode`'s fixed 320px card width and its typical
+    // rendered height (avatar + card body, ~300px).
     const viewportWidth = 1800;
     const centerX = viewportWidth / 2;
     const cardWidth = 320;

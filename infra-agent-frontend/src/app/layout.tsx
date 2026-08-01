@@ -48,7 +48,6 @@ export default function RootLayout({
                 },
               }}
               theme="dark"
-              richColors
               closeButton
             />
             <NotificationToast />

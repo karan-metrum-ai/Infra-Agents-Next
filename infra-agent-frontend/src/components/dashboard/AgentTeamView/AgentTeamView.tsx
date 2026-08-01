@@ -21,13 +21,18 @@ const AgentTeamGraphCanvas = dynamic(
 
 /**
  * Live view of a cluster's deployed agent team: read-only org-chart canvas
- * plus health/agent-catalog stats, polled every 30s. This is the interim
- * Teams-tab implementation for Phase 5 — the fuller experience (chat, query
- * history, SSE trace streaming) lives in TeamsDashboard, which depends on
- * Phase 6 (digital-twin panel), Phase 7 (the real AgentNode), and Phase 8
- * (useFlowStream + QueryTrace) all landing first.
+ * plus health/agent-catalog stats, polled every 30s. Embedded as the middle
+ * panel of `TeamsDashboard`'s 3-panel split, which drives `activeAgentName`
+ * from the live query stream to light up the currently-working agent's
+ * pulsing aura (`AgentNode`'s `isLiveAgent`) — the stand-in for the Vite
+ * source's `InvestigationActionFlow`, which never actually existed there.
  */
-export function AgentTeamView({ className, showControls = true, clusterId }: AgentTeamViewProps) {
+export function AgentTeamView({
+  className,
+  showControls = true,
+  clusterId,
+  activeAgentName,
+}: AgentTeamViewProps) {
   // Phase 11: when no `cluster` query param is present, fall back to the
   // most-recently-deployed team's cluster id (mirrors the Vite source's
   // `getMostRecentDeployedTeamId()` usage in `TeamsDashboard`/
@@ -43,11 +48,18 @@ export function AgentTeamView({ className, showControls = true, clusterId }: Age
     setNodes,
   );
 
+  const displayNodes = useMemo(() => {
+    if (!activeAgentName) return nodes;
+    return nodes.map((node) => {
+      const isLiveAgent = node.id === activeAgentName;
+      if (node.data.isLiveAgent === isLiveAgent) return node;
+      return { ...node, data: { ...node.data, isLiveAgent } };
+    });
+  }, [nodes, activeAgentName]);
+
   const stats = useMemo(() => {
     const agentNodes = nodes.filter((node) => node.type === "agent");
-    const activeAgents = agentNodes.filter(
-      (node) => node.data.status === "running" || node.data.status === "active",
-    );
+    const activeAgents = agentNodes.filter((node) => node.data.status === "running");
     return {
       totalAgents: agentNodes.length,
       activeAgents: activeAgents.length,
@@ -88,7 +100,7 @@ export function AgentTeamView({ className, showControls = true, clusterId }: Age
 
       <div className={styles.flowContainer}>
         <AgentTeamGraphCanvas
-          nodes={nodes}
+          nodes={displayNodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}

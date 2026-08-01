@@ -77,6 +77,10 @@ const nextConfig: NextConfig = {
         destination: `${BACKEND_UPSTREAM}/clusterid-${CLUSTER_ID}/report-api/:path*`,
       },
       { source: "/uptime-api/:path*", destination: `${UPTIME_MONITOR_UPSTREAM}/:path*` },
+      // Cluster-scoped endpoints (e.g. `useAgentTeamHealth`'s
+      // `/clusterid-{id}/health` poll) — nginx.conf passes these through to
+      // BACKEND_UPSTREAM unchanged (`location ~ ^/clusterid-[0-9]+`).
+      { source: "/clusterid-:id/:path*", destination: `${BACKEND_UPSTREAM}/clusterid-:id/:path*` },
       // /sandbox-api intentionally not rewired — no local port-forward for
       // the sandbox evaluator service is currently up on this machine (the
       // docker-compose default is a NodePort at :30825). Add one and a

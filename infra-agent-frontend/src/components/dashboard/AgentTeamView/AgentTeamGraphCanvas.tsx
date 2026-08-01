@@ -8,12 +8,16 @@ import {
   ReactFlowProvider,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import type { Edge, Node, OnEdgesChange, OnNodesChange } from "@xyflow/react";
-import { TeamNodePlaceholder } from "./TeamNodePlaceholder";
+import type { Edge, Node, NodeProps, OnEdgesChange, OnNodesChange } from "@xyflow/react";
+import AgentNode from "@/components/WorkflowDesigner/AgentNode";
 import styles from "./AgentTeamView.module.css";
 import type { TeamNodeData } from "./AgentTeamView.types";
 
-const NODE_TYPES = { agent: TeamNodePlaceholder };
+/** Settings button is a no-op here — this org chart is read-only, matching the Vite source. */
+const NOOP = () => {};
+const NODE_TYPES = {
+  agent: (props: NodeProps<Node<TeamNodeData>>) => <AgentNode {...props} onSettingsClick={NOOP} />,
+};
 
 interface AgentTeamGraphCanvasProps {
   nodes: Node<TeamNodeData>[];
