@@ -135,8 +135,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: color-mix(in oklch, var(--foreground) 45%, transparent);
@@ -151,44 +151,6 @@
 .closeButton:focus-visible {
   outline: 2px solid var(--color-ring);
   outline-offset: 2px;
-}
-
-.pageHeader {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.pageTopBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pageBackLink {
-  all: unset;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  cursor: pointer;
-  font-size: var(--font-size-sm);
-  color: color-mix(in oklch, var(--foreground) 55%, transparent);
-}
-
-.pageBackLink:hover {
-  color: color-mix(in oklch, var(--foreground) 85%, transparent);
-}
-
-.pageBackLink:focus-visible {
-  outline: 2px solid var(--color-ring);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-.pageHero {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
 }
 
 /* ── Tabs ──────────────────────────────────────────────────────────── */
@@ -352,7 +314,7 @@
 
 .teamList {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--spacing-md);
 }
 
@@ -462,11 +424,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-sm);
   border: var(--border-width) solid color-mix(in oklch, var(--foreground) 10%, transparent);
   cursor: pointer;
+  box-sizing: border-box;
   color: color-mix(in oklch, var(--foreground) 55%, transparent);
 }
 
@@ -511,7 +474,7 @@
 
 .promptList {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--spacing-sm);
 }
 
@@ -610,9 +573,25 @@
   white-space: pre-wrap;
 }
 
+.selectionSummary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-right: auto;
+  font-size: var(--font-size-sm);
+  color: color-mix(in oklch, var(--foreground) 65%, transparent);
+}
+
+.selectionSummary strong {
+  color: color-mix(in oklch, var(--foreground) 90%, transparent);
+  font-weight: 600;
+}
+
 .teamSelectionActions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  gap: var(--spacing-md);
 }
 
 .startEvaluationButton {

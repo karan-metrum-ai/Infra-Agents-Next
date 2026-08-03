@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { ReactFlowProvider, type Node } from "@xyflow/react";
 import { Monitor } from "lucide-react";
+import { AppPageShell } from "@/components/AppPageShell/AppPageShell";
 import type { AgentNodeData } from "./AgentNode.types";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -115,124 +116,128 @@ function WorkflowDesignerContent() {
     markOnboardingComplete();
   };
 
-  return (
-    <div className={styles.workflowDesigner}>
-      <WorkflowDesignerCanvas
-        wrapperRef={canvas.reactFlowWrapperRef}
-        nodes={canvas.nodes}
-        edges={canvas.edges}
-        onNodesChange={canvas.handleNodesChange}
-        onEdgesChange={canvas.onEdgesChange}
-        onConnect={canvas.onConnect}
-        onDrop={canvas.onDrop}
-        onDragOver={canvas.onDragOver}
-        onDragLeave={canvas.onDragLeave}
-        onSelectionChange={canvas.onSelectionChange}
-        onSettingsClick={inspector.handleSettingsClick}
-        isRecommending={teamLoader.isRecommending}
-      />
+  const workflowActions = (
+    <ActionButtonsPanel
+      onRecommendTeam={() => setShowRecommendModal(true)}
+      onTestPlayground={() => router.push("/kyai")}
+      onSandboxEval={() => router.push("/sandbox/new")}
+      onDeploySavedTeam={() => setShowDeploySavedTeamModal(true)}
+      onSaveTeam={() => setShowSaveTeamModal(true)}
+      currentTeamId={teamLoader.currentTeamId}
+      currentClusterId={teamLoader.currentClusterId}
+      canExecute={canvas.nodes.length > 0}
+      nodes={agentNodes}
+      edges={canvas.edges}
+      teamName={teamLoader.teamName}
+      onTeamCreated={handleTeamCreated}
+      onTeamDeployed={handleTeamDeployed}
+    />
+  );
 
-      <div className={styles.topBar}>
-        <TeamBuilderPanel
-          teamName={teamLoader.teamName}
-          onTeamNameChange={teamLoader.setTeamName}
-          nodeCount={canvas.nodes.length}
-          edgeCount={canvas.edges.length}
-          selectedClusterId={teamLoader.currentClusterId || teamLoader.selectedClusterId}
-          onClearCluster={teamLoader.clearCluster}
+  return (
+    <AppPageShell title="Team Builder" actions={workflowActions}>
+      <div className={styles.workflowDesigner}>
+        <WorkflowDesignerCanvas
+          wrapperRef={canvas.reactFlowWrapperRef}
+          nodes={canvas.nodes}
+          edges={canvas.edges}
+          onNodesChange={canvas.handleNodesChange}
+          onEdgesChange={canvas.onEdgesChange}
+          onConnect={canvas.onConnect}
+          onDrop={canvas.onDrop}
+          onDragOver={canvas.onDragOver}
+          onDragLeave={canvas.onDragLeave}
+          onSelectionChange={canvas.onSelectionChange}
+          onSettingsClick={inspector.handleSettingsClick}
+          isRecommending={teamLoader.isRecommending}
         />
 
-        <ActionButtonsPanel
-          onRecommendTeam={() => setShowRecommendModal(true)}
-          onTestPlayground={() => router.push("/kyai")}
-          onSandboxEval={() => router.push("/sandbox/new")}
-          onDeploySavedTeam={() => setShowDeploySavedTeamModal(true)}
-          onSaveTeam={() => setShowSaveTeamModal(true)}
-          currentTeamId={teamLoader.currentTeamId}
-          currentClusterId={teamLoader.currentClusterId}
-          canExecute={canvas.nodes.length > 0}
+        <div className={styles.topBar}>
+          <TeamBuilderPanel
+            teamName={teamLoader.teamName}
+            onTeamNameChange={teamLoader.setTeamName}
+            nodeCount={canvas.nodes.length}
+            edgeCount={canvas.edges.length}
+            selectedClusterId={teamLoader.currentClusterId || teamLoader.selectedClusterId}
+            onClearCluster={teamLoader.clearCluster}
+          />
+        </div>
+
+        <AgentsPanel onDragStart={canvas.handleDragStart} onAgentSelect={canvas.addAgentToTeam} />
+
+        {inspector.selectedAgent ? (
+          <AgentInspectorPanel
+            selectedAgent={inspector.selectedAgent}
+            selectedTools={inspector.selectedTools}
+            onToolToggle={inspector.handleToolToggle}
+            onModelSelect={inspector.handleModelSelect}
+            onClose={inspector.closeInspector}
+            userInstructions={
+              inspector.selectedAgent.nodeId
+                ? canvas.agentUserInstructions[inspector.selectedAgent.nodeId] || ""
+                : ""
+            }
+            knowledgeFiles={
+              inspector.selectedAgent.nodeId
+                ? inspector.agentKnowledgeFiles[inspector.selectedAgent.nodeId] || []
+                : []
+            }
+            cronJobConfig={
+              inspector.selectedAgent.nodeId
+                ? inspector.agentCronJobConfigs[inspector.selectedAgent.nodeId] ||
+                  inspector.emptyCronConfig
+                : inspector.emptyCronConfig
+            }
+            onUserInstructionsChange={inspector.handleUserInstructionsChange}
+            onFileUpload={inspector.handleFileUpload}
+            onFileDelete={inspector.handleFileDelete}
+            onCronJobConfigChange={inspector.handleCronJobConfigChange}
+            onPanelRef={inspector.setInspectorPanelRef}
+          />
+        ) : (
+          <ToolCatalogPanel />
+        )}
+
+        {hasDeployedTeams && (
+          <div className={styles.dashboardButtonContainer}>
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/live/teams")}
+              className={styles.dashboardButton}
+            >
+              <Monitor className={styles.dashboardIcon} aria-hidden="true" />
+              <span>Move to Dashboard</span>
+            </button>
+          </div>
+        )}
+
+        <RecommendTeamModal
+          isOpen={showRecommendModal}
+          onClose={() => setShowRecommendModal(false)}
+          onShowRecommendedTeam={(features) => {
+            void teamLoader.handleShowRecommendedTeam(features);
+          }}
+        />
+
+        <DeploySavedTeamModal
+          isOpen={showDeploySavedTeamModal}
+          onClose={() => setShowDeploySavedTeamModal(false)}
+          onLoadTeam={teamLoader.handleLoadSavedTeam}
+        />
+
+        <SaveTeamModal
+          isOpen={showSaveTeamModal}
+          onClose={() => setShowSaveTeamModal(false)}
+          onTeamSaved={teamLoader.handleTeamSaved}
           nodes={agentNodes}
           edges={canvas.edges}
           teamName={teamLoader.teamName}
-          onTeamCreated={handleTeamCreated}
-          onTeamDeployed={handleTeamDeployed}
+          selectedTools={canvas.agentSelectedTools}
+          selectedModelClients={canvas.agentSelectedModelClients}
+          recommendedTeamPayload={teamLoader.recommendedTeamPayload}
         />
       </div>
-
-      <AgentsPanel onDragStart={canvas.handleDragStart} onAgentSelect={canvas.addAgentToTeam} />
-
-      {inspector.selectedAgent ? (
-        <AgentInspectorPanel
-          selectedAgent={inspector.selectedAgent}
-          selectedTools={inspector.selectedTools}
-          onToolToggle={inspector.handleToolToggle}
-          onModelSelect={inspector.handleModelSelect}
-          onClose={inspector.closeInspector}
-          userInstructions={
-            inspector.selectedAgent.nodeId
-              ? canvas.agentUserInstructions[inspector.selectedAgent.nodeId] || ""
-              : ""
-          }
-          knowledgeFiles={
-            inspector.selectedAgent.nodeId
-              ? inspector.agentKnowledgeFiles[inspector.selectedAgent.nodeId] || []
-              : []
-          }
-          cronJobConfig={
-            inspector.selectedAgent.nodeId
-              ? inspector.agentCronJobConfigs[inspector.selectedAgent.nodeId] ||
-                inspector.emptyCronConfig
-              : inspector.emptyCronConfig
-          }
-          onUserInstructionsChange={inspector.handleUserInstructionsChange}
-          onFileUpload={inspector.handleFileUpload}
-          onFileDelete={inspector.handleFileDelete}
-          onCronJobConfigChange={inspector.handleCronJobConfigChange}
-          onPanelRef={inspector.setInspectorPanelRef}
-        />
-      ) : (
-        <ToolCatalogPanel />
-      )}
-
-      {hasDeployedTeams && (
-        <div className={styles.dashboardButtonContainer}>
-          <button
-            type="button"
-            onClick={() => router.push("/dashboard/live/teams")}
-            className={styles.dashboardButton}
-          >
-            <Monitor className={styles.dashboardIcon} aria-hidden="true" />
-            <span>Move to Dashboard</span>
-          </button>
-        </div>
-      )}
-
-      <RecommendTeamModal
-        isOpen={showRecommendModal}
-        onClose={() => setShowRecommendModal(false)}
-        onShowRecommendedTeam={(features) => {
-          void teamLoader.handleShowRecommendedTeam(features);
-        }}
-      />
-
-      <DeploySavedTeamModal
-        isOpen={showDeploySavedTeamModal}
-        onClose={() => setShowDeploySavedTeamModal(false)}
-        onLoadTeam={teamLoader.handleLoadSavedTeam}
-      />
-
-      <SaveTeamModal
-        isOpen={showSaveTeamModal}
-        onClose={() => setShowSaveTeamModal(false)}
-        onTeamSaved={teamLoader.handleTeamSaved}
-        nodes={agentNodes}
-        edges={canvas.edges}
-        teamName={teamLoader.teamName}
-        selectedTools={canvas.agentSelectedTools}
-        selectedModelClients={canvas.agentSelectedModelClients}
-        recommendedTeamPayload={teamLoader.recommendedTeamPayload}
-      />
-    </div>
+    </AppPageShell>
   );
 }
 

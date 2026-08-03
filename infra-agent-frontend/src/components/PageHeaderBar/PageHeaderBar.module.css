@@ -1,16 +1,13 @@
-/* Digital Twin Header Styles
- * Mirrors the Onboarding / LiveDashboard top bar so the menu button,
- * Metrum logo and page title share the same position and padding
- * across pages.
- */
 .topBar {
   position: fixed;
   top: var(--spacing-lg);
   left: var(--spacing-lg);
+  right: var(--spacing-lg);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--spacing-md);
-  z-index: 100;
+  z-index: 110;
   pointer-events: none;
 }
 
@@ -25,7 +22,6 @@
   border: var(--border-width) solid var(--border);
   height: 52px;
   pointer-events: auto;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logo {
@@ -35,23 +31,17 @@
   object-fit: contain;
 }
 
-/* Compact square icon used on small screens */
 .logoIcon {
   display: none;
   width: 28px;
   height: 28px;
   object-fit: contain;
   border-radius: var(--radius-sm);
-  flex-shrink: 0;
-}
-
-.separatorSm {
-  height: 1.5rem;
-  margin-left: var(--spacing-sm);
-  margin-right: var(--spacing-sm);
 }
 
 .title {
+  margin: 0;
+  white-space: nowrap;
   font-family:
     "Inter",
     -apple-system,
@@ -60,17 +50,40 @@
   font-size: var(--font-size-xl);
   font-weight: 600;
   color: var(--foreground);
-  margin: 0;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
 }
 
-/* Tablet: shrink logo and hide the wordmark */
+.rightPanel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: var(--card);
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: var(--border-width) solid var(--border);
+  min-height: 52px;
+  pointer-events: auto;
+}
+
+.separatorSm {
+  height: 1.5rem;
+  margin-left: var(--spacing-sm);
+  margin-right: var(--spacing-sm);
+}
+
 @media (max-width: 1024px) {
   .logoPanel {
     gap: var(--spacing-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
-    height: 44px;
+  }
+
+  .rightPanel {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    min-height: 44px;
+  }
+
+  .title {
+    font-size: var(--font-size-base);
   }
 
   .logo {
@@ -78,18 +91,24 @@
     min-width: unset;
     max-width: 120px;
   }
-
-  .title {
-    font-size: var(--font-size-base);
-  }
 }
 
-/* Mobile: hide the wordmark/title, show the compact icon */
 @media (max-width: 768px) {
+  .topBar {
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    gap: var(--spacing-xs);
+  }
+
   .logoPanel {
     padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-sm);
     height: 40px;
+  }
+
+  .rightPanel {
+    min-height: 40px;
   }
 
   .logo {
@@ -100,10 +119,7 @@
     display: block;
   }
 
-  .title {
-    display: none;
-  }
-
+  .title,
   .separatorSm {
     display: none;
   }

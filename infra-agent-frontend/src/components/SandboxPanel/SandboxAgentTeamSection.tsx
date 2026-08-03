@@ -1,6 +1,7 @@
 "use client";
 
 import { Controller } from "react-hook-form";
+import { Users } from "lucide-react";
 import { AVAILABLE_AGENTS } from "./sandboxAgentCatalog";
 import styles from "./SandboxConfigForm.module.css";
 import type { SandboxSectionProps } from "./SandboxConfigForm.types";
@@ -21,6 +22,7 @@ export function SandboxAgentTeamSection({ form }: SandboxSectionProps) {
   return (
     <section className={styles.configSection}>
       <div className={styles.configSectionHeader}>
+        <Users size={14} className={styles.configSectionIcon} aria-hidden="true" />
         <span>2. Agent team</span>
       </div>
       <p className={styles.configSectionHint}>Choose which agents to deploy and evaluate.</p>

@@ -42,8 +42,13 @@ const NAV_ITEMS = [
   },
 ];
 
-/** Shared top bar across the /dashboard/live tabs — Vite LiveDashboard parity. */
-export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
+/**
+ * Shared top bar — Vite LiveDashboard parity for /dashboard/live/*, and
+ * reused verbatim (via `title`) as the universal app shell for
+ * /digital-twin and /workflows so every top-level page shares the same
+ * nav, notifications, and profile menu.
+ */
+export function LiveDashboardShell({ children, title = "Dashboard" }: LiveDashboardShellProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -91,7 +96,7 @@ export function LiveDashboardShell({ children }: LiveDashboardShellProps) {
             className={styles.logoIcon}
           />
           <Separator orientation="vertical" className={styles.separatorSm} />
-          <h1 className={styles.title}>Dashboard</h1>
+          <h1 className={styles.title}>{title}</h1>
           <Separator orientation="vertical" className={styles.separatorMd} />
           <ClusterTeamSelector value={selectedClusterId} onClusterChange={handleClusterChange} />
         </div>

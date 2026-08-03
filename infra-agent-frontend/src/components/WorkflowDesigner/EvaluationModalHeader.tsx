@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronLeft, X } from "lucide-react";
+import { X } from "lucide-react";
+import { PageHero } from "@/components/PageHero/PageHero";
 import styles from "./EvaluationModal.module.css";
 import type { EvaluationModalLayout } from "./EvaluationModal.types";
 
@@ -21,22 +22,13 @@ export function EvaluationModalHeader({ layout, onClose, sessionId }: Evaluation
 
   if (layout === "page") {
     return (
-      <header className={styles.pageHeader}>
-        <div className={styles.pageTopBar}>
-          <button type="button" className={styles.pageBackLink} onClick={onClose} aria-label="Back">
-            <ChevronLeft size={14} aria-hidden="true" />
-            Back
-          </button>
-          {sessionBadge && <div className={styles.pageSessionBadge}>{sessionBadge}</div>}
-        </div>
-        <div className={styles.pageHero}>
-          <span className={styles.pageEyebrow}>KYAI Playground</span>
-          <h1 className={styles.titleText}>Know Your AI</h1>
-          <p className={styles.titleSubtext}>
-            Trace, score, and visualize a single agent-team execution.
-          </p>
-        </div>
-      </header>
+      <PageHero
+        eyebrow="KYAI Playground"
+        title="Know Your AI"
+        subtitle="Trace, score, and visualize a single agent-team execution."
+        onBack={onClose}
+        trailing={sessionBadge && <div className={styles.pageSessionBadge}>{sessionBadge}</div>}
+      />
     );
   }
 

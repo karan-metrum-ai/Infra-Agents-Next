@@ -1,17 +1,15 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import Image from "next/image";
 import { Layers, X } from "lucide-react";
-import { CenterNavPanel } from "@/components/CenterNavPanel/CenterNavPanel";
 import styles from "./TeamBuilderPanel.module.css";
 import type { TeamBuilderPanelProps } from "./TeamBuilderPanel.types";
 
 /**
- * Top-left floating pill: brand mark, global nav, the editable team-name
- * input, and (once a cluster is picked) a dismissible cluster indicator
- * chip. Renders inside `FloatingPanel` at `position="top-left"` by its
- * parent (a later Phase 7 orchestrator).
+ * Top-left floating pill below the shared `LiveDashboardShell` bar (mounted
+ * by `app/workflows/layout.tsx`, which already provides the hamburger/logo/
+ * avatar): the editable team-name input and, once a cluster is picked, a
+ * dismissible cluster indicator chip.
  */
 export function TeamBuilderPanel({
   teamName,
@@ -28,25 +26,6 @@ export function TeamBuilderPanel({
   return (
     <div className={styles.teamBuilderPanel}>
       <div className={styles.teamHeader}>
-        <CenterNavPanel />
-        <Image
-          src="/metrum-logo-white.webp"
-          alt="Metrum AI"
-          width={120}
-          height={28}
-          className={styles.logo}
-          priority
-          decoding="async"
-        />
-        <Image
-          src="/android-chrome-512x512.png"
-          alt="Metrum AI"
-          width={22}
-          height={22}
-          className={styles.logoIcon}
-          decoding="async"
-        />
-        <div className={`${styles.divider} ${styles.brandDivider}`} />
         <h1 className={styles.title}>Team Builder</h1>
         <div className={styles.divider} />
         <div className={styles.inputContainer}>

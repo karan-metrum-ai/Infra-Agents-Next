@@ -1,0 +1,97 @@
+/* Same pill chrome as LiveDashboardShell's top bar (var(--card) cards,
+ * spacing-lg insets), minus the nav-tabs/bell/cluster-selector content
+ * that page doesn't need — just hamburger + logo + title on the left,
+ * profile avatar on the right. */
+.shell {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+}
+
+.logoPanel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+  background: var(--card);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: var(--border-width) solid var(--border);
+  height: 52px;
+}
+
+.logo {
+  width: auto;
+  height: 28px;
+}
+
+.separator {
+  height: 1.5rem;
+  margin-left: var(--spacing-sm);
+  margin-right: var(--spacing-sm);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rightPanel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  background: var(--card);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: var(--border-width) solid var(--border);
+  height: 52px;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoPanel {
+    transition: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .topBar {
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-xs);
+  }
+
+  .logoPanel,
+  .rightPanel {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .separator {
+    display: none;
+  }
+
+  .title {
+    font-size: var(--font-size-sm);
+  }
+}

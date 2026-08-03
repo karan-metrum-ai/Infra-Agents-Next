@@ -259,6 +259,18 @@ export function EvaluationTeamSelection({
           </div>
 
           <div className={styles.teamSelectionActions}>
+            {selectedTeamId && hasValidPrompt && (
+              <div className={styles.selectionSummary}>
+                <CheckCircle size={14} className={styles.sectionComplete} aria-hidden="true" />
+                <span>
+                  Ready to evaluate{" "}
+                  <strong>
+                    {availableTeams.find((team) => team.team_id === selectedTeamId)?.team_name ??
+                      "selected team"}
+                  </strong>
+                </span>
+              </div>
+            )}
             <button
               type="button"
               onClick={onStartEvaluation}

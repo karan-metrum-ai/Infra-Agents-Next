@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, ChevronLeft, History, Loader2, Play } from "lucide-react";
+import { AlertCircle, History, Loader2, Play } from "lucide-react";
 import { useStartRunMutation } from "@/features/sandbox/sandboxApi";
 import { useRegisterCommand } from "@/hooks/useCommandRegistry";
+import { PageHero } from "@/components/PageHero/PageHero";
 import {
   defaultSandboxRunConfigFormValues,
   sandboxRunConfigSchema,
@@ -17,6 +18,7 @@ import { SandboxSimulatorSection } from "./SandboxSimulatorSection";
 import { SandboxAgentTeamSection } from "./SandboxAgentTeamSection";
 import { SandboxDatasetSection } from "./SandboxDatasetSection";
 import { SandboxAdvancedSection } from "./SandboxAdvancedSection";
+import { SandboxRunSummary } from "./SandboxRunSummary";
 import { SandboxRunHistoryPanel } from "./SandboxRunHistoryPanel";
 import styles from "./SandboxConfigForm.module.css";
 
@@ -100,16 +102,12 @@ export function SandboxConfigForm() {
   return (
     <div className={styles.pageRoot}>
       <div className={styles.pageContainer}>
-        <header className={styles.pageHeader}>
-          <div className={styles.pageTopBar}>
-            <button
-              type="button"
-              className={styles.backButton}
-              onClick={() => router.push("/workflows")}
-            >
-              <ChevronLeft size={14} aria-hidden="true" />
-              Back
-            </button>
+        <PageHero
+          eyebrow="Sandbox Evaluator"
+          title="Configure a sandbox run"
+          subtitle="Set up the evaluation parameters, then open the live report once the run starts."
+          onBack={() => router.push("/workflows")}
+          trailing={
             <button
               type="button"
               className={styles.historyButton}
@@ -118,23 +116,22 @@ export function SandboxConfigForm() {
               <History size={14} aria-hidden="true" />
               Run History
             </button>
-          </div>
-          <div className={styles.pageHero}>
-            <span className={styles.pageEyebrow}>Sandbox Evaluator</span>
-            <h1 className={styles.titleText}>Configure a sandbox run</h1>
-            <p className={styles.titleSubtext}>
-              Set up the evaluation parameters, then open the live report once the run starts.
-            </p>
-          </div>
-        </header>
+          }
+        />
 
         <form className={styles.sandboxConfigContainer} onSubmit={onSubmit} noValidate>
-          <fieldset className={styles.formFieldset} disabled={isStarting}>
-            <SandboxSimulatorSection form={form} />
-            <SandboxAgentTeamSection form={form} />
-            <SandboxDatasetSection form={form} />
-            <SandboxAdvancedSection form={form} />
-          </fieldset>
+          <div className={styles.configLayout}>
+            <fieldset className={styles.formFieldset} disabled={isStarting}>
+              <SandboxSimulatorSection form={form} />
+              <SandboxAgentTeamSection form={form} />
+              <SandboxDatasetSection form={form} />
+              <SandboxAdvancedSection form={form} />
+            </fieldset>
+
+            <aside className={styles.runSummarySidebar}>
+              <SandboxRunSummary form={form} />
+            </aside>
+          </div>
 
           {submitError && (
             <div className={styles.errorBannerInline} role="alert">

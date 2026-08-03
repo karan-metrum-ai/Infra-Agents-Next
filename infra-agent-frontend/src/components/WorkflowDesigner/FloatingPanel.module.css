@@ -159,37 +159,6 @@
   transition: opacity 0.3s ease-in 0.1s;
 }
 
-/* ActionButtonsPanel — symmetric with TeamBuilderPanel, card shape, natural width */
-:global(.actionButtonsFloatingPanel) {
-  width: max-content !important;
-  min-width: unset !important;
-  max-width: none !important;
-  height: var(--nav-panel-h) !important;
-  min-height: var(--nav-panel-h) !important;
-  max-height: var(--nav-panel-h) !important;
-  border-radius: var(--radius-xl) !important;
-  overflow: visible !important;
-}
-
-:global(.actionButtonsFloatingPanel) .panelContent {
-  overflow: visible !important;
-  height: 100% !important;
-  padding: 0 var(--spacing-md) !important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: max-content !important;
-}
-
-:global(.actionButtonsFloatingPanel):not(.collapsed) {
-  border-radius: var(--radius-xl) !important;
-  height: var(--nav-panel-h) !important;
-  min-height: var(--nav-panel-h) !important;
-  max-height: var(--nav-panel-h) !important;
-  width: max-content !important;
-}
-
 /* Bottom-right positioning with slide-in animation */
 .position-right-top {
   bottom: 360px;

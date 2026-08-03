@@ -22,7 +22,6 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
 import { useOnboardingStatus } from "@/hooks/useOnboardingStatus";
 import { useRegisterCommand } from "@/hooks/useCommandRegistry";
 import { DigitalTwinBuildingStats } from "./DigitalTwinBuildingStats";
@@ -36,6 +35,7 @@ import { useDigitalTwinTelemetry } from "./useDigitalTwinTelemetry";
 import { useDigitalTwinViewState } from "./useDigitalTwinViewState";
 import styles from "./DataCenterDigitalTwin.module.css";
 import type { DataCenterDigitalTwinProps } from "./DataCenterDigitalTwin.types";
+import type { GlobeSite } from "./types";
 
 /**
  * `DigitalTwinCanvasView` pulls in `@react-three/fiber`/`@react-three/drei`/
@@ -52,8 +52,11 @@ const DigitalTwinCanvasView = dynamic(
 const TOTAL_FLOORS = 9;
 const FLOOR_HEIGHT = 4;
 
+/** Stable identity so the default never re-triggers downstream memo/effects. */
+const EMPTY_SITES: GlobeSite[] = [];
+
 export function DataCenterDigitalTwin({
-  sites = [],
+  sites = EMPTY_SITES,
   initialViewMode = "globe",
   onDeviceSelect,
   hideNavigation = false,
@@ -147,8 +150,6 @@ export function DataCenterDigitalTwin({
   return (
     <div className={styles.twinRoot}>
       <TransitionOverlay transitionState={transitionState} siteName={selectedSite?.name} />
-
-      {!hideNavigation && <ProfileAvatar position="fixed" />}
 
       <DigitalTwinCanvasView
         viewMode={viewMode}

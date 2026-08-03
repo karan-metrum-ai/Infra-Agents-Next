@@ -1,18 +1,85 @@
+/* Confined to the middle column between AgentsPanel (left) and
+ * ToolCatalogPanel/AgentInspectorPanel (right) -- rail widths are set as
+ * custom properties on the `.workflowDesigner` ancestor (see
+ * WorkflowDesigner.module.css) so the canvas never extends underneath
+ * those fixed-position side panels. */
 .reactFlowContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: var(--workflow-panel-top, 80px);
+  right: var(--canvas-right-rail, 20px);
+  bottom: var(--canvas-bottom-inset, 20px);
+  left: var(--canvas-left-rail, 20px);
+  overflow: hidden;
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
 }
 
 .reactFlow {
   background: var(--background);
 }
 
+/* `@xyflow/react/dist/style.css` ships its own light-theme
+ * `.react-flow__controls-button` (white background, dark icon fill) --
+ * without an explicit override here those buttons render in that default
+ * light theme regardless of this app's dark tokens, showing as blank
+ * white squares. `!important` is needed to win over that base
+ * stylesheet's own rules at equal selector specificity. */
 .reactFlowControls {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  padding: 4px !important;
+  background: var(--panel-bg) !important;
+  border: var(--border-width) solid var(--panel-border) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--panel-shadow) !important;
+  overflow: hidden !important;
+}
+
+.reactFlowControls button {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  color: color-mix(in oklch, var(--foreground) 70%, transparent) !important;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease !important;
+  box-shadow: none !important;
+}
+
+.reactFlowControls button:hover {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent) !important;
+  color: var(--foreground) !important;
+}
+
+.reactFlowControls button:active {
+  background: color-mix(in oklch, var(--foreground) 12%, transparent) !important;
+  transform: scale(0.94);
+}
+
+.reactFlowControls button:focus-visible {
+  outline: none !important;
+  box-shadow: inset 0 0 0 1.5px var(--primary) !important;
+}
+
+.reactFlowControls button svg {
+  width: 12px !important;
+  height: 12px !important;
+  fill: currentColor !important;
+}
+
+.reactFlowControls button path {
+  fill: currentColor !important;
 }
 
 .recommendingOverlay {

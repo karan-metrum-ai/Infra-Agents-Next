@@ -1,5 +1,6 @@
 "use client";
 
+import { Cpu } from "lucide-react";
 import styles from "./SandboxConfigForm.module.css";
 import type { SandboxSectionProps } from "./SandboxConfigForm.types";
 
@@ -17,6 +18,7 @@ export function SandboxSimulatorSection({ form }: SandboxSectionProps) {
   return (
     <section className={styles.configSection}>
       <div className={styles.configSectionHeader}>
+        <Cpu size={14} className={styles.configSectionIcon} aria-hidden="true" />
         <span>1. Simulator</span>
       </div>
       <p className={styles.configSectionHint}>

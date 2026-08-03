@@ -11,13 +11,17 @@ import {
   useGetClusterIdsQuery,
   useStopDeploymentMutation,
 } from "@/features/teams/teamsApi";
-import { ProfileAvatar } from "@/components/ProfileAvatar/ProfileAvatar";
-import floatingPanelStyles from "./FloatingPanel.module.css";
 import styles from "./ActionButtonsPanel.module.css";
+import type { Edge, Node } from "@xyflow/react";
+import type { AgentNodeData } from "./AgentNode.types";
 import type { ActionButtonsPanelProps } from "./ActionButtonsPanel.types";
 
 /** Temporarily disable workflow action buttons on /workflows (matches Vite). */
 const WORKFLOW_ACTIONS_UI_DISABLED = true;
+
+/** Stable identities so the defaults never re-trigger downstream memo/effects. */
+const EMPTY_NODES: Node<AgentNodeData>[] = [];
+const EMPTY_EDGES: Edge[] = [];
 
 function extractErrorMessage(error: unknown): string {
   if (error && typeof error === "object") {
@@ -29,10 +33,10 @@ function extractErrorMessage(error: unknown): string {
 }
 
 /**
- * Bottom action bar embedded via `FloatingPanel`'s `className` pass-through
- * (the `actionButtonsFloatingPanel` global class from
- * `FloatingPanel.module.css`) — Recommend / KYAI / Sandbox / Deploy Saved
- * Team / Save / Deploy, plus the inline profile avatar.
+ * Recommend / KYAI / Sandbox / Deploy Saved Team / Save / Deploy — rendered
+ * as `AppPageShell`'s `actions` slot (see `WorkflowDesigner.tsx`), so it
+ * sits directly in the top navigation bar's right end, before the profile
+ * avatar, rather than as its own floating panel over the canvas.
  *
  * The Vite original's "Estimate Cost" hover panel is dead UI (fully
  * commented out in source, along with the click-outside effect that only
@@ -53,8 +57,8 @@ export function ActionButtonsPanel({
   currentClusterId,
   isExecuting = false,
   canExecute = true,
-  nodes = [],
-  edges = [],
+  nodes = EMPTY_NODES,
+  edges = EMPTY_EDGES,
   teamName = "",
 }: ActionButtonsPanelProps) {
   const [isDeploying, setIsDeploying] = useState(false);
@@ -197,89 +201,79 @@ export function ActionButtonsPanel({
   };
 
   return (
-    <div className={cn(floatingPanelStyles.floatingPanel, "actionButtonsFloatingPanel")}>
-      <div className={floatingPanelStyles.panelContent}>
-        <div className={styles.actionButtonsPanel}>
-          <button
-            type="button"
-            onClick={onRecommendTeam}
-            disabled={isExecuting}
-            className={styles.recommendButton}
-          >
-            <span className={styles.recommendText}>Recommend Team</span>
-          </button>
+    <div className={styles.actionButtonsPanel}>
+      <button
+        type="button"
+        onClick={onRecommendTeam}
+        disabled={isExecuting}
+        className={styles.recommendButton}
+      >
+        <span className={styles.recommendText}>Recommend Team</span>
+      </button>
 
-          <div className={styles.divider} />
+      <div className={styles.divider} />
 
-          <div className={styles.buttonWithSubcaption}>
-            <button
-              type="button"
-              onClick={onTestPlayground}
-              disabled={WORKFLOW_ACTIONS_UI_DISABLED || isExecuting}
-              className={cn(styles.actionButton, styles.testButton)}
-            >
-              <span className={styles.actionText}>K Y A I</span>
-            </button>
-          </div>
-
-          <div className={styles.buttonWithSubcaption}>
-            <button
-              type="button"
-              onClick={onSandboxEval}
-              disabled={WORKFLOW_ACTIONS_UI_DISABLED || isExecuting}
-              className={cn(styles.actionButton, styles.sandboxButton)}
-            >
-              <span className={styles.actionText}>Sandbox</span>
-            </button>
-          </div>
-
-          <div className={styles.divider} />
-
-          <button
-            type="button"
-            onClick={onDeploySavedTeam}
-            disabled={WORKFLOW_ACTIONS_UI_DISABLED || isExecuting}
-            className={cn(styles.actionButton, styles.deploySavedButton)}
-          >
-            <span className={styles.actionText}>Deploy Saved Team</span>
-          </button>
-
-          <div className={styles.divider} />
-
-          <button
-            type="button"
-            onClick={handleSaveTeam}
-            disabled={
-              WORKFLOW_ACTIONS_UI_DISABLED || !canExecute || isExecuting || nodes.length === 0
-            }
-            className={cn(styles.actionButton, styles.saveButton)}
-            title="Save team to cluster"
-          >
-            <span className={styles.actionText}>Save</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleDeployTeam}
-            disabled={WORKFLOW_ACTIONS_UI_DISABLED || !currentTeamId || isExecuting || isDeploying}
-            className={cn(styles.actionButton, styles.saveDeployButton)}
-            title={currentTeamId ? "Deploy saved team" : "Save team first to deploy"}
-          >
-            {isDeploying ? (
-              <>
-                <span className={styles.buttonSpinner} aria-hidden="true" />
-                <span className={styles.actionText}>Deploying...</span>
-              </>
-            ) : (
-              <span className={styles.actionText}>Deploy</span>
-            )}
-          </button>
-
-          <div className={styles.divider} />
-
-          <ProfileAvatar position="inline" />
-        </div>
+      <div className={styles.buttonWithSubcaption}>
+        <button
+          type="button"
+          onClick={onTestPlayground}
+          disabled={WORKFLOW_ACTIONS_UI_DISABLED || isExecuting}
+          className={cn(styles.actionButton, styles.testButton)}
+        >
+          <span className={styles.actionText}>K Y A I</span>
+        </button>
       </div>
+
+      <div className={styles.buttonWithSubcaption}>
+        <button
+          type="button"
+          onClick={onSandboxEval}
+          disabled={WORKFLOW_ACTIONS_UI_DISABLED || isExecuting}
+          className={cn(styles.actionButton, styles.sandboxButton)}
+        >
+          <span className={styles.actionText}>Sandbox</span>
+        </button>
+      </div>
+
+      <div className={styles.divider} />
+
+      <button
+        type="button"
+        onClick={onDeploySavedTeam}
+        disabled={WORKFLOW_ACTIONS_UI_DISABLED || isExecuting}
+        className={cn(styles.actionButton, styles.deploySavedButton)}
+      >
+        <span className={styles.actionText}>Deploy Saved Team</span>
+      </button>
+
+      <div className={styles.divider} />
+
+      <button
+        type="button"
+        onClick={handleSaveTeam}
+        disabled={WORKFLOW_ACTIONS_UI_DISABLED || !canExecute || isExecuting || nodes.length === 0}
+        className={cn(styles.actionButton, styles.saveButton)}
+        title="Save team to cluster"
+      >
+        <span className={styles.actionText}>Save</span>
+      </button>
+
+      <button
+        type="button"
+        onClick={handleDeployTeam}
+        disabled={WORKFLOW_ACTIONS_UI_DISABLED || !currentTeamId || isExecuting || isDeploying}
+        className={cn(styles.actionButton, styles.saveDeployButton)}
+        title={currentTeamId ? "Deploy saved team" : "Save team first to deploy"}
+      >
+        {isDeploying ? (
+          <>
+            <span className={styles.buttonSpinner} aria-hidden="true" />
+            <span className={styles.actionText}>Deploying...</span>
+          </>
+        ) : (
+          <span className={styles.actionText}>Deploy</span>
+        )}
+      </button>
     </div>
   );
 }

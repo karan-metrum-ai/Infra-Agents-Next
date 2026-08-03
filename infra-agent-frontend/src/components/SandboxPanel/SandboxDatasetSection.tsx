@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { AlertCircle, FileUp, Loader2 } from "lucide-react";
+import { AlertCircle, Database, FileUp, Loader2 } from "lucide-react";
 import { useUploadKBMutation } from "@/features/sandbox/sandboxApi";
 import styles from "./SandboxConfigForm.module.css";
 import type { SandboxSectionProps } from "./SandboxConfigForm.types";
@@ -48,6 +48,7 @@ export function SandboxDatasetSection({ form }: SandboxSectionProps) {
   return (
     <section className={styles.configSection}>
       <div className={styles.configSectionHeader}>
+        <Database size={14} className={styles.configSectionIcon} aria-hidden="true" />
         <span>3. Dataset</span>
       </div>
       <p className={styles.configSectionHint}>

@@ -1,9 +1,48 @@
 .workflowDesigner {
   position: relative;
   width: 100%;
-  height: 100dvh;
+  /* Fills the remaining space below AppPageShell's top bar (mounted from
+   * inside this component -- see WorkflowDesigner.tsx). */
+  height: 100%;
   overflow: hidden;
   background: var(--background);
+
+  /* Canvas rail geometry, read by WorkflowDesignerCanvas.module.css's
+   * .reactFlowContainer -- keeps the ReactFlow canvas confined to the
+   * middle column instead of extending underneath AgentsPanel (left,
+   * FloatingPanel `position-left-top`, 340px) and ToolCatalogPanel /
+   * AgentInspectorPanel (right, 380px), matching the Vite source's
+   * --canvas-left-rail/--canvas-right-rail approach. AgentsPanel and
+   * ToolCatalogPanel already read --workflow-panel-top/
+   * --canvas-bottom-inset from this ancestor (see their own doc
+   * comments) -- defining them here closes that gap. */
+  --workflow-panel-top: 80px;
+  --canvas-bottom-inset: 20px;
+  --canvas-edge-inset: 20px;
+  --canvas-rail-gap: 16px;
+  --canvas-left-rail: calc(var(--canvas-edge-inset) + 340px + var(--canvas-rail-gap));
+  --canvas-right-rail: calc(var(--canvas-edge-inset) + 380px + var(--canvas-rail-gap));
+}
+
+@media (max-width: 1024px) {
+  .workflowDesigner {
+    /* ToolCatalogPanel/AgentInspectorPanel narrow to 340px here; AgentsPanel
+     * (left) stays 340px at this breakpoint too. */
+    --canvas-right-rail: calc(var(--canvas-edge-inset) + 340px + var(--canvas-rail-gap));
+  }
+}
+
+@media (max-width: 768px) {
+  .workflowDesigner {
+    /* Both side panels become full-width slide-in overlays at this
+     * breakpoint (FloatingPanel's position-left-top and ToolCatalogPanel's
+     * panelShell both switch to left+right insets instead of a fixed
+     * rail width), so the canvas goes edge-to-edge underneath them. */
+    --workflow-panel-top: 64px;
+    --canvas-bottom-inset: 10px;
+    --canvas-left-rail: 10px;
+    --canvas-right-rail: 10px;
+  }
 }
 
 .topBar {

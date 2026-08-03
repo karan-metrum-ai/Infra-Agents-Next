@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown, ChevronRight, Server, Zap } from "lucide-react";
 import styles from "./SandboxConfigForm.module.css";
 import type { SandboxSectionProps } from "./SandboxConfigForm.types";
 
@@ -25,6 +26,11 @@ export function SandboxAdvancedSection({ form }: SandboxSectionProps) {
         aria-expanded={expanded}
         aria-controls="sandbox-advanced-content"
       >
+        {expanded ? (
+          <ChevronDown size={14} aria-hidden="true" />
+        ) : (
+          <ChevronRight size={14} aria-hidden="true" />
+        )}
         {expanded ? "Hide advanced settings" : "Show advanced settings"}
       </button>
 
@@ -32,6 +38,7 @@ export function SandboxAdvancedSection({ form }: SandboxSectionProps) {
         <div id="sandbox-advanced-content" className={styles.advancedContent}>
           <section className={styles.configSection}>
             <div className={styles.configSectionHeader}>
+              <Server size={14} className={styles.configSectionIcon} aria-hidden="true" />
               <span>Model endpoint</span>
             </div>
             <div className={styles.configRow}>
@@ -70,6 +77,7 @@ export function SandboxAdvancedSection({ form }: SandboxSectionProps) {
 
           <section className={styles.configSection}>
             <div className={styles.configSectionHeader}>
+              <Zap size={14} className={styles.configSectionIcon} aria-hidden="true" />
               <span>Optimization</span>
             </div>
             <label className={styles.radioItem}>
