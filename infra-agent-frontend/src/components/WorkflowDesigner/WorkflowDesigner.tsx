@@ -116,6 +116,17 @@ function WorkflowDesignerContent() {
     markOnboardingComplete();
   };
 
+  const workflowLeading = (
+    <TeamBuilderPanel
+      teamName={teamLoader.teamName}
+      onTeamNameChange={teamLoader.setTeamName}
+      nodeCount={canvas.nodes.length}
+      edgeCount={canvas.edges.length}
+      selectedClusterId={teamLoader.currentClusterId || teamLoader.selectedClusterId}
+      onClearCluster={teamLoader.clearCluster}
+    />
+  );
+
   const workflowActions = (
     <ActionButtonsPanel
       onRecommendTeam={() => setShowRecommendModal(true)}
@@ -135,7 +146,7 @@ function WorkflowDesignerContent() {
   );
 
   return (
-    <AppPageShell title="Team Builder" actions={workflowActions}>
+    <AppPageShell title="Team Builder" leadingExtra={workflowLeading} actions={workflowActions}>
       <div className={styles.workflowDesigner}>
         <WorkflowDesignerCanvas
           wrapperRef={canvas.reactFlowWrapperRef}
@@ -151,17 +162,6 @@ function WorkflowDesignerContent() {
           onSettingsClick={inspector.handleSettingsClick}
           isRecommending={teamLoader.isRecommending}
         />
-
-        <div className={styles.topBar}>
-          <TeamBuilderPanel
-            teamName={teamLoader.teamName}
-            onTeamNameChange={teamLoader.setTeamName}
-            nodeCount={canvas.nodes.length}
-            edgeCount={canvas.edges.length}
-            selectedClusterId={teamLoader.currentClusterId || teamLoader.selectedClusterId}
-            onClearCluster={teamLoader.clearCluster}
-          />
-        </div>
 
         <AgentsPanel onDragStart={canvas.handleDragStart} onAgentSelect={canvas.addAgentToTeam} />
 

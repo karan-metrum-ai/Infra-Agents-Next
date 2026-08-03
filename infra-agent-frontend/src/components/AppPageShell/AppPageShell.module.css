@@ -50,6 +50,13 @@
   white-space: nowrap;
 }
 
+.leadingExtra {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+}
+
 .rightPanel {
   display: flex;
   align-items: center;

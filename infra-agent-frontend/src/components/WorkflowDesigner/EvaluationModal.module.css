@@ -35,18 +35,33 @@
 }
 
 .pageRoot {
-  width: 100%;
-  min-height: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  box-sizing: border-box;
+  background: var(--background);
+  overflow: hidden;
 }
 
-.pageContainer {
+.pageModal {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1080px;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-xl) var(--spacing-lg);
+  background: var(--card);
+  border: var(--border-width) solid var(--panel-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: slideUp 0.2s var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pageModal {
+    animation: none;
+  }
 }
 
 @keyframes fadeIn {
@@ -85,6 +100,7 @@
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
   border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  flex-shrink: 0;
 }
 
 .titleContent {
@@ -158,6 +174,7 @@
 .tabNavigation {
   padding: 0 var(--spacing-lg);
   border-bottom: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
+  flex-shrink: 0;
 }
 
 .tabContainer {
@@ -195,6 +212,7 @@
 
 .tabContent {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: var(--spacing-lg);
 }
@@ -314,7 +332,7 @@
 
 .teamList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-md);
 }
 
@@ -343,9 +361,9 @@
 
 .teamCardSelected,
 .teamCardSelected:hover {
-  border-color: color-mix(in oklch, var(--color-brand) 50%, transparent);
-  background: color-mix(in oklch, var(--color-brand) 5%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--color-brand) 25%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 8%, transparent);
+  background: color-mix(in oklch, var(--primary) 8%, transparent);
+  box-shadow: none;
 }
 
 .teamCardHeader {
@@ -501,8 +519,8 @@
 }
 
 .promptCardSelected {
-  border-color: color-mix(in oklch, var(--color-brand) 50%, transparent);
-  background: color-mix(in oklch, var(--color-brand) 5%, transparent);
+  border-color: color-mix(in oklch, var(--foreground) 8%, transparent);
+  background: color-mix(in oklch, var(--primary) 8%, transparent);
 }
 
 .promptCardHeader {
@@ -592,6 +610,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: var(--border-width) solid color-mix(in oklch, var(--foreground) 6%, transparent);
 }
 
 .startEvaluationButton {

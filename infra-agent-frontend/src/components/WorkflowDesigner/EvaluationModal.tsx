@@ -206,7 +206,7 @@ function EvaluationModalContent({ correlationId, onClose, layout }: EvaluationMo
         </div>
       ) : (
         <div className={styles.pageRoot}>
-          <div className={styles.pageContainer}>{modalBody}</div>
+          <div className={styles.pageModal}>{modalBody}</div>
         </div>
       )}
 
@@ -220,8 +220,8 @@ function EvaluationModalContent({ correlationId, onClose, layout }: EvaluationMo
 /**
  * KYAI Playground trajectory viewer/evaluator. `layout="modal"` (default)
  * renders as an accessible overlay dialog on `/workflows`; `layout="page"`
- * renders the same content inline for the `/kyai` route bridges, with no
- * dialog semantics or overlay chrome.
+ * renders the same modal chrome as a page-hosted panel on `/kyai` (no
+ * dialog semantics/overlay), matching `SandboxConfigForm`.
  *
  * Decomposed from the Vite original's single 1583-LOC file into this
  * orchestrator plus sibling view components (`EvaluationTeamSelection`,

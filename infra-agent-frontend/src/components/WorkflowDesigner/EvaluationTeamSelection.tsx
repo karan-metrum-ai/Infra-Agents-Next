@@ -88,7 +88,7 @@ export function EvaluationTeamSelection({
         <div className={styles.teamSelectionError} role="alert">
           <AlertCircle size={32} aria-hidden="true" />
           <span>Failed to load teams. Please try again.</span>
-          <button type="button" onClick={onRetryTeams} className={styles.retryButton}>
+          <button type="button" onClick={onRetryTeams} className="btn-secondary">
             Retry
           </button>
         </div>
@@ -275,16 +275,16 @@ export function EvaluationTeamSelection({
               type="button"
               onClick={onStartEvaluation}
               disabled={!selectedTeamId || !hasValidPrompt || isStarting}
-              className={styles.startEvaluationButton}
+              className="btn-primary"
             >
               {isStarting ? (
                 <>
-                  <Loader2 size={20} className={styles.loadingIcon} aria-hidden="true" />
+                  <Loader2 size={16} className={styles.loadingIcon} aria-hidden="true" />
                   Starting Evaluation...
                 </>
               ) : (
                 <>
-                  <Play size={20} aria-hidden="true" />
+                  <Play size={16} aria-hidden="true" />
                   Start KYAI Evaluation
                 </>
               )}

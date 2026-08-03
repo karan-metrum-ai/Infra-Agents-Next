@@ -18,12 +18,9 @@ interface KyaiPlaygroundRouteProps {
  *
  * The Vite source redirected these legacy URLs into an inline modal opened
  * on `/workflows`. This app's Phase 7 port of `EvaluationModal` already
- * added a `layout="page"` mode specifically for this route (see its own
- * doc comment: "'page' renders the same content as a standalone route (used
- * by `/kyai`)"), so this component renders that mode directly instead of
- * redirecting anywhere -- matching the same "prefer a real page over a
- * cross-page redirect-then-reopen-as-modal dance" precedent already used
- * by `SandboxConfigForm.tsx` for `/sandbox/new`.
+ * added a `layout="page"` mode specifically for this route — that mode now
+ * uses the same page-hosted modal chrome as `/sandbox/new` (header → body,
+ * global `.btn-primary` / `.btn-secondary`), not a PageHero stack.
  *
  * `onClose` navigates back to `/workflows` (this route's one meaningful
  * "close" destination, since `layout="page"` has no overlay to dismiss).

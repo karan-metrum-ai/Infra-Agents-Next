@@ -8,13 +8,15 @@ import styles from "./AppPageShell.module.css";
 
 interface AppPageShellProps {
   title: string;
+  /** Inline controls after the page title (e.g. team name input). */
+  leadingExtra?: React.ReactNode;
   /** Page-specific controls shown at the right end, before the profile avatar. */
   actions?: React.ReactNode;
   children: React.ReactNode;
 }
 
 /** Shared authenticated page chrome with global nav + brand + page title. */
-export function AppPageShell({ title, actions, children }: AppPageShellProps) {
+export function AppPageShell({ title, leadingExtra, actions, children }: AppPageShellProps) {
   return (
     <div className={styles.shell}>
       <header className={styles.topBar}>
@@ -30,6 +32,12 @@ export function AppPageShell({ title, actions, children }: AppPageShellProps) {
           />
           <Separator orientation="vertical" className={styles.separator} />
           <h1 className={styles.title}>{title}</h1>
+          {leadingExtra && (
+            <>
+              <Separator orientation="vertical" className={styles.separator} />
+              <div className={styles.leadingExtra}>{leadingExtra}</div>
+            </>
+          )}
         </div>
         <div className={styles.rightPanel}>
           {actions}

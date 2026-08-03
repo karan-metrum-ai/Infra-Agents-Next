@@ -29,14 +29,14 @@ export function EvaluationDiagramTab({
         <button
           type="button"
           onClick={onToggleFullscreen}
-          className={styles.fullscreenButton}
+          className="btn-secondary"
           title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
           disabled={!mermaidDiagram}
         >
           {isFullscreen ? (
-            <Minimize2 size={20} aria-hidden="true" />
+            <Minimize2 size={16} aria-hidden="true" />
           ) : (
-            <Maximize2 size={20} aria-hidden="true" />
+            <Maximize2 size={16} aria-hidden="true" />
           )}
           <span className={styles.buttonText}>
             {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}

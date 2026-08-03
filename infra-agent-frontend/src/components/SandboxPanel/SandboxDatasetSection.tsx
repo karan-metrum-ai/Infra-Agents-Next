@@ -86,7 +86,7 @@ export function SandboxDatasetSection({ form }: SandboxSectionProps) {
         {kbSourceType === "custom" && (
           <div className={styles.fileUploadRow}>
             <label
-              className={`${styles.fileUploadButton} ${isUploading ? styles.fileUploadButtonDisabled : ""}`}
+              className={`btn-secondary ${isUploading ? styles.fileUploadButtonDisabled : ""}`}
             >
               {isUploading ? (
                 <>

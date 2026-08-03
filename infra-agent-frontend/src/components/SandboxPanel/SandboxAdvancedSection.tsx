@@ -31,7 +31,7 @@ export function SandboxAdvancedSection({ form }: SandboxSectionProps) {
         ) : (
           <ChevronRight size={14} aria-hidden="true" />
         )}
-        {expanded ? "Hide advanced settings" : "Show advanced settings"}
+        {expanded ? "Hide advanced settings" : "4. Advanced settings (optional)"}
       </button>
 
       {expanded && (

@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, History, Loader2, Play } from "lucide-react";
 import { useStartRunMutation } from "@/features/sandbox/sandboxApi";
 import { useRegisterCommand } from "@/hooks/useCommandRegistry";
-import { PageHero } from "@/components/PageHero/PageHero";
 import {
   defaultSandboxRunConfigFormValues,
   sandboxRunConfigSchema,
@@ -34,34 +33,15 @@ function extractErrorMessage(error: unknown): string {
 
 /**
  * Sandbox Evaluator config → run submission form. Ported from the Vite
- * app's `SandboxConfigModal.tsx` (610 LOC) + `SandboxConfigPage.tsx` (48
- * LOC) into this orchestrator + 4 sibling sections
- * (`SandboxSimulatorSection`, `SandboxAgentTeamSection`,
- * `SandboxDatasetSection`, `SandboxAdvancedSection`) + a run-history drawer
- * (`SandboxRunHistoryPanel`), all under the LOC soft cap.
+ * app's `SandboxConfigModal.tsx` into this orchestrator + sibling sections.
  *
- * **Modal-vs-page decision**: this is page-level content only, not a
- * dialog — no overlay, no `role="dialog"`, no `useDialogFocusTrap` on the
- * form itself. In the Vite app `SandboxConfigModal` was opened inline from
- * the Workflow Designer canvas; that call site was deliberately NOT pulled
- * forward in Phase 7 (see CLAUDE.md's resolved-conflicts table) — the
- * canvas's "Sandbox Eval" action navigates to the real `/sandbox/new` route
- * instead, matching `EvaluationModal`'s own `layout="page"` precedent for
- * exactly this reason. Since `/sandbox/new` is this component's one real
- * mount point right now (`SandboxConfigPage.tsx`'s Vite job — bridging to
- * a route — is exactly what this *is* the route), it never needs the
- * overlay/dialog chrome in the first place, unlike `EvaluationModal` which
- * genuinely has two live callers (`/workflows`'s inline modal and
- * `/kyai`'s page). If a future phase adds a second, inline-modal caller for
- * this form, add a `layout` prop then, following that same precedent —
- * don't speculatively build it now.
+ * Visual model: page-hosted modal chrome (SaveTeamModal / EvaluationModal
+ * header → body → footer), not a dialog overlay. Primary/secondary actions
+ * use the global `.btn-primary` / `.btn-secondary` utilities from
+ * `globals.css`.
  *
- * Zero-`useEffect` discipline: form state is entirely React Hook Form
- * (`useForm` + `zodResolver`); server data is RTK Query
- * (`useStartRunMutation`, `useUploadKBMutation` in `SandboxDatasetSection`,
- * `useListRunsQuery`/`useCancelRunMutation` in `SandboxRunHistoryPanel`);
- * the advanced-section collapse and run-history-open flags are plain
- * event-driven `useState`. No direct `useEffect` anywhere in this feature.
+ * Zero-`useEffect` discipline: form state is React Hook Form; server data is
+ * RTK Query; collapse/history flags are event-driven `useState`.
  */
 export function SandboxConfigForm() {
   const router = useRouter();
@@ -101,25 +81,34 @@ export function SandboxConfigForm() {
 
   return (
     <div className={styles.pageRoot}>
-      <div className={styles.pageContainer}>
-        <PageHero
-          eyebrow="Sandbox Evaluator"
-          title="Configure a sandbox run"
-          subtitle="Set up the evaluation parameters, then open the live report once the run starts."
-          onBack={() => router.push("/workflows")}
-          trailing={
-            <button
-              type="button"
-              className={styles.historyButton}
-              onClick={() => setShowHistory(true)}
-            >
-              <History size={14} aria-hidden="true" />
-              Run History
-            </button>
-          }
-        />
+      <form
+        className={styles.modalContainer}
+        onSubmit={onSubmit}
+        noValidate
+        aria-labelledby="sandbox-config-title"
+      >
+        <header className={styles.modalHeader}>
+          <div className={styles.headerText}>
+            <span className={styles.eyebrow}>Sandbox Evaluator</span>
+            <h2 id="sandbox-config-title" className={styles.modalTitle}>
+              Configure a sandbox run
+            </h2>
+            <p className={styles.modalSubtitle}>
+              Set up the evaluation parameters, then open the live report once the run starts.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => setShowHistory(true)}
+            aria-label="Open run history"
+          >
+            <History size={14} aria-hidden="true" />
+            Run History
+          </button>
+        </header>
 
-        <form className={styles.sandboxConfigContainer} onSubmit={onSubmit} noValidate>
+        <div className={styles.modalContent}>
           <div className={styles.configLayout}>
             <fieldset className={styles.formFieldset} disabled={isStarting}>
               <SandboxSimulatorSection form={form} />
@@ -128,7 +117,7 @@ export function SandboxConfigForm() {
               <SandboxAdvancedSection form={form} />
             </fieldset>
 
-            <aside className={styles.runSummarySidebar}>
+            <aside className={styles.runSummarySidebar} aria-label="Run summary">
               <SandboxRunSummary form={form} />
             </aside>
           </div>
@@ -139,24 +128,32 @@ export function SandboxConfigForm() {
               <span>{submitError}</span>
             </div>
           )}
+        </div>
 
-          <div className={styles.configActions}>
-            <button type="submit" className={styles.startButton} disabled={isStarting}>
-              {isStarting ? (
-                <>
-                  <Loader2 size={14} className={styles.spinIcon} aria-hidden="true" />
-                  Starting...
-                </>
-              ) : (
-                <>
-                  <Play size={14} aria-hidden="true" />
-                  Start sandbox run
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
+        <footer className={styles.modalFooter}>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => router.push("/workflows")}
+            disabled={isStarting}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn-primary" disabled={isStarting}>
+            {isStarting ? (
+              <>
+                <Loader2 size={14} className={styles.spinIcon} aria-hidden="true" />
+                Starting...
+              </>
+            ) : (
+              <>
+                <Play size={14} aria-hidden="true" />
+                Start sandbox run
+              </>
+            )}
+          </button>
+        </footer>
+      </form>
 
       {showHistory && <SandboxRunHistoryPanel onClose={() => setShowHistory(false)} />}
     </div>
